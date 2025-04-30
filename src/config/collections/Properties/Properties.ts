@@ -59,4 +59,24 @@ export const Properties: CollectionConfig = {
       ],
     },
   ],
+  hooks: {
+    afterRead: [
+      async (props) => {
+        const zipcode = props.doc.zipcode
+        const doc = {
+          ...props.doc,
+          address: {
+            street: props.doc.street,
+            city: zipcode.city,
+            state: zipcode.state_name,
+            state_abbr: zipcode.state_abbr,
+            zip: zipcode.code,
+          },
+          zipcode: undefined,
+          street: undefined,
+        }
+        return doc
+      },
+    ],
+  },
 }
