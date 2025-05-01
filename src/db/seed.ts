@@ -1,25 +1,30 @@
-import { seedZipCodes } from './seeders/zipcodes'
+import { drizzle } from 'drizzle-orm/node-postgres'
+import { reset } from 'drizzle-seed'
+
 import { getPayload } from 'payload'
 import config from '../payload.config'
-async function seed() {
-  console.log('Seeding database...')
+import { seedZipCodes } from './seeders/zipcodes'
+import { seedFeatures } from './seeders/features'
+async function main() {
+  console.log(`\n== Seeding database ==\n`)
+
+  const db = drizzle(process.env.DATABASE_URI!)
 
   const payload = await getPayload({ config })
 
-  // clear all collections
-  await payload.delete({
-    collection: 'zipcodes',
-    where: {},
-  })
+  console.log(`\n[Resetting database...]`)
+  await reset(db, payload.db.schema)
 
-  console.log('Clearing zipcodes collection first...')
-
+  console.log(`\n[Seeding zip codes...]\n`)
   await seedZipCodes(payload)
+
+  console.log(`\n[Seeding features...]\n`)
+  await seedFeatures(payload)
 }
 
-seed()
+main()
   .then(() => {
-    console.log('Database seeded successfully')
+    console.log(`\nDatabase seeded successfully\n`)
     process.exit(0)
   })
   .catch((err) => {

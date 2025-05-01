@@ -4,11 +4,10 @@ import path, { dirname } from 'path'
 import { Payload } from 'payload'
 import { fileURLToPath } from 'url'
 
-export async function seedZipCodes(payload: Payload) {
+export async function seedZipCodes(payload: Payload): Promise<void> {
   const __filename = fileURLToPath(import.meta.url)
   const __dirname = dirname(__filename)
   const csvFilePath = path.resolve(__dirname, './zip_codes.csv')
-  console.log(csvFilePath)
 
   const zipCodes: any[] = []
 
@@ -29,8 +28,7 @@ export async function seedZipCodes(payload: Payload) {
         })
       })
       .on('end', () => {
-        console.log(zipCodes[0])
-        console.log(`Found ${zipCodes.length} zip codes in target counties`)
+        console.log(`Found ${zipCodes.length} zip codes`)
         resolve()
       })
       .on('error', (error: Error) => {

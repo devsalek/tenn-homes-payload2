@@ -1,6 +1,6 @@
 import { Property, Zipcode } from '@/payload-types'
 import type { CollectionConfig } from 'payload'
-
+import ViewPropertyButton from '@/components/admin/ui/view-property-button'
 export interface PropertyWithAddress extends Property {
   address: {
     street: string
@@ -15,6 +15,7 @@ export const Properties: CollectionConfig = {
   slug: 'properties',
   admin: {
     useAsTitle: 'title',
+    preview: ({ id }) => `http://localhost:3000/properties/${id}`,
   },
   fields: [
     {
@@ -69,6 +70,15 @@ export const Properties: CollectionConfig = {
         },
       ],
     },
+    {
+      name: 'features',
+      type: 'relationship',
+      relationTo: 'features',
+      hasMany: true,
+      admin: {
+        description: 'Select the features for this property.',
+      },
+    },
   ],
   hooks: {
     afterRead: [
@@ -85,8 +95,6 @@ export const Properties: CollectionConfig = {
         const docWithAddress = {
           ...doc,
           address,
-          zipcode: undefined,
-          street: undefined,
         } as PropertyWithAddress
 
         return docWithAddress

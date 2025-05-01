@@ -71,6 +71,7 @@ export interface Config {
     media: Media;
     zipcodes: Zipcode;
     properties: Property;
+    features: Feature;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -81,6 +82,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     zipcodes: ZipcodesSelect<false> | ZipcodesSelect<true>;
     properties: PropertiesSelect<false> | PropertiesSelect<true>;
+    features: FeaturesSelect<false> | FeaturesSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -199,6 +201,24 @@ export interface Property {
   zipcode: number | Zipcode;
   price?: number | null;
   listingStatus: 'forsale' | 'pending' | 'contract' | 'sold' | 'notforsale';
+  /**
+   * Select the features for this property.
+   */
+  features?: (number | Feature)[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "features".
+ */
+export interface Feature {
+  id: number;
+  /**
+   * Name of the feature (e.g., "Hardwood Floors", "Swimming Pool")
+   */
+  name: string;
+  category: 'interior' | 'exterior' | 'community' | 'other';
   updatedAt: string;
   createdAt: string;
 }
@@ -224,6 +244,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'properties';
         value: number | Property;
+      } | null)
+    | ({
+        relationTo: 'features';
+        value: number | Feature;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -326,6 +350,17 @@ export interface PropertiesSelect<T extends boolean = true> {
   zipcode?: T;
   price?: T;
   listingStatus?: T;
+  features?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "features_select".
+ */
+export interface FeaturesSelect<T extends boolean = true> {
+  name?: T;
+  category?: T;
   updatedAt?: T;
   createdAt?: T;
 }
