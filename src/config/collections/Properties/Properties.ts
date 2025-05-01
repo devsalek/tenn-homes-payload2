@@ -1,6 +1,5 @@
 import { Property, Zipcode } from '@/payload-types'
 import type { CollectionConfig } from 'payload'
-import ViewPropertyButton from '@/components/admin/ui/view-property-button'
 export interface PropertyWithAddress extends Property {
   address: {
     street: string
