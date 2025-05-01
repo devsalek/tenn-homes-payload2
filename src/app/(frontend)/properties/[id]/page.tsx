@@ -1,15 +1,26 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { PropertyWithAddress } from '@/config/collections/Properties/Properties'
-import config from '@payload-config'
-import { getPayload } from 'payload'
+import { headers } from 'next/headers'
+import { notFound } from 'next/navigation'
+
+async function fetchProperty(id: string) {
+  const res = await fetch(`http://localhost:3000/api/properties/${id}`, {
+    headers: await headers(),
+  })
+  if (!res.ok) return undefined
+  return res.json()
+}
 
 export default async function PropertiesPage({ params }: { params: { id: string } }) {
-  const payload = await getPayload({ config })
   const { id } = await params
-  const property = (await payload.findByID({
-    collection: 'properties',
-    id,
-  })) as PropertyWithAddress
+  const property = (await fetchProperty(id)) as PropertyWithAddress
+
+  console.log({ property })
+
+  if (!property) {
+    return notFound()
+  }
+
   return (
     <div className="w-screen p-12 flex justify-center bg-accent text-sm">
       <div className="w-full max-w-lg grid gap-4">
@@ -29,7 +40,12 @@ export default async function PropertiesPage({ params }: { params: { id: string 
               <ul>
                 {property.features?.map((feature) => {
                   if (typeof feature === 'number') return null
-                  return <li key={feature.id}>{feature.name}</li>
+                  return (
+                    <li key={feature.id}>
+                      {feature.name} (
+                      <span className="capitalize text-muted-foreground">{feature.category}</span>)
+                    </li>
+                  )
                 })}
               </ul>
             </div>
