@@ -1,4 +1,15 @@
+import { Property, Zipcode } from '@/payload-types'
 import type { CollectionConfig } from 'payload'
+
+export interface PropertyWithAddress extends Property {
+  address: {
+    street: string
+    city: string
+    state_abbr: string
+    state_name: string
+    zip: string
+  }
+}
 
 export const Properties: CollectionConfig = {
   slug: 'properties',
@@ -61,21 +72,24 @@ export const Properties: CollectionConfig = {
   ],
   hooks: {
     afterRead: [
-      async (props) => {
-        const zipcode = props.doc.zipcode
-        const doc = {
-          ...props.doc,
-          address: {
-            street: props.doc.street,
-            city: zipcode.city,
-            state: zipcode.state_name,
-            state_abbr: zipcode.state_abbr,
-            zip: zipcode.code,
-          },
+      async ({ doc }) => {
+        const zipcode = doc.zipcode as Zipcode
+        const address = {
+          street: doc.street!,
+          city: zipcode.city!,
+          state_abbr: zipcode.state_abbr!,
+          state_name: zipcode.state_name!,
+          zip: zipcode.code!,
+        }
+        doc.address = address
+        const docWithAddress = {
+          ...doc,
+          address,
           zipcode: undefined,
           street: undefined,
-        }
-        return doc
+        } as PropertyWithAddress
+
+        return docWithAddress
       },
     ],
   },
