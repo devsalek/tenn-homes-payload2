@@ -1,4 +1,26 @@
-export default function PropertyGallery() {
+import { Footer } from '@/app/(frontend)/_layouts/footer'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { getPayloadClient } from '@/db/client'
+import { HeartPlusIcon, MailIcon, PhoneCallIcon, Share2Icon } from 'lucide-react'
+import { notFound } from 'next/navigation'
+
+export default async function PropertyGallery({ params }: { params: { location: string[] } }) {
+  const { location } = await params
+  console.log({ location })
+  const propertyId = location[location.length - 1]
+  const payload = await getPayloadClient()
+  const property = await payload.findByID({
+    collection: 'properties',
+    id: Number(propertyId),
+  })
+
+  if (!property) {
+    return notFound()
+  }
+  console.log({ property })
   // Sample property images
   const images = [
     {
@@ -60,7 +82,7 @@ export default function PropertyGallery() {
     <div className="w-full flex flex-col gap-4">
       <div className="relative">
         {/* Main gallery with CSS Grid that changes based on screen size */}
-        <div className="grid grid-cols-12 grid-rows-1 gap-1 h-1/2 max-h-[520px] macbook-pro:max-h-[720px]">
+        <div className="grid grid-cols-12 grid-rows-1 gap-1  max-h-[520px] xl:max-h-[680px]">
           {/* Feature image - always visible */}
           <img
             src={featureImage.url}
@@ -98,13 +120,12 @@ export default function PropertyGallery() {
         </div>
       </div>
       <div className="max-w-7xl px-4 large:p-0 w-full mx-auto grid grid-cols-12 gap-4">
-        <div className="col-span-12 desktop:col-span-8 grid gap-2">
-          <div className="bg-white rounded-lg p-6">
+        <div className="col-span-12 desktop:col-span-8 grid gap-4">
+          {/* Property Details */}
+          <div className="bg-white rounded-lg p-6 flex items-start justify-between">
             <div className="flex flex-col gap-3">
               <div className="flex flex-col gap-1">
-                <h1 className="text-2xl font-bold leading-none">
-                  Beautiful Home in the Smoky Mountains!
-                </h1>
+                <h1 className="text-2xl font-bold">Beautiful Home in the Smoky Mountains!</h1>
                 <div className="flex flex-wrap gap-2">
                   {tags.map((tag) => (
                     <div
@@ -120,7 +141,7 @@ export default function PropertyGallery() {
               <div>
                 <span className="font-semibold">5325 Roberts Rd</span>, Corryton, TN 37721
               </div>
-              <div className="flex items-center gap-12">
+              <div className="flex flex-wrap gap-x-8 gap-y-4">
                 <div>
                   <h3 className="text-3xl font-bold leading-none">$670,000</h3>
                   <p>
@@ -147,7 +168,18 @@ export default function PropertyGallery() {
                 </div>
               </div>
             </div>
+            <div className="flex flex-col gap-2">
+              <div className="flex gap-2">
+                <Button variant="ghost" className="p-0 size-10">
+                  <Share2Icon size={24} className="shrink-0 h-6 w-6" />
+                </Button>
+                <Button variant="ghost" className="p-0 size-10">
+                  <HeartPlusIcon size={24} className="shrink-0 h-6 w-6" />
+                </Button>
+              </div>
+            </div>
           </div>
+          {/* Overview */}
           <div className="bg-white rounded-lg p-6">
             <div className="flex flex-col gap-6">
               <div className="flex flex-col gap-1">
@@ -183,11 +215,115 @@ export default function PropertyGallery() {
               </div>
             </div>
           </div>
+          {/* Features */}
+          <div className="bg-white rounded-lg p-6">
+            <div className="flex flex-col gap-6">
+              <div className="flex flex-col gap-1">
+                <h2 className="text-2xl font-semibold leading-none mb-4">Features</h2>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <h4 className="text-base font-semibold mb-3">Interior Features</h4>
+                  <ul className="list-disc list-inside flex flex-col gap-2">
+                    <li>
+                      <span>CentralAir Conditioning</span>
+                    </li>
+                    <li>
+                      <span>Hardwood Floors</span>
+                    </li>
+                    <li>
+                      <span>Attached Garage</span>
+                    </li>
+                    <li>
+                      <span>Updated Kitchen</span>
+                    </li>
+                    <li>
+                      <span>Open Floor Plan</span>
+                    </li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="text-base font-semibold mb-3">Exterior Features</h4>
+                  <ul className="list-disc list-inside flex flex-col gap-2">
+                    <li>
+                      <span>Paved Driveway</span>
+                    </li>
+                    <li>
+                      <span>Private Backyard</span>
+                    </li>
+                    <li>
+                      <span>Fenced Yard</span>
+                    </li>
+                    <li>
+                      <span>Outdoor Seating</span>
+                    </li>
+                    <li>
+                      <span>Covered Porch</span>
+                    </li>
+                    <li>
+                      <span>Outdoor Lighting</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Map */}
+          <div className="bg-white rounded-lg p-6">
+            <div className="flex flex-col gap-6">
+              <div className="flex flex-col gap-1">
+                <h2 className="text-2xl font-semibold leading-none mb-4">Map</h2>
+                <div className="h-96 w-full bg-zinc-100 rounded-md"></div>
+              </div>
+            </div>
+          </div>
         </div>
+
+        {/* Agent Details */}
         <div className="col-span-12 desktop:col-span-4">
-          <div className="bg-white rounded-lg p-6">Agent Details</div>
+          <div className="sticky top-4">
+            <div className="bg-white rounded-lg p-6 flex flex-col gap-4">
+              <div className="flex items-start gap-4">
+                <Avatar className="size-12">
+                  <AvatarImage src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col gap-4">
+                  <div>
+                    <h4 className="text-lg font-semibold">Sarah Johnson</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Licensed Real Estate Agent in Tennessee
+                    </p>
+                    <p className="text-muted-foreground text-xs">License #123456</p>
+                  </div>
+
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-2">
+                      <PhoneCallIcon size={16} />
+                      <a href="tel:+1234567890">123-456-7890</a>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <MailIcon size={16} />
+                      <a href="mailto:sarah@example.com">sarah@example.com</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-col items-center gap-2">
+                <Input placeholder="Enter your name" />
+                <Input placeholder="Enter your email" />
+                <Textarea placeholder="Enter your message" />
+
+                <Button className="w-full" size={'lg'}>
+                  Send
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+      <Footer />
     </div>
   )
 }
