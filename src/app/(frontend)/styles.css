@@ -120,9 +120,12 @@
 }
 
 @theme {
-  --breakpoint-*: initial;
   --breakpoint-tablet: 40rem;
   --breakpoint-laptop: 64rem;
   --breakpoint-desktop: 80rem;
-  --breakpoint-large: 120rem;
+  --breakpoint-large: 89rem;
+  /* Aliases */
+
+  --breakpoint-macbook-air: var(--breakpoint-desktop);
+  --breakpoint-macbook-pro: var(--breakpoint-large);
 }
