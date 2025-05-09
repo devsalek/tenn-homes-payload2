@@ -105,7 +105,7 @@ export default function PropertyGallery() {
         </div>
       </div>
       <div className="max-w-7xl px-4 large:p-0 w-full mx-auto grid grid-cols-12 gap-4">
-        <div className="col-span-12 desktop:col-span-8 grid gap-2">
+        <div className="col-span-12 desktop:col-span-8 grid gap-4">
           {/* Property Details */}
           <div className="bg-white rounded-lg p-6 flex items-start justify-between">
             <div className="flex flex-col gap-3">
