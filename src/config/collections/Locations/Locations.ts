@@ -1,17 +1,34 @@
-import type { CollectionConfig } from 'payload'
-//id,code,city,state_abbr,state_name,county,latitude,longitude,est_population
-export const ZipCodes: CollectionConfig = {
-  slug: 'zipcodes',
+import type { CollectionConfig, FieldHook } from 'payload'
+
+const formatLocation: FieldHook = async ({ data }) => {
+  if (!data) return ''
+  return `${data.city}, ${data.state_abbr} ${data.zip}`
+}
+
+export const Locations: CollectionConfig = {
+  slug: 'locations',
   labels: {
-    singular: 'Zip Code',
-    plural: 'Zip Codes',
+    singular: 'Location',
+    plural: 'Locations',
   },
   admin: {
-    useAsTitle: 'code',
+    useAsTitle: 'formattedLocation',
+    listSearchableFields: ['city', 'state_abbr', 'state_name', 'zip', 'county'],
   },
   fields: [
     {
-      name: 'code',
+      name: 'formattedLocation',
+      type: 'text',
+      label: 'Location',
+      admin: {
+        hidden: true,
+      },
+      hooks: {
+        afterRead: [formatLocation],
+      },
+    },
+    {
+      name: 'zip',
       type: 'text',
       unique: true,
       label: 'Zip Code',

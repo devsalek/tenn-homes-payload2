@@ -1,19 +1,28 @@
-import { Property, Zipcode } from '@/payload-types'
+import type { JSONSchema4 } from 'json-schema'
+
+import { AfterReadHook } from 'node_modules/payload/dist/collections/config/types'
 import type { CollectionConfig } from 'payload'
-export interface PropertyWithAddress extends Property {
-  address: {
-    street: string
-    city: string
-    state_abbr: string
-    state_name: string
-    zip: string
+
+const formatAddress: AfterReadHook = async ({ doc }) => {
+  console.log({ location: doc.location })
+
+  return {
+    ...doc,
+    address: {
+      street: doc.street,
+      city: doc.location.city,
+      state: doc.location.state_name,
+      state_abbr: doc.location.state_abbr,
+      zip: doc.location.zip,
+      full_address: `${doc.street}, ${doc.location.city}, ${doc.location.state_abbr} ${doc.location.zip}`,
+    },
   }
 }
-
 export const Properties: CollectionConfig = {
   slug: 'properties',
   admin: {
     useAsTitle: 'title',
+    defaultColumns: ['title', 'location', 'price', 'listingStatus'],
     preview: ({ id }) => `http://localhost:3000/properties/${id}`,
   },
   fields: [
@@ -29,9 +38,36 @@ export const Properties: CollectionConfig = {
       label: 'Street Address',
     },
     {
-      name: 'zipcode',
+      name: 'address',
+      type: 'text',
+      admin: {
+        hidden: true,
+      },
+      typescriptSchema: [
+        () => {
+          const address: JSONSchema4 = {
+            type: 'object',
+            properties: {
+              street: { type: 'string' },
+              city: { type: 'string' },
+              state: { type: 'string' },
+              state_abbr: { type: 'string' },
+              zip: { type: 'string' },
+              full_address: {
+                type: 'string',
+              },
+            },
+            required: ['street', 'city', 'state', 'state_abbr', 'zip', 'full_address'],
+          }
+
+          return address
+        },
+      ],
+    },
+    {
+      name: 'location',
       type: 'relationship',
-      relationTo: 'zipcodes',
+      relationTo: 'locations',
       required: true,
       hasMany: false,
       admin: {
@@ -80,24 +116,6 @@ export const Properties: CollectionConfig = {
     },
   ],
   hooks: {
-    afterRead: [
-      async ({ doc }) => {
-        const zipcode = doc.zipcode as Zipcode
-        const address = {
-          street: doc.street!,
-          city: zipcode.city!,
-          state_abbr: zipcode.state_abbr!,
-          state_name: zipcode.state_name!,
-          zip: zipcode.code!,
-        }
-        doc.address = address
-        const docWithAddress = {
-          ...doc,
-          address,
-        } as PropertyWithAddress
-
-        return docWithAddress
-      },
-    ],
+    afterRead: [formatAddress],
   },
 }

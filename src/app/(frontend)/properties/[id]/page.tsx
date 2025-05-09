@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { PropertyWithAddress } from '@/config/collections/Properties/Properties'
+import { Property } from '@/payload-types'
 import { headers } from 'next/headers'
 import { notFound } from 'next/navigation'
 
@@ -13,11 +13,9 @@ async function fetchProperty(id: string) {
 
 export default async function PropertiesPage({ params }: { params: { id: string } }) {
   const { id } = await params
-  const property = (await fetchProperty(id)) as PropertyWithAddress
+  const property = (await fetchProperty(id)) as Property
 
-  console.log({ property })
-
-  if (!property) {
+  if (!property || !property.address) {
     return notFound()
   }
 
@@ -29,12 +27,7 @@ export default async function PropertiesPage({ params }: { params: { id: string 
             <CardTitle className="text-xl font-semibold">{property.title}</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-2">
-            <div className="flex flex-row gap-1">
-              <p>{property.address.street},</p>
-              <p>{property.address.city}</p>
-              <p>{property.address.state_abbr},</p>
-              <p>{property.address.zip}</p>
-            </div>
+            <div className="flex flex-row gap-1">{property.address.full_address}</div>
             <div className="flex flex-row gap-3">
               <h3 className="font-bold">Features</h3>
               <ul>
