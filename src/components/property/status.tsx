@@ -6,8 +6,9 @@ export const PropertyStatus = ({ listingStatus }: { listingStatus: Property['lis
   return (
     <div
       className={cn(
-        'text-sm font-medium uppercase bg-gray-800 text-white px-3 py-1 rounded-xs',
+        'text-sm font-medium uppercase text-white px-3 py-1 rounded-xs',
         listingStatusMap[listingStatus].color,
+        listingStatusMap[listingStatus].foreground,
       )}
     >
       {listingStatusMap[listingStatus].label}

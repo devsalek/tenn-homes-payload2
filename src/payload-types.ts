@@ -225,7 +225,7 @@ export interface Property {
    */
   location: number | Location;
   price?: number | null;
-  listingStatus: 'forsale' | 'pending' | 'contract' | 'sold' | 'notforsale';
+  listingStatus: 'forsale' | 'pending' | 'contract' | 'contingent' | 'sold' | 'offmarket' | 'notforsale';
   /**
    * Select the features for this property.
    */

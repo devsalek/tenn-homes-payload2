@@ -132,9 +132,18 @@
 
 @theme {
   /* status colors */
-  --color-status-forsale: oklch(0.7 0.18 145);
-  --color-status-pending: oklch(0.78 0.13 85);
+  --color-status-forsale: oklch(0.65 0.1653 146.12);
+  --color-status-forsale-foreground: oklch(0.95 0.0296 146.12);
+  --color-status-pending: oklch(0.72 0.1505 64.59);
+  --color-status-pending-foreground: oklch(0.96 0.0321 64.59);
   --color-status-contract: oklch(0.58 0.14 240);
-  --color-status-sold: oklch(0.52 0.18 25);
-  --color-status-notforsale: oklch(0.68 0.02 0);
+  --color-status-contract-foreground: oklch(0.95 0.0148 240);
+  --color-status-contingent: oklch(0.62 0.2129 31.2);
+  --color-status-contingent-foreground: oklch(0.95 0.0148 31.2);
+  --color-status-sold: oklch(0.52 0.1545 252.87);
+  --color-status-sold-foreground: oklch(0.95 0.0148 252.87);
+  --color-status-offmarket: oklch(0.52 0.1545 252.87);
+  --color-status-offmarket-foreground: oklch(0.95 0.0148 252.87);
+  --color-status-notforsale: oklch(0.83 0.0148 146.12);
+  --color-status-notforsale-foreground: oklch(0.33 0.0469 146.12);
 }
