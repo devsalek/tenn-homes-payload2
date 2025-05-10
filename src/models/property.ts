@@ -1,6 +1,11 @@
 import { formatPrice } from '@/lib/format-price'
 import route from '@/lib/routes'
-import { Feature, Property as PropertType, Location as LocationType } from '@/payload-types'
+import {
+  Feature,
+  Property as PropertType,
+  Location as LocationType,
+  PropertyPhoto,
+} from '@/payload-types'
 import slugify from 'slugify'
 
 export class Property {
@@ -16,6 +21,10 @@ export class Property {
 
   get description(): PropertType['description'] {
     return this.data.description
+  }
+
+  get photos(): PropertyPhoto[] {
+    return this.data.photos as PropertyPhoto[]
   }
 
   get listingStatus(): PropertType['listingStatus'] {

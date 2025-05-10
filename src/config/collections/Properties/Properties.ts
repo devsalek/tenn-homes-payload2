@@ -68,6 +68,12 @@ export const Properties: CollectionConfig = {
       required: true,
     },
     {
+      name: 'photos',
+      type: 'relationship',
+      relationTo: 'property-photos',
+      hasMany: true,
+    },
+    {
       name: 'street',
       type: 'text',
       required: true,
