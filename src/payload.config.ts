@@ -15,7 +15,7 @@ import { Features } from './config/collections/Features/Features'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
-const DATABASE_URL = process.env.DATABASE_URI + '_31a'
+const DATABASE_URL = process.env.DATABASE_URI + '_pdp'
 
 export default buildConfig({
   admin: {

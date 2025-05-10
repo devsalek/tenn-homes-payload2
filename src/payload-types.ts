@@ -193,8 +193,23 @@ export interface Location {
  * via the `definition` "properties".
  */
 export interface Property {
-  id: number;
+  id: string;
   title: string;
+  description: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
   street: string;
   address?: {
     street: string;
@@ -215,6 +230,13 @@ export interface Property {
    * Select the features for this property.
    */
   features?: (number | Feature)[] | null;
+  details?: {
+    bedrooms?: number | null;
+    bathrooms?: number | null;
+    squareFeet?: number | null;
+    lotSize?: number | null;
+    yearBuilt?: number | null;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -253,7 +275,7 @@ export interface PayloadLockedDocument {
       } | null)
     | ({
         relationTo: 'properties';
-        value: number | Property;
+        value: string | Property;
       } | null)
     | ({
         relationTo: 'features';
@@ -356,13 +378,24 @@ export interface LocationsSelect<T extends boolean = true> {
  * via the `definition` "properties_select".
  */
 export interface PropertiesSelect<T extends boolean = true> {
+  id?: T;
   title?: T;
+  description?: T;
   street?: T;
   address?: T;
   location?: T;
   price?: T;
   listingStatus?: T;
   features?: T;
+  details?:
+    | T
+    | {
+        bedrooms?: T;
+        bathrooms?: T;
+        squareFeet?: T;
+        lotSize?: T;
+        yearBuilt?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }

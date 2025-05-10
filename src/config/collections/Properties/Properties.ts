@@ -1,13 +1,17 @@
-import type { JSONSchema4 } from 'json-schema'
-
+import { generatePrimaryKey } from '@/lib/generate-primary-key'
+import routes from '@/lib/routes'
+import slugify from 'slugify'
 import { AfterReadHook } from 'node_modules/payload/dist/collections/config/types'
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig, PayloadRequest } from 'payload'
+import type { Location } from '@/payload-types'
+import type { JSONSchema4 } from 'json-schema'
+import { listingStatusOptions } from './listing-status-map'
 
 const formatAddress: AfterReadHook = async ({ doc }) => {
-  console.log({ location: doc.location })
-
   return {
     ...doc,
+    //IL/Chicago/1620-S-Michigan-Ave-60616/unit-907/home/21655306
+
     address: {
       street: doc.street,
       city: doc.location.city,
@@ -18,17 +22,49 @@ const formatAddress: AfterReadHook = async ({ doc }) => {
     },
   }
 }
+
+const generateUrl = async (id: string, req: PayloadRequest) => {
+  console.log('generating url', req)
+  const property = await req.payload.findByID({ collection: 'properties', id })
+  const location = property.location as Location
+  const fullAddress = [property.street, location.city, location.state_abbr, location.zip].map((l) =>
+    slugify(`${l}`, { lower: true }),
+  )
+
+  return (
+    req.payload.config.serverURL +
+    routes('property.show', {
+      id,
+      full_address: fullAddress.join('/'),
+    })
+  )
+}
 export const Properties: CollectionConfig = {
   slug: 'properties',
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'location', 'price', 'listingStatus'],
-    preview: ({ id }) => `http://localhost:3000/properties/${id}`,
+    preview: (doc, options) => generateUrl(String(doc.id), options.req as PayloadRequest),
   },
   fields: [
     {
+      name: 'id',
+      type: 'text',
+      required: true,
+      unique: true,
+      admin: {
+        disabled: true,
+      },
+      defaultValue: generatePrimaryKey.bind(null, 8),
+    },
+    {
       name: 'title',
       type: 'text',
+      required: true,
+    },
+    {
+      name: 'description',
+      type: 'richText',
       required: true,
     },
     {
@@ -82,28 +118,7 @@ export const Properties: CollectionConfig = {
       name: 'listingStatus',
       type: 'select',
       required: true,
-      options: [
-        {
-          label: 'For Sale',
-          value: 'forsale',
-        },
-        {
-          label: 'Offer Pending',
-          value: 'pending',
-        },
-        {
-          label: 'Under Contract',
-          value: 'contract',
-        },
-        {
-          label: 'Sold',
-          value: 'sold',
-        },
-        {
-          label: 'Not For Sale',
-          value: 'notforsale',
-        },
-      ],
+      options: listingStatusOptions,
     },
     {
       name: 'features',
@@ -113,6 +128,32 @@ export const Properties: CollectionConfig = {
       admin: {
         description: 'Select the features for this property.',
       },
+    },
+    {
+      name: 'details',
+      type: 'group',
+      fields: [
+        {
+          name: 'bedrooms',
+          type: 'number',
+        },
+        {
+          name: 'bathrooms',
+          type: 'number',
+        },
+        {
+          name: 'squareFeet',
+          type: 'number',
+        },
+        {
+          name: 'lotSize',
+          type: 'number',
+        },
+        {
+          name: 'yearBuilt',
+          type: 'number',
+        },
+      ],
     },
   ],
   hooks: {

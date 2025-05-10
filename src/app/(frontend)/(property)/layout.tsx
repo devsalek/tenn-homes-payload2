@@ -1,3 +1,4 @@
+import { Footer } from '../_layouts/footer'
 import { Header } from '../_layouts/header'
 
 export default function PropertyLayout({ children }: { children: React.ReactNode }) {
@@ -7,6 +8,7 @@ export default function PropertyLayout({ children }: { children: React.ReactNode
         <Header />
       </div>
       <main>{children}</main>
+      <Footer />
     </div>
   )
 }
