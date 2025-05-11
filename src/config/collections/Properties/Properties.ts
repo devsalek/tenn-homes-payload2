@@ -58,107 +58,136 @@ export const Properties: CollectionConfig = {
       },
       defaultValue: generatePrimaryKey.bind(null, 8),
     },
+
     {
-      name: 'title',
-      type: 'text',
-      required: true,
-    },
-    {
-      name: 'description',
-      type: 'richText',
-      required: true,
-    },
-    {
-      name: 'photos',
-      type: 'upload',
-      relationTo: 'media',
-      hasMany: true,
-    },
-    {
-      name: 'street',
-      type: 'text',
-      required: true,
-      label: 'Street Address',
-    },
-    {
-      name: 'address',
-      type: 'text',
-      admin: {
-        hidden: true,
-      },
-      typescriptSchema: [
-        () => {
-          const address: JSONSchema4 = {
-            type: 'object',
-            properties: {
-              street: { type: 'string' },
-              city: { type: 'string' },
-              state: { type: 'string' },
-              state_abbr: { type: 'string' },
-              zip: { type: 'string' },
-              full_address: {
-                type: 'string',
+      type: 'tabs',
+      tabs: [
+        {
+          label: 'General',
+          fields: [
+            {
+              name: 'title',
+              type: 'text',
+              required: true,
+            },
+            {
+              name: 'description',
+              type: 'richText',
+              required: true,
+            },
+            {
+              name: 'price',
+              type: 'number',
+            },
+            {
+              name: 'listingStatus',
+              type: 'select',
+              required: true,
+              options: listingStatusOptions,
+            },
+            {
+              name: 'details',
+              type: 'group',
+              fields: [
+                {
+                  name: 'bedrooms',
+                  type: 'number',
+                },
+                {
+                  name: 'bathrooms',
+                  type: 'number',
+                },
+                {
+                  name: 'squareFeet',
+                  type: 'number',
+                },
+                {
+                  name: 'lotSize',
+                  type: 'number',
+                },
+                {
+                  name: 'yearBuilt',
+                  type: 'number',
+                },
+              ],
+            },
+          ],
+        },
+        {
+          label: 'Photos',
+          fields: [
+            {
+              name: 'photos',
+              type: 'upload',
+              relationTo: 'media',
+              hasMany: true,
+              admin: {
+                components: {
+                  Field: '@/config/collections/Properties/admin/components/Field#PhotosField',
+                },
               },
             },
-            required: ['street', 'city', 'state', 'state_abbr', 'zip', 'full_address'],
-          }
+          ],
+        },
+        {
+          label: 'Location',
+          fields: [
+            {
+              name: 'street',
+              type: 'text',
+              required: true,
+              label: 'Street Address',
+            },
 
-          return address
-        },
-      ],
-    },
-    {
-      name: 'location',
-      type: 'relationship',
-      relationTo: 'locations',
-      required: true,
-      hasMany: false,
-      admin: {
-        description: 'Select a ZIP code for this property.',
-      },
-    },
-    {
-      name: 'price',
-      type: 'number',
-    },
-    {
-      name: 'listingStatus',
-      type: 'select',
-      required: true,
-      options: listingStatusOptions,
-    },
-    {
-      name: 'features',
-      type: 'relationship',
-      relationTo: 'features',
-      hasMany: true,
-      admin: {
-        description: 'Select the features for this property.',
-      },
-    },
-    {
-      name: 'details',
-      type: 'group',
-      fields: [
-        {
-          name: 'bedrooms',
-          type: 'number',
+            {
+              name: 'address',
+              type: 'text',
+              admin: {
+                hidden: true,
+              },
+              typescriptSchema: [
+                () => {
+                  const address: JSONSchema4 = {
+                    type: 'object',
+                    properties: {
+                      street: { type: 'string' },
+                      city: { type: 'string' },
+                      state: { type: 'string' },
+                      state_abbr: { type: 'string' },
+                      zip: { type: 'string' },
+                      full_address: {
+                        type: 'string',
+                      },
+                    },
+                    required: ['street', 'city', 'state', 'state_abbr', 'zip', 'full_address'],
+                  }
+
+                  return address
+                },
+              ],
+            },
+            {
+              name: 'location',
+              type: 'relationship',
+              relationTo: 'locations',
+              required: true,
+              hasMany: false,
+            },
+          ],
         },
         {
-          name: 'bathrooms',
-          type: 'number',
-        },
-        {
-          name: 'squareFeet',
-          type: 'number',
-        },
-        {
-          name: 'lotSize',
-          type: 'number',
-        },
-        {
-          name: 'yearBuilt',
-          type: 'number',
+          label: 'Features',
+          fields: [
+            {
+              name: 'features',
+              type: 'relationship',
+              relationTo: 'features',
+              hasMany: true,
+              admin: {
+                description: 'Select the features for this property.',
+              },
+            },
+          ],
         },
       ],
     },

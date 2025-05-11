@@ -1,8 +1,0 @@
-@layer payload-default {
-  .card {
-    background: var(--theme-elevation-50);
-    border: 1px solid #e5e5e5;
-    border-radius: 4px;
-    padding: 10px;
-  }
-}

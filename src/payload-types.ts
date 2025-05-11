@@ -210,6 +210,15 @@ export interface Property {
     };
     [k: string]: unknown;
   };
+  price?: number | null;
+  listingStatus: 'forsale' | 'pending' | 'contract' | 'contingent' | 'sold' | 'offmarket' | 'notforsale';
+  details?: {
+    bedrooms?: number | null;
+    bathrooms?: number | null;
+    squareFeet?: number | null;
+    lotSize?: number | null;
+    yearBuilt?: number | null;
+  };
   photos?: (number | Media)[] | null;
   street: string;
   address?: {
@@ -221,23 +230,11 @@ export interface Property {
     full_address: string;
     [k: string]: unknown;
   };
-  /**
-   * Select a ZIP code for this property.
-   */
   location: number | Location;
-  price?: number | null;
-  listingStatus: 'forsale' | 'pending' | 'contract' | 'contingent' | 'sold' | 'offmarket' | 'notforsale';
   /**
    * Select the features for this property.
    */
   features?: (number | Feature)[] | null;
-  details?: {
-    bedrooms?: number | null;
-    bathrooms?: number | null;
-    squareFeet?: number | null;
-    lotSize?: number | null;
-    yearBuilt?: number | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -382,13 +379,8 @@ export interface PropertiesSelect<T extends boolean = true> {
   id?: T;
   title?: T;
   description?: T;
-  photos?: T;
-  street?: T;
-  address?: T;
-  location?: T;
   price?: T;
   listingStatus?: T;
-  features?: T;
   details?:
     | T
     | {
@@ -398,6 +390,11 @@ export interface PropertiesSelect<T extends boolean = true> {
         lotSize?: T;
         yearBuilt?: T;
       };
+  photos?: T;
+  street?: T;
+  address?: T;
+  location?: T;
+  features?: T;
   updatedAt?: T;
   createdAt?: T;
 }
