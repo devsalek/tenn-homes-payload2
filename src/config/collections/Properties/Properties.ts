@@ -11,6 +11,7 @@ const formatAddress: AfterReadHook = async ({ doc }) => {
   return {
     ...doc,
     //IL/Chicago/1620-S-Michigan-Ave-60616/unit-907/home/21655306
+    full_address: `${doc.street}, ${doc.location.city}, ${doc.location.state_abbr} ${doc.location.zip}`,
 
     address: {
       street: doc.street,
@@ -42,10 +43,10 @@ const generateUrl = async (id: string, req: PayloadRequest) => {
 export const Properties: CollectionConfig = {
   slug: 'properties',
   admin: {
-    useAsTitle: 'title',
-    defaultColumns: ['title', 'location', 'price', 'listingStatus'],
+    defaultColumns: ['primaryPhoto', 'street', 'location', 'price', 'listingStatus'],
     preview: (doc, options) => generateUrl(String(doc.id), options.req as PayloadRequest),
   },
+
   fields: [
     {
       name: 'id',
@@ -69,8 +70,8 @@ export const Properties: CollectionConfig = {
     },
     {
       name: 'photos',
-      type: 'relationship',
-      relationTo: 'property-photos',
+      type: 'upload',
+      relationTo: 'media',
       hasMany: true,
     },
     {

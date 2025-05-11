@@ -11,7 +11,6 @@ import { Users } from './config/collections/Users/Users'
 import { Media } from './config/collections/Media/Media'
 import { Locations } from './config/collections/Locations/Locations'
 import { Properties } from './config/collections/Properties/Properties'
-import { PropertyPhotos } from './config/collections/PropertyPhotos/PropertyPhotos'
 import { Features } from './config/collections/Features/Features'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -25,7 +24,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, Locations, Properties, Features, PropertyPhotos],
+  collections: [Users, Media, Locations, Properties, Features],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

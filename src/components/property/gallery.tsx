@@ -1,11 +1,12 @@
 'use client'
 
+import { Media } from '@/payload-types'
 import { useProperty } from './context'
 
 export const PropertyGallery = () => {
   const property = useProperty()
 
-  const images = property?.photos
+  const images = property?.photos as Media[]
 
   // Feature image is the first one
   const featureImage = images[0]
@@ -14,12 +15,12 @@ export const PropertyGallery = () => {
   return (
     <div className="relative">
       {/* Main gallery with CSS Grid that changes based on screen size */}
-      <div className="grid grid-cols-12 grid-rows-1 gap-1  max-h-[520px] xl:max-h-[680px]">
+      <div className="grid grid-cols-12 grid-rows-1 gap-1  max-h-[520px] 2xl:max-h-[680px]">
         {/* Feature image - always visible */}
-        {featureImage.sizes?.large?.url && (
+        {featureImage?.url && (
           <img
-            src={featureImage.sizes?.large?.url}
-            alt={featureImage.altText}
+            src={featureImage.url}
+            alt={featureImage.alt}
             className="w-full col-span-12 h-full tablet:col-span-8 desktop:col-span-6 object-cover cursor-pointer"
           />
         )}
@@ -41,13 +42,13 @@ export const PropertyGallery = () => {
               visibilityClass = 'hidden large:block'
             }
 
-            if (!image.sizes?.large?.url) return null
+            if (!image.url) return null
 
             return (
               <img
                 key={image.id}
-                src={image.sizes?.large?.url}
-                alt={image.altText}
+                src={image.url}
+                alt={image.alt}
                 className={`w-full h-full object-cover cursor-pointer photo-${image.id} ${visibilityClass}`}
               />
             )

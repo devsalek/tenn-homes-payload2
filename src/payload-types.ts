@@ -72,7 +72,6 @@ export interface Config {
     locations: Location;
     properties: Property;
     features: Feature;
-    'property-photos': PropertyPhoto;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -84,7 +83,6 @@ export interface Config {
     locations: LocationsSelect<false> | LocationsSelect<true>;
     properties: PropertiesSelect<false> | PropertiesSelect<true>;
     features: FeaturesSelect<false> | FeaturesSelect<true>;
-    'property-photos': PropertyPhotosSelect<false> | PropertyPhotosSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -212,7 +210,7 @@ export interface Property {
     };
     [k: string]: unknown;
   };
-  photos?: (number | PropertyPhoto)[] | null;
+  photos?: (number | Media)[] | null;
   street: string;
   address?: {
     street: string;
@@ -242,84 +240,6 @@ export interface Property {
   };
   updatedAt: string;
   createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "property-photos".
- */
-export interface PropertyPhoto {
-  id: number;
-  property: string | Property;
-  /**
-   * Describe the image for accessibility and SEO
-   */
-  altText: string;
-  areaType: 'interior' | 'exterior' | 'views';
-  interiorArea?:
-    | (
-        | 'living_room'
-        | 'kitchen'
-        | 'master_bedroom'
-        | 'bathroom'
-        | 'dining_room'
-        | 'family_room'
-        | 'den'
-        | 'office'
-        | 'other'
-      )
-    | null;
-  exteriorArea?: ('front_yard' | 'backyard' | 'driveway' | 'pool' | 'other') | null;
-  viewType?:
-    | ('front_view' | 'back_view' | 'side_view' | 'balcony_view' | 'window_view' | 'rooftop_view' | 'other')
-    | null;
-  order: number;
-  isPublished?: boolean | null;
-  caption?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
-  sizes?: {
-    thumbnail?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    medium?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    large?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    hero?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -361,10 +281,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'features';
         value: number | Feature;
-      } | null)
-    | ({
-        relationTo: 'property-photos';
-        value: number | PropertyPhoto;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -494,76 +410,6 @@ export interface FeaturesSelect<T extends boolean = true> {
   category?: T;
   updatedAt?: T;
   createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "property-photos_select".
- */
-export interface PropertyPhotosSelect<T extends boolean = true> {
-  property?: T;
-  altText?: T;
-  areaType?: T;
-  interiorArea?: T;
-  exteriorArea?: T;
-  viewType?: T;
-  order?: T;
-  isPublished?: T;
-  caption?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  url?: T;
-  thumbnailURL?: T;
-  filename?: T;
-  mimeType?: T;
-  filesize?: T;
-  width?: T;
-  height?: T;
-  focalX?: T;
-  focalY?: T;
-  sizes?:
-    | T
-    | {
-        thumbnail?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        medium?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        large?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        hero?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

@@ -2,40 +2,7 @@ import { CollectionConfig } from 'payload'
 
 export const PropertyPhotos: CollectionConfig = {
   slug: 'property-photos',
-  admin: {
-    useAsTitle: 'altText',
-    defaultColumns: ['thumbnail', 'property', 'photoType', 'order', 'isPublished'],
-  },
-  upload: {
-    staticDir: 'property-photos',
-    mimeTypes: ['image/*'],
-    imageSizes: [
-      {
-        name: 'thumbnail',
-        width: 300,
-        height: 200,
-        position: 'centre',
-      },
-      {
-        name: 'medium',
-        width: 800,
-        height: 600,
-        position: 'centre',
-      },
-      {
-        name: 'large',
-        width: 1600,
-        height: 1200,
-        fit: 'inside',
-      },
-      {
-        name: 'hero',
-        width: 1920,
-        height: 1080,
-        position: 'centre',
-      },
-    ],
-  },
+  upload: true,
   fields: [
     {
       name: 'property',
