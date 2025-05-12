@@ -2,7 +2,7 @@ import { Logo } from '@/components/logo'
 import Link from 'next/link'
 export const Footer = () => {
   return (
-    <footer className="bg-background text-foreground border-t">
+    <footer className="bg-background text-foreground">
       <div className="max-w-7xl mx-auto px-4 py-12">
         <div className="grid grid-cols-1 tablet:grid-cols-2 gap-12">
           <div className="max-w-md">

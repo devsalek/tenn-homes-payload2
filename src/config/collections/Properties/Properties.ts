@@ -121,11 +121,6 @@ export const Properties: CollectionConfig = {
               type: 'upload',
               relationTo: 'media',
               hasMany: true,
-              admin: {
-                components: {
-                  Field: '@/config/collections/Properties/admin/components/Field#PhotosField',
-                },
-              },
             },
           ],
         },
