@@ -13,7 +13,7 @@ export const PropertyGallery = () => {
   // Feature image is the first one
   const featureImage = images[0]
   // Grid images are all remaining images (index 1 and beyond)
-  const gridImages = images.slice(1)
+  const gridImages = images.slice(1, 7)
   return (
     <Dialog>
       <div className="relative">
