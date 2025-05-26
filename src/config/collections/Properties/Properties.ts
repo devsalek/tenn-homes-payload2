@@ -149,6 +149,9 @@ export const Properties: CollectionConfig = {
             {
               name: "address",
               type: "text",
+              required: true,
+              validate: () => true,
+              hasMany: false,
               admin: {
                 hidden: true,
               },

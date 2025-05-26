@@ -187,23 +187,23 @@ export interface Media {
 export interface Location {
   id: number;
   formattedLocation?: string | null;
-  zip?: string | null;
+  zip: string;
   /**
    * City of the zip code
    */
-  city?: string | null;
+  city: string;
   /**
    * State abbreviation of the zip code
    */
-  state_abbr?: string | null;
+  state_abbr: string;
   /**
    * State name of the zip code
    */
-  state_name?: string | null;
+  state_name: string;
   /**
    * County of the zip code
    */
-  county?: string | null;
+  county: string;
   latitude?: number | null;
   longitude?: number | null;
   /**
@@ -234,7 +234,7 @@ export interface Property {
   };
   photos?: (number | Media)[] | null;
   street: string;
-  address?: {
+  address: {
     street: string;
     city: string;
     state: string;

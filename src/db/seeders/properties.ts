@@ -1,5 +1,6 @@
 import { heatingTypeOptions } from "@/config/collections/Properties/heating-options"
 import { propertyTypeOptions } from "@/config/collections/Properties/property-type-options"
+import { PropertyModel } from "@/models/base-model"
 import { Property } from "@/payload-types"
 import { faker } from "@faker-js/faker"
 
@@ -128,10 +129,7 @@ export async function seedProperties(payload: Payload): Promise<void> {
   )
 
   for (const property of sampleProperties) {
-    await payload.create({
-      collection: "properties",
-      data: property,
-    })
+    await PropertyModel.create(property)
   }
 
   console.log(`Seeded ${sampleProperties.length} properties`)
