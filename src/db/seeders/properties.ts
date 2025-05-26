@@ -1,6 +1,6 @@
 import { heatingTypeOptions } from "@/config/collections/Properties/heating-options"
 import { propertyTypeOptions } from "@/config/collections/Properties/property-type-options"
-import { PropertyModel } from "@/models/base-model"
+import { PropertyModel } from "@/models/property-model"
 import { Property } from "@/payload-types"
 import { faker } from "@faker-js/faker"
 

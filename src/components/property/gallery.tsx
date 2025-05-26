@@ -9,7 +9,7 @@ import Image from "next/image"
 export const PropertyGallery = () => {
   const property = useProperty()
 
-  const images = property?.photos as Media[]
+  const images = property.get("photos") as Media[]
 
   // Feature image is the first one
   const featureImage = images[0]
@@ -26,6 +26,8 @@ export const PropertyGallery = () => {
               <Image
                 src={featureImage.url}
                 alt={featureImage.alt}
+                width={800}
+                height={600}
                 className="w-full col-span-12 h-full tablet:col-span-8 desktop:col-span-6 object-cover cursor-pointer"
               />
             </DialogTrigger>
@@ -55,6 +57,8 @@ export const PropertyGallery = () => {
                   <Image
                     src={image.url}
                     alt={image.alt}
+                    width={800}
+                    height={600}
                     className={`w-full h-full object-cover cursor-pointer photo-${image.id} ${visibilityClass}`}
                   />
                 </DialogTrigger>
@@ -74,6 +78,8 @@ export const PropertyGallery = () => {
                     src={image.url!}
                     alt={image.alt ?? ""}
                     className="w-full h-full object-cover"
+                    width={800}
+                    height={600}
                   />
                 )
               })}

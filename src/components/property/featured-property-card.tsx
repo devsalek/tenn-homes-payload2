@@ -10,7 +10,7 @@ import Image from "next/image"
 
 export const FeaturedPropertyCard = () => {
   const property = useProperty()
-  const images = property?.photos as Media[]
+  const images = property.original.photos as Media[]
   const featureImage = images[0] ?? {
     url: "https://placehold.co/600x400",
     alt: property.original.title,
@@ -34,27 +34,28 @@ export const FeaturedPropertyCard = () => {
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-2">
               <div className="flex justify-between items-center">
-                <h3 className="font-bold text-xl mb-1 line-clamp-1">{property.price}</h3>
+                <h3 className="font-bold text-xl mb-1 line-clamp-1">{property.get("price")}</h3>
                 <PropertyShare />
               </div>
               <div className="line-clamp-1 text-sm transition-all group-hover:text-amber-800">
-                <span className="font-semibold">{property.address?.street}</span>,{" "}
-                <span>{property.address?.city}</span>, <span>{property.address?.state_abbr}</span>{" "}
-                <span>{property.address?.zip}</span>
+                <span className="font-semibold">{property.get("address")?.street}</span>,{" "}
+                <span>{property.get("address")?.city}</span>,{" "}
+                <span>{property.get("address")?.state_abbr}</span>{" "}
+                <span>{property.get("address")?.zip}</span>
               </div>
             </div>
             <div className="flex justify-between text-sm text-muted-foreground border-t pt-3">
               <span className="flex items-center gap-1">
                 <BedDoubleIcon size={20} />
-                {property.details.bedrooms} beds
+                {property.get("details")?.bedrooms} beds
               </span>
               <span className="flex items-center gap-1">
                 <BathIcon size={20} />
-                {property.details.bathrooms} baths
+                {property.get("details")?.bathrooms} baths
               </span>
               <span className="flex items-center gap-1">
                 <RulerIcon size={20} />
-                {property.details.squareFeet} sqft
+                {property.get("details")?.squareFeet} sqft
               </span>
             </div>
           </div>

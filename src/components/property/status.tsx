@@ -6,7 +6,7 @@ import { useProperty } from "./context"
 export const PropertyStatus = () => {
   const property = useProperty()
 
-  const listingStatus = property.listingStatus
+  const listingStatus = property.get("listingStatus")
   console.log({ listingStatus })
   return (
     <div
