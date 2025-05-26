@@ -20,27 +20,6 @@ export abstract class BaseModel<T extends BaseDocument = BaseDocument, D = BaseD
 
   constructor(data: T) {
     this.data = data
-    // Return a proxy to intercept property access
-    return new Proxy(this, {
-      set(target, property, value) {
-        // If the property exists on the data object, set it there
-        if (typeof property === "string" && property in target.data) {
-          ;(target.data as any)[property] = value
-          return true
-        }
-        // Otherwise, set it on the instance itself
-        ;(target as any)[property] = value
-        return true
-      },
-      get(target, property) {
-        // If accessing a data property, return it from data
-        if (typeof property === "string" && property in target.data && !(property in target)) {
-          return (target.data as any)[property]
-        }
-        // Otherwise return the property from the instance
-        return (target as any)[property]
-      },
-    })
   }
 
   static client = async () => {
