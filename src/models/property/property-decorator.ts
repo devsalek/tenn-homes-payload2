@@ -1,9 +1,9 @@
 import { Feature, Media, Property } from "@/payload-types"
-import { BaseDecorator } from "./base-decorator"
 import slugify from "slugify"
 import route from "@/lib/routes"
 import { ListingStatus } from "@/config/collections/Properties/listing-status-map"
 import { formatPrice } from "@/lib/format-price"
+import { BaseDecorator } from "../base-decorator"
 export type DecoratedPhoto = {
   id: number
   url: string | null

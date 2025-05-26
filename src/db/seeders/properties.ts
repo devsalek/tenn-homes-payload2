@@ -1,6 +1,7 @@
 import { heatingTypeOptions } from "@/config/collections/Properties/heating-options"
 import { propertyTypeOptions } from "@/config/collections/Properties/property-type-options"
-import { PropertyModel } from "@/models/property-model"
+import { LocationModel } from "@/models/location/location-model"
+import { PropertyModel } from "@/models/property/property-model"
 import { Property } from "@/payload-types"
 import { faker } from "@faker-js/faker"
 
@@ -8,10 +9,7 @@ import { Payload } from "payload"
 
 export async function seedProperties(payload: Payload): Promise<void> {
   // Get all locations to randomly assign to properties
-  const locations = await payload.find({
-    collection: "locations",
-    limit: 100,
-  })
+  const locations = await LocationModel.where()
 
   // Get all features to randomly assign to properties
   const features = await payload.find({
@@ -75,25 +73,24 @@ export async function seedProperties(payload: Payload): Promise<void> {
   const sampleProperties: Omit<Property, "id" | "updatedAt" | "createdAt">[] = Array.from(
     { length: 100 },
     () => {
-      const location = faker.helpers.arrayElement(locations.docs)
+      const location = faker.helpers.arrayElement(locations)
       const street = faker.location.streetAddress()
       const title = `${faker.helpers.arrayElement(titleAdjectives)} ${faker.helpers.arrayElement(titleNouns)} in the ${faker.helpers.arrayElement(titleRegions)}`
       return {
         title,
         description: faker.lorem.paragraph(),
         street,
-        location: location.id,
+        location: location.get("id"),
         address: {
           street,
-          city: location.city || "",
-          state: location.state_name || "",
-          state_abbr: location.state_abbr || "",
-          zip: location.zip || "",
-          full_address: `${street}, ${location.city || ""}, ${location.state_abbr || ""} ${location.zip || ""}`,
+          city: location.get("city") || "",
+          state: location.get("state_name") || "",
+          state_abbr: location.get("state_abbr") || "",
+          zip: location.get("zip") || "",
+          full_address: `${street}, ${location.get("city") || ""}, ${location.get("state_abbr") || ""} ${location.get("zip") || ""}`,
         },
         price: faker.number.int({ min: 100000, max: 1000000 }),
         listingStatus: faker.helpers.weightedArrayElement([
-          //'forsale' | 'pending' | 'contract' | 'sold' | 'notforsale'
           { weight: 5, value: "forsale" },
           { weight: 2, value: "pending" },
           { weight: 2, value: "contract" },

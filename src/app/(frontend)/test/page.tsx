@@ -1,4 +1,4 @@
-import { PropertyModel } from "@/models/property-model"
+import { PropertyModel } from "@/models/property/property-model"
 
 export default async function TestPage() {
   const properties = await PropertyModel.where()

@@ -5,13 +5,24 @@ import { PropertyFeatures } from "@/components/property/features"
 import { PropertyGallery } from "@/components/property/gallery"
 import { PropertyMap } from "@/components/property/map"
 import { PropertyOverview } from "@/components/property/overview"
-import { PropertyModel } from "@/models/property-model"
+import { PropertyModel } from "@/models/property/property-model"
+import { redirect } from "next/navigation"
 
 export async function generateMetadata({ params }: { params: Promise<{ routePath: string[] }> }) {
   const { routePath } = await params
   const propertyId = routePath[routePath.length - 1]
   const property = await PropertyModel.find(propertyId)
+  if (!property) {
+    return {
+      title: "Property Not Found",
+      description: "The requested property could not be found.",
+    }
+  }
   return {
+    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
+    alternates: {
+      canonical: property.url,
+    },
     title: property.get("address").full_address,
     description: property.get("description"),
   }
@@ -24,7 +35,14 @@ export default async function PropertyDetailPage({
 }) {
   const { routePath } = await params
   const propertyId = routePath[routePath.length - 1]
-  const property = await PropertyModel.find(propertyId)
+  const property = await PropertyModel.findOrFail(propertyId)
+  // ensure canonical URL is correct
+  const path = `/home/${routePath.join("/")}`
+
+  if (path !== property.url) {
+    // If the path does not match the stored URL, redirect to the correct URL
+    redirect(property.url)
+  }
 
   return (
     <PropertyProvider property={property.original}>

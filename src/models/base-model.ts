@@ -1,5 +1,7 @@
 import { getPayloadClient } from "@/db/client"
 import { CollectionSlug, Where } from "payload"
+import { cache } from "react"
+import { notFound } from "next/navigation"
 
 // Define a base document type that matches Payload's requirements
 interface BaseDocument {
@@ -7,6 +9,12 @@ interface BaseDocument {
   createdAt?: string | Date
   updatedAt?: string | Date
   [key: string]: any
+}
+
+interface BaseInstance<T, D> {
+  new (data: T): BaseModel<BaseDocument, D>
+  collectionSlug: CollectionSlug
+  decoratorClass: new (data: T) => D
 }
 
 interface BaseDecorator<T> {
@@ -26,12 +34,29 @@ export abstract class BaseModel<T extends BaseDocument = BaseDocument, D = BaseD
     return getPayloadClient()
   }
 
+  private static _findById = cache(async (self: BaseInstance<any, any>, id: string) => {
+    const client = await BaseModel.client()
+    return await client.findByID({
+      collection: self.collectionSlug,
+      id,
+    })
+  })
+
+  private static _find = cache(async (self: BaseInstance<any, any>, where: Where = {}) => {
+    const client = await BaseModel.client()
+    const data = await client.find({
+      collection: self.collectionSlug,
+      where,
+      limit: 100,
+      pagination: false,
+      sort: "-createdAt",
+    })
+
+    return data.docs.map((item) => new self.decoratorClass(item))
+  })
+
   static async create<T extends BaseDocument = any, D = any>(
-    this: {
-      new (data: T): BaseModel<T, D>
-      collectionSlug: CollectionSlug
-      decoratorClass: new (data: T) => D
-    },
+    this: BaseInstance<T, D>,
     data: Omit<T, "id" | "updatedAt" | "createdAt">,
   ): Promise<D> {
     const client = await BaseModel.client()
@@ -51,35 +76,40 @@ export abstract class BaseModel<T extends BaseDocument = BaseDocument, D = BaseD
       decoratorClass: new (data: T) => D
     },
     id: string,
-  ): Promise<D> {
-    const client = await BaseModel.client()
-    const data = await client.findByID({
-      collection: this.collectionSlug,
-      id,
-    })
+  ): Promise<D | null> {
+    try {
+      const data = await BaseModel._findById(this, id)
+      return new this.decoratorClass(data as T) as D
+    } catch (error) {
+      // Handle error if needed
+      return null
+    }
+  }
 
-    // Return decorated instance if decorator class exists
-    return new this.decoratorClass(data as T) as D
+  /**
+   *
+   * @param this
+   * @param id
+   * @returns T or throws a 404 error if not found
+   */
+  static async findOrFail<T extends BaseDocument = any, D = any>(
+    this: BaseInstance<T, D>,
+    id: string,
+  ): Promise<D> {
+    try {
+      const data = await BaseModel._findById(this, id)
+      return new this.decoratorClass(data as T) as D
+    } catch (error) {
+      // Handle error if needed
+      notFound()
+    }
   }
 
   static async where<T extends BaseDocument = any, D = any>(
-    this: {
-      new (data: T): BaseModel<T, D>
-      collectionSlug: CollectionSlug
-      decoratorClass: new (data: T) => D
-    },
+    this: BaseInstance<T, D>,
     where: Where = {},
   ): Promise<D[]> {
-    const client = await BaseModel.client()
-    const data = await client.find({
-      collection: this.collectionSlug,
-      where,
-      limit: 100,
-      pagination: false,
-      sort: "-createdAt",
-    })
-
-    return data.docs.map((item) => new this.decoratorClass!(item as T)) as D[]
+    return await BaseModel._find(this, where)
   }
 
   async save(): Promise<this> {

@@ -7,7 +7,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel"
 import { PropertyProvider } from "@/components/property/context"
-import { PropertyModel } from "@/models/property-model"
+import { PropertyModel } from "@/models/property/property-model"
 
 export async function FeaturedProperties() {
   const properties = await PropertyModel.where({

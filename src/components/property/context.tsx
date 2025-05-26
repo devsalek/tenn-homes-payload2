@@ -1,5 +1,5 @@
 "use client"
-import { PropertyDecorator } from "@/models/property-decorator"
+import { PropertyDecorator } from "@/models/property/property-decorator"
 import { Property } from "@/payload-types"
 import { createContext, useContext } from "react"
 
