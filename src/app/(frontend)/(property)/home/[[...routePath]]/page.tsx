@@ -6,15 +6,14 @@ import { PropertyGallery } from "@/components/property/gallery"
 import { PropertyMap } from "@/components/property/map"
 import { PropertyOverview } from "@/components/property/overview"
 import { PropertyModel } from "@/models/property-model"
-import { db } from "@/repositories"
 
 export async function generateMetadata({ params }: { params: Promise<{ routePath: string[] }> }) {
   const { routePath } = await params
   const propertyId = routePath[routePath.length - 1]
-  const property = await db.properties.getOne(propertyId)
+  const property = await PropertyModel.find(propertyId)
   return {
-    title: property.original.title,
-    description: property.original.description,
+    title: property.get("address").full_address,
+    description: property.get("description"),
   }
 }
 
@@ -26,7 +25,6 @@ export default async function PropertyDetailPage({
   const { routePath } = await params
   const propertyId = routePath[routePath.length - 1]
   const property = await PropertyModel.find(propertyId)
-  console.log({ property })
 
   return (
     <PropertyProvider property={property.original}>
