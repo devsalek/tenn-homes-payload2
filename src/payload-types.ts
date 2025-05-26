@@ -64,6 +64,7 @@ export type SupportedTimezones =
 export interface Config {
   auth: {
     users: UserAuthOperations;
+    agents: AgentAuthOperations;
   };
   blocks: {};
   collections: {
@@ -72,6 +73,7 @@ export interface Config {
     locations: Location;
     properties: Property;
     features: Feature;
+    agents: Agent;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -83,6 +85,7 @@ export interface Config {
     locations: LocationsSelect<false> | LocationsSelect<true>;
     properties: PropertiesSelect<false> | PropertiesSelect<true>;
     features: FeaturesSelect<false> | FeaturesSelect<true>;
+    agents: AgentsSelect<false> | AgentsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -93,15 +96,37 @@ export interface Config {
   globals: {};
   globalsSelect: {};
   locale: null;
-  user: User & {
-    collection: 'users';
-  };
+  user:
+    | (User & {
+        collection: 'users';
+      })
+    | (Agent & {
+        collection: 'agents';
+      });
   jobs: {
     tasks: unknown;
     workflows: unknown;
   };
 }
 export interface UserAuthOperations {
+  forgotPassword: {
+    email: string;
+    password: string;
+  };
+  login: {
+    email: string;
+    password: string;
+  };
+  registerFirstUser: {
+    email: string;
+    password: string;
+  };
+  unlock: {
+    email: string;
+    password: string;
+  };
+}
+export interface AgentAuthOperations {
   forgotPassword: {
     email: string;
     password: string;
@@ -195,21 +220,7 @@ export interface Location {
 export interface Property {
   id: string;
   title: string;
-  description: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
+  description: string;
   price?: number | null;
   listingStatus: 'forsale' | 'pending' | 'contract' | 'contingent' | 'sold' | 'offmarket' | 'notforsale';
   details?: {
@@ -218,6 +229,8 @@ export interface Property {
     squareFeet?: number | null;
     lotSize?: number | null;
     yearBuilt?: number | null;
+    propertyType?: ('single-family' | 'multi-family' | 'condo' | 'townhouse' | 'land' | 'mobile-home') | null;
+    heatingType?: ('central' | 'electric' | 'gas' | 'oil' | 'propane') | null;
   };
   photos?: (number | Media)[] | null;
   street: string;
@@ -235,6 +248,7 @@ export interface Property {
    * Select the features for this property.
    */
   features?: (number | Feature)[] | null;
+  agent?: (string | null) | Agent;
   updatedAt: string;
   createdAt: string;
 }
@@ -251,6 +265,101 @@ export interface Feature {
   category: 'interior' | 'exterior' | 'community' | 'other';
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "agents".
+ */
+export interface Agent {
+  id: string;
+  first_name?: string | null;
+  last_name?: string | null;
+  full_name?: string | null;
+  initials?: string | null;
+  phone?: string | null;
+  contact_email?: string | null;
+  /**
+   * e.g., "Realtor", "Senior Agent", "Broker"
+   */
+  title?: string | null;
+  licenses?:
+    | {
+        license_number?: string | null;
+        state?:
+          | (
+              | 'AL'
+              | 'AK'
+              | 'AZ'
+              | 'AR'
+              | 'CA'
+              | 'CO'
+              | 'CT'
+              | 'DE'
+              | 'FL'
+              | 'GA'
+              | 'HI'
+              | 'IL'
+              | 'IN'
+              | 'IA'
+              | 'KS'
+              | 'KY'
+              | 'LA'
+              | 'ME'
+              | 'MD'
+              | 'MA'
+              | 'MI'
+              | 'MN'
+              | 'MS'
+              | 'MO'
+              | 'MT'
+              | 'NE'
+              | 'NV'
+              | 'NH'
+              | 'NJ'
+              | 'NM'
+              | 'NY'
+              | 'NC'
+              | 'ND'
+              | 'OH'
+              | 'OK'
+              | 'OR'
+              | 'PA'
+              | 'RI'
+              | 'SC'
+              | 'SD'
+              | 'TN'
+              | 'TX'
+              | 'UT'
+              | 'VT'
+              | 'VA'
+              | 'WA'
+              | 'WV'
+              | 'WI'
+              | 'WY'
+              | 'PR'
+              | 'VI'
+              | 'GU'
+              | 'MP'
+              | 'AS'
+            )
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  specializations?:
+    | ('residential' | 'commercial' | 'luxury' | 'first_time' | 'investment' | 'vacation' | 'relocation')[]
+    | null;
+  profilePhoto?: (number | null) | Media;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  password?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -278,12 +387,21 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'features';
         value: number | Feature;
+      } | null)
+    | ({
+        relationTo: 'agents';
+        value: string | Agent;
       } | null);
   globalSlug?: string | null;
-  user: {
-    relationTo: 'users';
-    value: number | User;
-  };
+  user:
+    | {
+        relationTo: 'users';
+        value: number | User;
+      }
+    | {
+        relationTo: 'agents';
+        value: string | Agent;
+      };
   updatedAt: string;
   createdAt: string;
 }
@@ -293,10 +411,15 @@ export interface PayloadLockedDocument {
  */
 export interface PayloadPreference {
   id: number;
-  user: {
-    relationTo: 'users';
-    value: number | User;
-  };
+  user:
+    | {
+        relationTo: 'users';
+        value: number | User;
+      }
+    | {
+        relationTo: 'agents';
+        value: string | Agent;
+      };
   key?: string | null;
   value?:
     | {
@@ -389,12 +512,15 @@ export interface PropertiesSelect<T extends boolean = true> {
         squareFeet?: T;
         lotSize?: T;
         yearBuilt?: T;
+        propertyType?: T;
+        heatingType?: T;
       };
   photos?: T;
   street?: T;
   address?: T;
   location?: T;
   features?: T;
+  agent?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -407,6 +533,38 @@ export interface FeaturesSelect<T extends boolean = true> {
   category?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "agents_select".
+ */
+export interface AgentsSelect<T extends boolean = true> {
+  id?: T;
+  first_name?: T;
+  last_name?: T;
+  full_name?: T;
+  initials?: T;
+  phone?: T;
+  contact_email?: T;
+  title?: T;
+  licenses?:
+    | T
+    | {
+        license_number?: T;
+        state?: T;
+        id?: T;
+      };
+  specializations?: T;
+  profilePhoto?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

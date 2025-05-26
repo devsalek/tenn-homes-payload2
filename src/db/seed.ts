@@ -1,21 +1,25 @@
-import { drizzle } from 'drizzle-orm/node-postgres'
-import { reset } from 'drizzle-seed'
+import { drizzle } from "drizzle-orm/node-postgres"
+import { seedLocations } from "./seeders/locations"
+import { seedFeatures } from "./seeders/features"
+import { seedProperties } from "./seeders/properties"
+import { seedUsers } from "./seeders/users"
+import { seedMedia } from "./seeders/media"
+import { getPayloadClient } from "./client"
+import { reset } from "drizzle-seed"
+import { seedAgents } from "./seeders/agents"
+import { DATABASE_URL } from "@/config/env"
 
-import { getPayload } from 'payload'
-import config from '../payload.config'
-import { seedLocations } from './seeders/locations'
-import { seedFeatures } from './seeders/features'
-import { seedProperties } from './seeders/properties'
-import { seedUsers } from './seeders/users'
 async function main() {
   console.log(`\n== Seeding database ==\n`)
 
-  const db = drizzle(process.env.DATABASE_URI + '_video_32'!)
-
-  const payload = await getPayload({ config })
-
   console.log(`\n[Resetting database...]`)
-  await reset(db, payload.db.schema)
+  const db = drizzle(DATABASE_URL)
+  const payload = await getPayloadClient()
+  const schema = payload.db.schema
+  await reset(db, schema)
+
+  console.log(`\n[Seeding media...]\n`)
+  await seedMedia(payload)
 
   console.log(`\n[Seeding users...]\n`)
   await seedUsers(payload)
@@ -25,6 +29,9 @@ async function main() {
 
   console.log(`\n[Seeding features...]\n`)
   await seedFeatures(payload)
+
+  console.log(`\n[Seeding agents...]\n`)
+  await seedAgents(payload)
 
   console.log(`\n[Seeding properties...]\n`)
   await seedProperties(payload)

@@ -1,9 +1,8 @@
-import memoize from 'memoize'
 const routes = {
   // marketing pages
-  home: '/',
+  home: "/",
   //`/home/${doc.location.state_abbr}/${doc.location.city}/${doc.street}/${doc.location.zip}/${doc.id}`
-  'property.show': '/home/:full_address/:id',
+  "property.show": "/home/:full_address/:id",
 } as const
 
 export type Route = keyof typeof routes

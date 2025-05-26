@@ -1,10 +1,16 @@
-import { formatPrice } from '@/lib/format-price'
-import route from '@/lib/routes'
-import { Feature, Property as PropertType, Location as LocationType, Media } from '@/payload-types'
-import slugify from 'slugify'
+import { formatPrice } from "@/lib/format-price"
+import route from "@/lib/routes"
+import {
+  Feature,
+  Property as PropertyType,
+  Location as LocationType,
+  Media,
+  Agent,
+} from "@/payload-types"
+import slugify from "slugify"
 
 export class Property {
-  constructor(readonly data: PropertType) {}
+  constructor(readonly data: PropertyType) {}
 
   get id(): string {
     return this.data.id
@@ -14,15 +20,15 @@ export class Property {
     return this.data.title
   }
 
-  get description(): PropertType['description'] {
+  get description(): PropertyType["description"] {
     return this.data.description
   }
 
-  get photos(): PropertType['photos'] {
+  get photos(): PropertyType["photos"] {
     return this.data.photos as Media[]
   }
 
-  get listingStatus(): PropertType['listingStatus'] {
+  get listingStatus(): PropertyType["listingStatus"] {
     return this.data.listingStatus
   }
 
@@ -30,8 +36,12 @@ export class Property {
     return formatPrice(this.data.price)
   }
 
-  get address(): PropertType['address'] {
+  get address(): PropertyType["address"] {
     return this.data.address
+  }
+
+  get agent(): Agent {
+    return this.data.agent as Agent
   }
 
   get details() {
@@ -58,9 +68,9 @@ export class Property {
 
     console.log({ fullAddress })
 
-    return route('property.show', {
+    return route("property.show", {
       id: this.data.id,
-      full_address: fullAddress.join('/'),
+      full_address: fullAddress.join("/"),
     })
   }
 }

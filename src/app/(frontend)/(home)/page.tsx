@@ -1,36 +1,24 @@
-import Image from 'next/image'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { MapPin, Star } from 'lucide-react'
-import Hero from '@/app/(frontend)/(home)/_components/hero'
-import singleFamilyHomeKnoxville from '@/assets/knoxville-single-family.png'
-import villaHomeKnoxville from '@/assets/villa.png'
-import momAvatar from '@/assets/mom-avatar.png'
-import attorneyAvatar from '@/assets/attorney.png'
-import ruralMomAvatar from '@/assets/rural-mom.png'
-import landPlot from '@/assets/land.png'
-import apartment from '@/assets/apartment.png'
-import office from '@/assets/office.png'
-import condo from '@/assets/condo.png'
-import { Input } from '@/components/ui/input'
-import { FixedHeader } from '../_layouts/fixed-header'
-import { Footer } from '../_layouts/footer'
-import { getPayloadClient } from '@/db/client'
-import { Property } from '@/models/property'
-import Link from 'next/link'
-import { PropertyStatus } from '@/components/property/status'
-import { FeaturedPropertyCard } from '@/components/property/feartured-property-card'
-
-const company_name = 'Tenn Homes'
+import Image from "next/image"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { Star } from "lucide-react"
+import Hero from "@/app/(frontend)/(home)/_components/hero"
+import singleFamilyHomeKnoxville from "@/assets/knoxville-single-family.png"
+import villaHomeKnoxville from "@/assets/villa.png"
+import momAvatar from "@/assets/mom-avatar.png"
+import attorneyAvatar from "@/assets/attorney.png"
+import ruralMomAvatar from "@/assets/rural-mom.png"
+import landPlot from "@/assets/land.png"
+import apartment from "@/assets/apartment.png"
+import office from "@/assets/office.png"
+import condo from "@/assets/condo.png"
+import { Input } from "@/components/ui/input"
+import { FixedHeader } from "../_layouts/fixed-header"
+import { Footer } from "../_layouts/footer"
+import { FeaturedProperties } from "@/blocks/featured-properties"
+const company_name = "Tenn Homes"
 
 export default async function HomePage() {
-  const payload = await getPayloadClient()
-  const data = await payload.find({
-    collection: 'properties',
-    limit: 4,
-  })
-
-  const properties = data.docs.map((doc) => new Property(doc))
   return (
     <div className="flex min-h-screen flex-col">
       <FixedHeader />
@@ -52,9 +40,9 @@ export default async function HomePage() {
                   perfect property that captures the essence of mountain living.
                 </p>
                 <p className="text-muted-foreground mb-6">
-                  Our team of local experts knows every corner of East Tennessee, from Knoxville's
-                  vibrant downtown to the peaceful mountain communities. We'll guide you through
-                  every step of finding your dream home in this beautiful region.
+                  Our team of local experts knows every corner of East Tennessee, from
+                  Knoxville&apos;s vibrant downtown to the peaceful mountain communities. We&apos;ll
+                  guide you through every step of finding your dream home in this beautiful region.
                 </p>
                 <Button className="bg-primary hover:bg-primary/90 text-white rounded-md px-6 py-2.5">
                   MEET OUR TEAM
@@ -72,7 +60,7 @@ export default async function HomePage() {
                 <div className="bg-gray-50 p-6 rounded-md">
                   <div className="text-3xl font-bold text-primary mb-2">1.5k</div>
                   <p className="text-sm text-muted-foreground">
-                    Happy clients whose dream homes we've helped them find and purchase
+                    Happy clients whose dream homes we&apos;ve helped them find and purchase
                   </p>
                 </div>
                 <div className="bg-gray-50 p-6 rounded-md">
@@ -86,32 +74,13 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* Featured Properties */}
-        <section className="py-16 bg-accent text-accent-foreground">
-          <div className="container mx-auto px-4">
-            <div className="flex justify-between items-center mb-8">
-              <div>
-                <h2 className="text-3xl font-bold">Featured Properties in East Tennessee</h2>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-4 gap-6">
-              {properties.map((property) => {
-                return (
-                  <Link href={property.url} key={property.id} className="group block relative">
-                    <FeaturedPropertyCard property={property} />
-                  </Link>
-                )
-              })}
-            </div>
-          </div>
-        </section>
+        <FeaturedProperties />
 
         {/* Property Types */}
         <section className="py-16 bg-white">
           <div className="container mx-auto px-4">
             <h2 className="text-3xl font-bold mb-8">
-              Explore East Tennessee's Diverse Property Types
+              Explore East Tennessee&apos;s Diverse Property Types
             </h2>
 
             <div className="grid grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-3 gap-6">
@@ -218,8 +187,9 @@ export default async function HomePage() {
                 </h2>
                 <p className="text-muted-foreground mb-8">
                   Contact us now for a free consultation with one of our expert East Tennessee
-                  agents. We'll help you find the perfect property that meets all your requirements,
-                  whether you're looking for a mountain retreat or a downtown condo.
+                  agents. We&apos;ll help you find the perfect property that meets all your
+                  requirements, whether you&apos;re looking for a mountain retreat or a downtown
+                  condo.
                 </p>
                 <Button className="bg-primary hover:bg-primary/90 text-white w-fit">
                   CONTACT US
@@ -251,9 +221,9 @@ export default async function HomePage() {
                   ))}
                 </div>
                 <p className="text-muted-foreground mb-6 italic">
-                  "Working with TennHomes was an absolute pleasure. They understood exactly what we
-                  were looking for in the Smoky Mountains and made the entire process smooth. They
-                  found our dream home with the perfect mountain view!"
+                  &quot;Working with TennHomes was an absolute pleasure. They understood exactly
+                  what we were looking for in the Smoky Mountains and made the entire process
+                  smooth. They found our dream home with the perfect mountain view!&quot;
                 </p>
                 <div className="flex items-center">
                   <div className="mr-4 h-12 w-12 overflow-hidden rounded-full bg-accent">
@@ -280,9 +250,9 @@ export default async function HomePage() {
                   ))}
                 </div>
                 <p className="text-muted-foreground mb-6 italic">
-                  "I was impressed by the professionalism and local knowledge of the team at{' '}
+                  &quot;I was impressed by the professionalism and local knowledge of the team at{" "}
                   {company_name}. They sold our home in Knoxville quickly and at the best price.
-                  Their understanding of the East Tennessee market is unmatched!"
+                  Their understanding of the East Tennessee market is unmatched!&quot;
                 </p>
                 <div className="flex items-center">
                   <div className="mr-4 h-12 w-12 overflow-hidden rounded-full bg-accent">
@@ -303,9 +273,9 @@ export default async function HomePage() {
                   ))}
                 </div>
                 <p className="text-muted-foreground mb-6 italic">
-                  "As a first-time homebuyer in Johnson City, I was nervous. But they made the
+                  &quot;As a first-time homebuyer in Johnson City, I was nervous. But they made the
                   process so easy. They were always there to answer my questions about the area and
-                  helped me find the perfect starter home in a great neighborhood."
+                  helped me find the perfect starter home in a great neighborhood.&quot;
                 </p>
                 <div className="flex items-center">
                   <div className="mr-4 h-12 w-12 overflow-hidden rounded-full bg-accent">
@@ -370,7 +340,7 @@ export default async function HomePage() {
                 </div>
                 <CardContent className="p-4">
                   <h3 className="font-bold text-lg mb-2">
-                    Living in Gatlinburg: A Local's Perspective
+                    Living in Gatlinburg: A Local&apos;s Perspective
                   </h3>
                   <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
                     Experience the magic of living in the Gateway to the Smokies - from year-round
@@ -397,10 +367,12 @@ export default async function HomePage() {
                   />
                 </div>
                 <CardContent className="p-4">
-                  <h3 className="font-bold text-lg mb-2">Johnson City's Growing Communities</h3>
+                  <h3 className="font-bold text-lg mb-2">
+                    Johnson City&apos;s Growing Communities
+                  </h3>
                   <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
                     Explore the newest developments and family-friendly neighborhoods in Johnson
-                    City's thriving community.
+                    City&apos;s thriving community.
                   </p>
                   <div className="flex justify-between items-center text-xs text-muted-foreground">
                     <span>March 15, 2025</span>

@@ -1,26 +1,18 @@
-'use client'
-import { Share2Icon } from 'lucide-react'
+"use client"
 
-import { HeartPlusIcon } from 'lucide-react'
-import { PropertyAddress } from './address'
-import { useProperty } from './context'
-import { Button } from '../ui/button'
-import {
-  listingStatusMap,
-  listingStatusOptions,
-} from '@/config/collections/Properties/listing-status-map'
-import { cn } from '@/lib/utils'
-import { PropertyStatus } from './status'
-
+import { PropertyAddress } from "./address"
+import { useProperty } from "./context"
+import { PropertyStatus } from "./status"
+import { PropertyShare } from "./share"
 export const PropertyDetails = () => {
   const property = useProperty()
   return (
     <div className="bg-white rounded-lg p-6 flex items-start justify-between">
       <div className="flex flex-col gap-3">
         <div className="flex flex-col gap-1">
-          <h1 className="text-2xl font-bold">{property.title}</h1>
+          <h1 className="text-2xl font-bold">{property.original.title}</h1>
           <div className="flex flex-wrap gap-2">
-            <PropertyStatus listingStatus={property.listingStatus} />
+            <PropertyStatus />
           </div>
         </div>
         <div>
@@ -54,14 +46,7 @@ export const PropertyDetails = () => {
         </div>
       </div>
       <div className="flex flex-col gap-2">
-        <div className="flex gap-2">
-          <Button variant="ghost" className="p-0 size-10">
-            <Share2Icon size={24} className="shrink-0 h-6 w-6" />
-          </Button>
-          <Button variant="ghost" className="p-0 size-10">
-            <HeartPlusIcon size={24} className="shrink-0 h-6 w-6" />
-          </Button>
-        </div>
+        <PropertyShare />
       </div>
     </div>
   )

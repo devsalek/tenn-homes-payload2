@@ -1,5 +1,5 @@
-import { Logo } from '@/components/logo'
-import Link from 'next/link'
+import { Logo } from "@/components/logo"
+import Link from "next/link"
 export const Footer = () => {
   return (
     <footer className="bg-background text-foreground">
@@ -10,9 +10,9 @@ export const Footer = () => {
               <Logo />
             </div>
             <p className="text-muted-foreground mb-4">
-              Your trusted partner for East Tennessee real estate since 2005. We're committed to
-              helping you find the perfect property that meets all your requirements, whether you're
-              looking for a mountain retreat, downtown condo, or family home.
+              Your trusted partner for East Tennessee real estate since 2005. We&apos;re committed
+              to helping you find the perfect property that meets all your requirements, whether
+              you&apos;re looking for a mountain retreat, downtown condo, or family home.
             </p>
             <div className="flex gap-4">
               <a href="#" className="text-muted-foreground hover:text-primary">

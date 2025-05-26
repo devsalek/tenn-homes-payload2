@@ -1,8 +1,7 @@
-'use client'
-import { RichText } from '@payloadcms/richtext-lexical/react'
-import { useProperty } from './context'
+"use client"
+import { useProperty } from "./context"
 
 export const PropertyDescription = () => {
   const property = useProperty()
-  return <RichText data={property.description} />
+  return <div>{property.original.description}</div>
 }

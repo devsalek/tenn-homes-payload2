@@ -1,21 +1,22 @@
 // storage-adapter-import-placeholder
-import { postgresAdapter } from '@payloadcms/db-postgres'
-import { payloadCloudPlugin } from '@payloadcms/payload-cloud'
-import { lexicalEditor } from '@payloadcms/richtext-lexical'
-import path from 'path'
-import { buildConfig } from 'payload'
-import { fileURLToPath } from 'url'
-import sharp from 'sharp'
+import { postgresAdapter } from "@payloadcms/db-postgres"
+import { payloadCloudPlugin } from "@payloadcms/payload-cloud"
+import { lexicalEditor } from "@payloadcms/richtext-lexical"
+import path from "path"
+import { buildConfig } from "payload"
+import { fileURLToPath } from "url"
+import sharp from "sharp"
 
-import { Users } from './config/collections/Users/Users'
-import { Media } from './config/collections/Media/Media'
-import { Locations } from './config/collections/Locations/Locations'
-import { Properties } from './config/collections/Properties/Properties'
-import { Features } from './config/collections/Features/Features'
+import { Users } from "./config/collections/Users/Users"
+import { Media } from "./config/collections/Media/Media"
+import { Locations } from "./config/collections/Locations/Locations"
+import { Properties } from "./config/collections/Properties/Properties"
+import { Features } from "./config/collections/Features/Features"
+import { Agents } from "./config/collections/Agents/Agents"
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
-const DATABASE_URL = process.env.DATABASE_URI + '_video_32'
+import { DATABASE_URL } from "@/config/env"
 
 export default buildConfig({
   admin: {
@@ -24,11 +25,11 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, Locations, Properties, Features],
+  collections: [Users, Media, Locations, Properties, Features, Agents],
   editor: lexicalEditor(),
-  secret: process.env.PAYLOAD_SECRET || '',
+  secret: process.env.PAYLOAD_SECRET || "",
   typescript: {
-    outputFile: path.resolve(dirname, 'payload-types.ts'),
+    outputFile: path.resolve(dirname, "payload-types.ts"),
   },
   db: postgresAdapter({
     pool: {

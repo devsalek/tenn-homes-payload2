@@ -1,9 +1,10 @@
-'use client'
+"use client"
 
-import { Media } from '@/payload-types'
-import { useProperty } from './context'
+import { Media } from "@/payload-types"
+import { useProperty } from "./context"
 
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
+import Image from "next/image"
 
 export const PropertyGallery = () => {
   const property = useProperty()
@@ -22,7 +23,7 @@ export const PropertyGallery = () => {
           {/* Feature image - always visible */}
           {featureImage?.url && (
             <DialogTrigger key={featureImage.url} asChild>
-              <img
+              <Image
                 src={featureImage.url}
                 alt={featureImage.alt}
                 className="w-full col-span-12 h-full tablet:col-span-8 desktop:col-span-6 object-cover cursor-pointer"
@@ -34,24 +35,24 @@ export const PropertyGallery = () => {
           <div className="hidden h-full grid-cols-1 tablet:grid tablet:grid-cols-1 desktop:grid-cols-2 large:grid-cols-3 tablet:grid-rows-2 tablet:col-span-4 desktop:col-span-6 gap-1">
             {gridImages.map((image, index) => {
               // Determine visibility based on screen size and image position
-              let visibilityClass = ''
+              let visibilityClass = ""
 
               if (index < 2) {
                 // First two images visible on tablet and up
-                visibilityClass = ''
+                visibilityClass = ""
               } else if (index < 4) {
                 // Next two images visible on desktop and up
-                visibilityClass = 'hidden desktop:block'
+                visibilityClass = "hidden desktop:block"
               } else {
                 // Last two images visible only on large screens
-                visibilityClass = 'hidden large:block'
+                visibilityClass = "hidden large:block"
               }
 
               if (!image.url) return null
 
               return (
                 <DialogTrigger key={image.id} asChild>
-                  <img
+                  <Image
                     src={image.url}
                     alt={image.alt}
                     className={`w-full h-full object-cover cursor-pointer photo-${image.id} ${visibilityClass}`}
@@ -68,9 +69,10 @@ export const PropertyGallery = () => {
             <div className="mx-auto max-w-7xl">
               {images.map((image) => {
                 return (
-                  <img
-                    src={image.url ?? ''}
-                    alt={image.alt ?? ''}
+                  <Image
+                    key={image.url!}
+                    src={image.url!}
+                    alt={image.alt ?? ""}
                     className="w-full h-full object-cover"
                   />
                 )

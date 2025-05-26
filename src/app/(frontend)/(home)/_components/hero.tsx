@@ -1,15 +1,15 @@
-'use client'
+"use client"
 
-import { SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Select } from '@/components/ui/select'
-import { Button } from '@/components/ui/button'
-import { Phone, Search } from 'lucide-react'
-import { useEffect, useState, useRef } from 'react'
-import Image from 'next/image'
+import { SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Select } from "@/components/ui/select"
+import { Button } from "@/components/ui/button"
+import { Phone, Search } from "lucide-react"
+import { useEffect, useState, useRef } from "react"
+import Image from "next/image"
 
-import homeForeground from '@/assets/smokymountainhome2.png'
-import homeBackground from '@/assets/home-background.png'
-import { cn } from '@/lib/utils'
+import homeForeground from "@/assets/smokymountainhome2.png"
+import homeBackground from "@/assets/home-background.png"
+import { cn } from "@/lib/utils"
 
 export default function Hero() {
   const [scrollY, setScrollY] = useState(0)
@@ -27,9 +27,9 @@ export default function Hero() {
       })
     }
 
-    window.addEventListener('scroll', handleScroll, { passive: true })
+    window.addEventListener("scroll", handleScroll, { passive: true })
     return () => {
-      window.removeEventListener('scroll', handleScroll)
+      window.removeEventListener("scroll", handleScroll)
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current)
       }
@@ -66,7 +66,7 @@ export default function Hero() {
             className="object-center object-cover"
             style={{
               transform: `scale(${calculateScale()})`,
-              willChange: 'transform',
+              willChange: "transform",
             }}
             priority
           />
@@ -78,8 +78,8 @@ export default function Hero() {
             </h1>
             <p className="text-primary/80 max-w-md">
               Explore our collection of beautiful properties across the Smoky Mountains, from
-              Knoxville to Johnson City. Find your perfect home in the heart of Tennessee's most
-              scenic region.
+              Knoxville to Johnson City. Find your perfect home in the heart of Tennessee&apos;s
+              most scenic region.
             </p>
             <Button className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-md px-4 py-2 flex items-center gap-2">
               <Phone className="h-4 w-4" />

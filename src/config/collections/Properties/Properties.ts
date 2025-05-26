@@ -1,11 +1,13 @@
-import { generatePrimaryKey } from '@/lib/generate-primary-key'
-import routes from '@/lib/routes'
-import slugify from 'slugify'
-import { AfterReadHook } from 'node_modules/payload/dist/collections/config/types'
-import type { CollectionConfig, PayloadRequest } from 'payload'
-import type { Location } from '@/payload-types'
-import type { JSONSchema4 } from 'json-schema'
-import { listingStatusOptions } from './listing-status-map'
+import { generatePrimaryKey } from "@/lib/generate-primary-key"
+import routes from "@/lib/routes"
+import slugify from "slugify"
+import { AfterReadHook } from "node_modules/payload/dist/collections/config/types"
+import type { CollectionConfig, PayloadRequest } from "payload"
+import type { Location } from "@/payload-types"
+import type { JSONSchema4 } from "json-schema"
+import { listingStatusOptions } from "./listing-status-map"
+import { propertyTypeOptions } from "./property-type-options"
+import { heatingTypeOptions } from "./heating-options"
 
 const formatAddress: AfterReadHook = async ({ doc }) => {
   return {
@@ -25,8 +27,8 @@ const formatAddress: AfterReadHook = async ({ doc }) => {
 }
 
 const generateUrl = async (id: string, req: PayloadRequest) => {
-  console.log('generating url', req)
-  const property = await req.payload.findByID({ collection: 'properties', id })
+  console.log("generating url", req)
+  const property = await req.payload.findByID({ collection: "properties", id })
   const location = property.location as Location
   const fullAddress = [property.street, location.city, location.state_abbr, location.zip].map((l) =>
     slugify(`${l}`, { lower: true }),
@@ -34,23 +36,23 @@ const generateUrl = async (id: string, req: PayloadRequest) => {
 
   return (
     req.payload.config.serverURL +
-    routes('property.show', {
+    routes("property.show", {
       id,
-      full_address: fullAddress.join('/'),
+      full_address: fullAddress.join("/"),
     })
   )
 }
 export const Properties: CollectionConfig = {
-  slug: 'properties',
+  slug: "properties",
   admin: {
-    defaultColumns: ['primaryPhoto', 'street', 'location', 'price', 'listingStatus'],
+    defaultColumns: ["primaryPhoto", "street", "location", "price", "listingStatus"],
     preview: (doc, options) => generateUrl(String(doc.id), options.req as PayloadRequest),
   },
 
   fields: [
     {
-      name: 'id',
-      type: 'text',
+      name: "id",
+      type: "text",
       required: true,
       unique: true,
       admin: {
@@ -60,101 +62,111 @@ export const Properties: CollectionConfig = {
     },
 
     {
-      type: 'tabs',
+      type: "tabs",
       tabs: [
         {
-          label: 'General',
+          label: "General",
           fields: [
             {
-              name: 'title',
-              type: 'text',
+              name: "title",
+              type: "text",
               required: true,
             },
             {
-              name: 'description',
-              type: 'richText',
+              name: "description",
+              type: "textarea",
               required: true,
             },
             {
-              name: 'price',
-              type: 'number',
+              name: "price",
+              type: "number",
             },
             {
-              name: 'listingStatus',
-              type: 'select',
+              name: "listingStatus",
+              type: "select",
               required: true,
               options: listingStatusOptions,
             },
             {
-              name: 'details',
-              type: 'group',
+              name: "details",
+              type: "group",
               fields: [
                 {
-                  name: 'bedrooms',
-                  type: 'number',
+                  name: "bedrooms",
+                  type: "number",
                 },
                 {
-                  name: 'bathrooms',
-                  type: 'number',
+                  name: "bathrooms",
+                  type: "number",
                 },
                 {
-                  name: 'squareFeet',
-                  type: 'number',
+                  name: "squareFeet",
+                  type: "number",
                 },
                 {
-                  name: 'lotSize',
-                  type: 'number',
+                  name: "lotSize",
+                  type: "number",
                 },
                 {
-                  name: 'yearBuilt',
-                  type: 'number',
+                  name: "yearBuilt",
+                  type: "number",
+                },
+                {
+                  name: "propertyType",
+                  type: "select",
+                  options: propertyTypeOptions,
+                },
+                {
+                  name: "heatingType",
+                  type: "select",
+                  options: heatingTypeOptions,
                 },
               ],
             },
           ],
         },
         {
-          label: 'Photos',
+          label: "Photos",
           fields: [
             {
-              name: 'photos',
-              type: 'upload',
-              relationTo: 'media',
+              name: "photos",
+              type: "upload",
+              relationTo: "media",
               hasMany: true,
             },
           ],
         },
         {
-          label: 'Location',
+          label: "Location",
           fields: [
             {
-              name: 'street',
-              type: 'text',
+              name: "street",
+              type: "text",
               required: true,
-              label: 'Street Address',
+              label: "Street Address",
             },
 
             {
-              name: 'address',
-              type: 'text',
+              name: "address",
+              type: "text",
               admin: {
                 hidden: true,
               },
               typescriptSchema: [
                 () => {
                   const address: JSONSchema4 = {
-                    type: 'object',
+                    type: "object",
                     properties: {
-                      street: { type: 'string' },
-                      city: { type: 'string' },
-                      state: { type: 'string' },
-                      state_abbr: { type: 'string' },
-                      zip: { type: 'string' },
+                      street: { type: "string" },
+                      city: { type: "string" },
+                      state: { type: "string" },
+                      state_abbr: { type: "string" },
+                      zip: { type: "string" },
                       full_address: {
-                        type: 'string',
+                        type: "string",
                       },
                     },
-                    required: ['street', 'city', 'state', 'state_abbr', 'zip', 'full_address'],
+                    required: ["street", "city", "state", "state_abbr", "zip", "full_address"],
                   }
 
                   return address
@@ -162,29 +174,38 @@ export const Properties: CollectionConfig = {
               ],
             },
             {
-              name: 'location',
-              type: 'relationship',
-              relationTo: 'locations',
+              name: "location",
+              type: "relationship",
+              relationTo: "locations",
               required: true,
               hasMany: false,
             },
           ],
         },
         {
-          label: 'Features',
+          label: "Features",
           fields: [
             {
-              name: 'features',
-              type: 'relationship',
-              relationTo: 'features',
+              name: "features",
+              type: "relationship",
+              relationTo: "features",
               hasMany: true,
               admin: {
-                description: 'Select the features for this property.',
+                description: "Select the features for this property.",
               },
             },
           ],
         },
       ],
+    },
+    {
+      name: "agent",
+      type: "relationship",
+      relationTo: "agents",
+      hasMany: false,
+      admin: {
+        position: "sidebar",
+      },
     },
   ],
   hooks: {
