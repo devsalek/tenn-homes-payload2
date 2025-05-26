@@ -16,9 +16,7 @@ export class BaseDecorator<T> {
     return this.data[key]
   }
 
-  // You can add more methods here that operate on the data
-  // For example, a method to convert the data to a specific format
-  toJSON(): string {
+  toString(): string {
     return JSON.stringify(this.data, null, 2)
   }
 }

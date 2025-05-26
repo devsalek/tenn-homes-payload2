@@ -134,7 +134,7 @@ export abstract class BaseModel<T extends BaseDocument = BaseDocument, D = BaseD
     return this
   }
 
-  toJSON(): T {
-    return this.data
+  toString(): string {
+    return JSON.stringify(this.data, null, 2)
   }
 }
