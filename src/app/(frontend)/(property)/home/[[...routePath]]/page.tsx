@@ -5,13 +5,14 @@ import { PropertyFeatures } from "@/components/property/features"
 import { PropertyGallery } from "@/components/property/gallery"
 import { PropertyMap } from "@/components/property/map"
 import { PropertyOverview } from "@/components/property/overview"
+import { model } from "@/models"
 import { PropertyModel } from "@/models/property/property-model"
 import { redirect } from "next/navigation"
 
 export async function generateMetadata({ params }: { params: Promise<{ routePath: string[] }> }) {
   const { routePath } = await params
   const propertyId = routePath[routePath.length - 1]
-  const property = await PropertyModel.find(propertyId)
+  const property = await model.property.find(propertyId)
   if (!property) {
     return {
       title: "Property Not Found",
@@ -35,7 +36,7 @@ export default async function PropertyDetailPage({
 }) {
   const { routePath } = await params
   const propertyId = routePath[routePath.length - 1]
-  const property = await PropertyModel.findOrFail(propertyId)
+  const property = await model.property.findOrFail(propertyId)
   // ensure canonical URL is correct
   const path = `/home/${routePath.join("/")}`
 
