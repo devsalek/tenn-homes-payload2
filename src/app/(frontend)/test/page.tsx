@@ -9,7 +9,7 @@ export default async function TestPage() {
 
   return (
     <div>
-      <pre>{JSON.stringify(property.original, null, 2)}</pre>
+      <pre>{JSON.stringify(property.data, null, 2)}</pre>
     </div>
   )
 }

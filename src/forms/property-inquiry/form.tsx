@@ -52,7 +52,6 @@ export function PropertyInquiryForm() {
     },
   )
 
-  console.log(form.formState)
   return (
     <form onSubmit={handleSubmitWithAction} className="flex flex-1 w-full flex-col gap-2">
       <div className="flex flex-col gap-2">

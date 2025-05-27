@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: { params: Promise<{ routePath
   return {
     metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
     alternates: {
-      canonical: property.url,
+      canonical: "asdasd",
     },
     title: property.get("address").full_address,
     description: property.get("description"),
@@ -45,7 +45,7 @@ export default async function PropertyDetailPage({
   }
 
   return (
-    <PropertyProvider property={property.original}>
+    <PropertyProvider property={property.data}>
       <div className="w-full flex flex-col">
         <PropertyGallery />
         <div className="max-w-7xl p-4  w-full mx-auto grid grid-cols-12 gap-4">

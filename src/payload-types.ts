@@ -80,11 +80,7 @@ export interface Config {
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
-  collectionsJoins: {
-    contacts: {
-      'inquiries.inquiries': 'inquiries';
-    };
-  };
+  collectionsJoins: {};
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
@@ -392,20 +388,6 @@ export interface Contact {
       | ('single-family' | 'multi-family' | 'condo' | 'townhouse' | 'land' | 'mobile-home' | 'other')[]
       | null;
   };
-  stats?: {
-    totalMessages?: number | null;
-    lastContact?: string | null;
-    firstContact?: string | null;
-    leadSources?: ('website-form' | 'phone' | 'email' | 'referral' | 'walk-in' | 'social-media')[] | null;
-  };
-  inquiries?: {
-    inquiries?: {
-      docs?: (number | Inquiry)[];
-      hasNextPage?: boolean;
-      totalDocs?: number;
-    };
-  };
-  internalNotes?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -658,20 +640,6 @@ export interface ContactsSelect<T extends boolean = true> {
         preferredAreas?: T;
         propertyTypes?: T;
       };
-  stats?:
-    | T
-    | {
-        totalMessages?: T;
-        lastContact?: T;
-        firstContact?: T;
-        leadSources?: T;
-      };
-  inquiries?:
-    | T
-    | {
-        inquiries?: T;
-      };
-  internalNotes?: T;
   updatedAt?: T;
   createdAt?: T;
 }

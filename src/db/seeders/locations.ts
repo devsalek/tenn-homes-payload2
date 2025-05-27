@@ -1,24 +1,28 @@
 import { LocationModel } from "@/models/location/location-model"
+import { Location } from "@/payload-types"
 import csv from "csv-parser"
 import fs from "fs"
 import path, { dirname } from "path"
-import { Payload } from "payload"
 import { fileURLToPath } from "url"
 
-export async function seedLocations(payload: Payload): Promise<void> {
+type RawData = Omit<Location, "id" | "updatedAt" | "createdAt"> & {
+  code: string
+}
+
+export async function seedLocations(): Promise<void> {
   const __filename = fileURLToPath(import.meta.url)
   const __dirname = dirname(__filename)
   const csvFilePath = path.resolve(__dirname, "./zip_codes.csv")
 
-  const locations: any[] = []
+  const locations: Omit<Location, "id" | "updatedAt" | "createdAt">[] = []
 
   await new Promise<void>((resolve, reject) => {
     fs.createReadStream(csvFilePath)
       .pipe(csv())
-      .on("data", (data: any) => {
+      .on("data", (data: RawData) => {
         // Filter by target counties
         locations.push({
-          zip: data.code,
+          zip: String(data.code),
           city: data.city,
           state_abbr: data.state_abbr,
           state_name: "Tennessee",

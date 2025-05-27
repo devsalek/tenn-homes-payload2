@@ -32,9 +32,9 @@ export async function FeaturedProperties() {
         >
           <CarouselContent className="pb-1">
             {properties.map((property) => (
-              <PropertyProvider property={property.original} key={property.original.id}>
+              <PropertyProvider property={property.data} key={property.id}>
                 <CarouselItem
-                  key={property.original.id}
+                  key={property.id}
                   className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4 h-auto"
                 >
                   <FeaturedPropertyCard />
