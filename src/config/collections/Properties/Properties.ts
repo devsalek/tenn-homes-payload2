@@ -45,6 +45,7 @@ const generateUrl = async (id: string, req: PayloadRequest) => {
 export const Properties: CollectionConfig = {
   slug: "properties",
   admin: {
+    useAsTitle: "street",
     defaultColumns: ["primaryPhoto", "street", "location", "price", "listingStatus"],
     preview: (doc, options) => generateUrl(String(doc.id), options.req as PayloadRequest),
   },

@@ -7,10 +7,10 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel"
 import { PropertyProvider } from "@/components/property/context"
-import { PropertyModel } from "@/models/property/property-model"
+import { model } from "@/models"
 
 export async function FeaturedProperties() {
-  const properties = await PropertyModel.where({
+  const properties = await model.property.where({
     listingStatus: {
       equals: "forsale",
     },

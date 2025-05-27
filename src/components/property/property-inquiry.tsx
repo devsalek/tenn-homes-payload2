@@ -1,13 +1,10 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { MailIcon, PhoneCallIcon } from "lucide-react"
 import { useProperty } from "./context"
 import { Media } from "@/payload-types"
-import { ContactAgentForm } from "@/forms/contact-agent/form"
+import { PropertyInquiryForm } from "@/forms/property-inquiry/form"
 
 const backgroundColors = [
   "#D8E2DC", // Ash gray
@@ -22,7 +19,7 @@ const backgroundColors = [
   "#C6DEF1", // Powder blue
 ]
 
-export const AgentContact = () => {
+export const PropertyInquiry = () => {
   const property = useProperty()
 
   if (!property.agent || typeof property.agent === "string") return null
@@ -73,7 +70,7 @@ export const AgentContact = () => {
           </div>
         </div>
       </div>
-      <ContactAgentForm />
+      <PropertyInquiryForm />
     </div>
   )
 }

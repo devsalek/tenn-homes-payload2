@@ -74,11 +74,17 @@ export interface Config {
     properties: Property;
     features: Feature;
     agents: Agent;
+    contacts: Contact;
+    inquiries: Inquiry;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
-  collectionsJoins: {};
+  collectionsJoins: {
+    contacts: {
+      'inquiries.inquiries': 'inquiries';
+    };
+  };
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
@@ -86,6 +92,8 @@ export interface Config {
     properties: PropertiesSelect<false> | PropertiesSelect<true>;
     features: FeaturesSelect<false> | FeaturesSelect<true>;
     agents: AgentsSelect<false> | AgentsSelect<true>;
+    contacts: ContactsSelect<false> | ContactsSelect<true>;
+    inquiries: InquiriesSelect<false> | InquiriesSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -229,7 +237,7 @@ export interface Property {
     squareFeet?: number | null;
     lotSize?: number | null;
     yearBuilt?: number | null;
-    propertyType?: ('single-family' | 'multi-family' | 'condo' | 'townhouse' | 'land' | 'mobile-home') | null;
+    propertyType?: ('single-family' | 'multi-family' | 'condo' | 'townhouse' | 'land' | 'mobile-home' | 'other') | null;
     heatingType?: ('central' | 'electric' | 'gas' | 'oil' | 'propane') | null;
   };
   photos?: (number | Media)[] | null;
@@ -363,6 +371,58 @@ export interface Agent {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contacts".
+ */
+export interface Contact {
+  id: number;
+  name: string;
+  email: string;
+  phone?: string | null;
+  preferredContact?: ('email' | 'phone' | 'text') | null;
+  status?: ('new' | 'contacted' | 'qualified' | 'active' | 'closed' | 'dnc') | null;
+  assignedTo?: (string | null) | Agent;
+  profile?: {
+    buyingTimeline?: ('immediately' | '3-months' | '6-months' | '1-year' | 'browsing') | null;
+    budgetRange?: {
+      min?: number | null;
+      max?: number | null;
+    };
+    preferredAreas?: string | null;
+    propertyTypes?:
+      | ('single-family' | 'multi-family' | 'condo' | 'townhouse' | 'land' | 'mobile-home' | 'other')[]
+      | null;
+  };
+  stats?: {
+    totalMessages?: number | null;
+    lastContact?: string | null;
+    firstContact?: string | null;
+    leadSources?: ('website-form' | 'phone' | 'email' | 'referral' | 'walk-in' | 'social-media')[] | null;
+  };
+  inquiries?: {
+    inquiries?: {
+      docs?: (number | Inquiry)[];
+      hasNextPage?: boolean;
+      totalDocs?: number;
+    };
+  };
+  internalNotes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "inquiries".
+ */
+export interface Inquiry {
+  id: number;
+  contact: number | Contact;
+  property?: (string | null) | Property;
+  message: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -391,6 +451,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'agents';
         value: string | Agent;
+      } | null)
+    | ({
+        relationTo: 'contacts';
+        value: number | Contact;
+      } | null)
+    | ({
+        relationTo: 'inquiries';
+        value: number | Inquiry;
       } | null);
   globalSlug?: string | null;
   user:
@@ -565,6 +633,58 @@ export interface AgentsSelect<T extends boolean = true> {
   hash?: T;
   loginAttempts?: T;
   lockUntil?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contacts_select".
+ */
+export interface ContactsSelect<T extends boolean = true> {
+  name?: T;
+  email?: T;
+  phone?: T;
+  preferredContact?: T;
+  status?: T;
+  assignedTo?: T;
+  profile?:
+    | T
+    | {
+        buyingTimeline?: T;
+        budgetRange?:
+          | T
+          | {
+              min?: T;
+              max?: T;
+            };
+        preferredAreas?: T;
+        propertyTypes?: T;
+      };
+  stats?:
+    | T
+    | {
+        totalMessages?: T;
+        lastContact?: T;
+        firstContact?: T;
+        leadSources?: T;
+      };
+  inquiries?:
+    | T
+    | {
+        inquiries?: T;
+      };
+  internalNotes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "inquiries_select".
+ */
+export interface InquiriesSelect<T extends boolean = true> {
+  contact?: T;
+  property?: T;
+  message?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

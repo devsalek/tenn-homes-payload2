@@ -5,6 +5,7 @@ export const propertyTypeMap = {
   townhouse: "Townhouse",
   land: "Land",
   "mobile-home": "Mobile Home",
+  other: "Other",
 }
 export type PropertyType = keyof typeof propertyTypeMap
 export type PropertyTypeOption = {

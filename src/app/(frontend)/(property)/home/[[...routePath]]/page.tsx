@@ -1,4 +1,4 @@
-import { AgentContact } from "@/components/property/agent-contact"
+import { PropertyInquiry } from "@/components/property/property-inquiry"
 import { PropertyProvider } from "@/components/property/context"
 import { PropertyDetails } from "@/components/property/details"
 import { PropertyFeatures } from "@/components/property/features"
@@ -6,7 +6,6 @@ import { PropertyGallery } from "@/components/property/gallery"
 import { PropertyMap } from "@/components/property/map"
 import { PropertyOverview } from "@/components/property/overview"
 import { model } from "@/models"
-import { PropertyModel } from "@/models/property/property-model"
 import { redirect } from "next/navigation"
 
 export async function generateMetadata({ params }: { params: Promise<{ routePath: string[] }> }) {
@@ -59,7 +58,7 @@ export default async function PropertyDetailPage({
 
           <div className="col-span-12 desktop:col-span-4">
             <div className="sticky top-4">
-              <AgentContact />
+              <PropertyInquiry />
             </div>
           </div>
         </div>

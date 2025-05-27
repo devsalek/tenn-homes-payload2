@@ -7,7 +7,6 @@ export const PropertyStatus = () => {
   const property = useProperty()
 
   const listingStatus = property.get("listingStatus")
-  console.log({ listingStatus })
   return (
     <div
       className={cn(
