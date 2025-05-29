@@ -19,4 +19,8 @@ export class BaseDecorator<T> {
   toString(): string {
     return JSON.stringify(this.data, null, 2)
   }
+
+  get url(): string {
+    return ""
+  }
 }

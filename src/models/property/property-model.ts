@@ -1,23 +1,15 @@
-import { Property } from "@/payload-types"
 import { CollectionSlug } from "payload"
-import { BaseModel } from "../base-model"
-import slugify from "slugify"
+import { Property as PropertyType } from "@/payload-types"
+import { ActiveRecord } from "../base-model"
+import { PropertyDecorator } from "./property-decorator"
 import route from "@/lib/routes"
+import slugify from "slugify"
+import { BaseDecorator } from "../base-decorator"
 
-export class PropertyModel extends BaseModel<Property> {
-  static collectionSlug: CollectionSlug = "properties"
-  get url(): string {
-    const data = this.data
-    const fullAddress = [
-      data.address.street,
-      data.address.city,
-      data.address.state_abbr,
-      data.address.zip,
-    ].map((l) => slugify(`${l}`, { lower: true }))
+export class PropertyModel extends ActiveRecord<PropertyType> {
+  override collection: CollectionSlug = "properties"
 
-    return route("property.show", {
-      id: data.id,
-      full_address: fullAddress.join("/"),
-    })
+  decorated(): PropertyDecorator {
+    return new PropertyDecorator(this.getAttributes())
   }
 }

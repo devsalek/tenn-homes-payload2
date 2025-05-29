@@ -1,23 +1,23 @@
 import { Contact as ContactType } from "@/payload-types"
 import { CollectionSlug } from "payload"
-import { BaseModel } from "../base-model"
+import { ActiveRecord } from "../base-model"
 
 /**
  * Contact Model
  * This class represents the Contact model, extending the BaseModel.
  */
-export class Contact extends BaseModel<ContactType> {
-  static collectionSlug: CollectionSlug = "contacts"
+export class ContactModel extends ActiveRecord<ContactType> {
+  override collection: CollectionSlug = "contacts"
 
-  static findOrCreate = async (data: Partial<ContactType>) => {
-    const contacts = await Contact.where({
-      email: { equals: data.email },
+  findOrCreate = async (data: Partial<ContactType>) => {
+    const contacts = await this.findMany({
+      where: { email: { equals: data.email } },
     })
 
-    if (contacts.length > 0) {
-      return contacts[0]
+    if (contacts.docs.count() > 0) {
+      return contacts.docs.first()
     } else {
-      return await Contact.create(data as Omit<ContactType, "id" | "updatedAt" | "createdAt">)
+      return await this.create(data as Omit<ContactType, "id" | "updatedAt" | "createdAt">)
     }
   }
 }

@@ -10,10 +10,11 @@ import sharp from "sharp"
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
-import { DATABASE_URL } from "@/config/env"
+import { DATABASE_URL, SERVER_URL } from "@/config/env"
 import { collections } from "./config/collections"
 
 export default buildConfig({
+  serverURL: SERVER_URL,
   admin: {
     importMap: {
       baseDir: path.resolve(dirname),

@@ -1,135 +1,204 @@
-import { getPayloadClient } from "@/db/client"
-import { CollectionSlug, Where } from "payload"
+// base.ts
+import { CollectionSlug, getPayload, PaginatedDocs, SelectType, Where } from "payload"
+import config from "@payload-config"
 import { cache } from "react"
+import { Options } from "node_modules/payload/dist/collections/operations/local/find"
 import { notFound } from "next/navigation"
+import { BaseDecorator } from "./base-decorator"
+// TODO: find,findOrFail,findMany,findOrCreate,create,update,upsert,delete
 
+export type CastFunction<V> = (value: V) => any
 interface BaseDocument {
   id: string | number
   createdAt?: string | Date
   updatedAt?: string | Date
 }
 
-interface BaseInstance<T, M> {
-  new (data: T): M
-  collectionSlug: CollectionSlug
+function castDate(value: string) {
+  return new Date(value)
 }
 
-export abstract class BaseModel<T extends BaseDocument = BaseDocument> {
-  static collectionSlug: CollectionSlug
-  data: T
+export abstract class ActiveRecord<T extends BaseDocument = BaseDocument> {
+  abstract collection: CollectionSlug
+  abstract decorated(): BaseDecorator<T>
+  protected casts: Record<string, CastFunction<any>> = {
+    createdAt: castDate,
+    updatedAt: castDate,
+  }
+  private attributes: T | null = null
+  private dirtyFields: Record<string, boolean> = {}
 
-  constructor(data: T) {
-    this.data = data
+  setAttributes(data: T): typeof this {
+    this.attributes = data
+    this.castAttributes()
+
+    return this
   }
 
-  get id(): string | number {
-    return this.data.id
+  getAttributes(): NonNullable<T> {
+    return this.attributes as T
   }
 
-  static client = async () => {
-    return getPayloadClient()
+  async castAttributes() {
+    if (!this.attributes) return
+    if (this.casts === null) return
+    Object.keys(this.attributes!).map((key) => {
+      if (!this.casts![key] || !this.attributes) return
+      const value = this.get(key as keyof T)
+      this.attributes[key as keyof T] = this.casts![key](value)
+    })
   }
 
-  private static _findById = cache(async (self: BaseInstance<any, any>, id: string) => {
-    const client = await BaseModel.client()
-    return await client.findByID({
-      collection: self.collectionSlug,
+  get<K extends keyof T>(key: K): T[K] {
+    if (!this.attributes) {
+      throw new Error("attributes have not been set")
+    }
+    return this.attributes[key]
+  }
+
+  set<K extends keyof T>(key: K, value: NonNullable<T>[K]) {
+    if (!this.attributes) {
+      throw new Error("attributes have not been set")
+    }
+    const oldValue = this.attributes[key]
+    if (oldValue === value) return
+    this.dirtyFields[key as string] = true
+    this.attributes[key] = value
+  }
+
+  private async getClient() {
+    return await getPayload({ config })
+  }
+
+  async find(
+    id: string | number,
+    options: Omit<Options<CollectionSlug, SelectType>, "collection"> = { depth: 2 },
+  ): Promise<ActiveRecord<T>> {
+    const client = await this.getClient()
+    const result = (await client.findByID({
+      collection: this.collection,
       id,
-    })
-  })
-
-  private static _find = cache(async (self: BaseInstance<any, any>, where: Where = {}) => {
-    const client = await BaseModel.client()
-    const data = await client.find({
-      collection: self.collectionSlug,
-      where,
-      limit: 100,
-      pagination: false,
-      sort: "-createdAt",
-    })
-
-    return data.docs.map((item) => new self(item))
-  })
-
-  static async create<T extends BaseDocument = BaseDocument, M extends BaseModel<T> = BaseModel<T>>(
-    this: BaseInstance<T, M>,
-    data: Omit<T, "id" | "updatedAt" | "createdAt">,
-  ): Promise<M> {
-    const client = await BaseModel.client()
-    const createdData = (await client.create({
-      collection: this.collectionSlug,
-      data,
+      ...options,
     })) as T
 
-    // Return model instance
-    return new this(createdData)
+    const clone = this.clone()
+    clone.setAttributes(result)
+
+    return clone
   }
 
-  static async find<T extends BaseDocument = BaseDocument, M extends BaseModel<T> = BaseModel<T>>(
-    this: BaseInstance<T, M>,
-    id: string,
-  ): Promise<M | null> {
+  async findOrFail(
+    id: string | number,
+    options: Omit<Options<CollectionSlug, SelectType>, "collection"> = { depth: 2 },
+  ): Promise<ActiveRecord<T>> {
+    const client = await this.getClient()
     try {
-      const data = await BaseModel._findById(this, id)
-      return new this(data as T)
-    } catch (error) {
-      // Handle error if needed
-      return null
-    }
-  }
+      const result = (await client.findByID({
+        collection: this.collection,
+        id,
+        depth: 0,
+        ...options,
+      })) as T
 
-  static async findOrFail<
-    T extends BaseDocument = BaseDocument,
-    M extends BaseModel<T> = BaseModel<T>,
-  >(this: BaseInstance<T, M>, id: string): Promise<M> {
-    try {
-      const data = await BaseModel._findById(this, id)
-      return new this(data as T)
+      // const clone = this.clone()
+      this.setAttributes(result)
+
+      return this
     } catch (error) {
-      // Handle error if needed
       notFound()
     }
   }
 
-  static async where<T extends BaseDocument = BaseDocument, M extends BaseModel<T> = BaseModel<T>>(
-    this: BaseInstance<T, M>,
-    where: Where = {},
-  ): Promise<M[]> {
-    return await BaseModel._find(this, where)
+  findMany = cache(
+    async (options: Omit<Options<CollectionSlug, SelectType>, "collection"> = {}) => {
+      const client = await this.getClient()
+      const results = (await client.find({
+        ...options,
+        collection: this.collection,
+      })) as PaginatedDocs<T>
+
+      return {
+        ...results,
+        docs: new RecordCollection(results.docs).hydrate(this),
+      }
+    },
+  )
+
+  clone(): ActiveRecord<T> {
+    return new (this.constructor as { new (): ActiveRecord<T> })()
   }
 
-  async save(): Promise<this> {
-    const client = await BaseModel.client()
+  /** CRUD */
+  async create(data: Omit<T, "id" | "updatedAt" | "createdAt">): Promise<ActiveRecord<T>> {
+    const client = await this.getClient()
+    const createdData = (await client.create({
+      collection: this.collection,
+      data,
+    })) as T
 
-    // Update existing record
-    const result = await client.update({
-      collection: (this.constructor as any).collectionSlug,
-      id: this.data.id,
-      data: this.data,
+    const clone = this.clone()
+    clone.setAttributes(createdData)
+
+    return clone
+  }
+
+  async save(updates: Partial<Omit<T, "id" | "updatedAt" | "createdAt">>) {
+    if (this.attributes === null) return this
+    console.log(`Saving the ${this.collection} collection...`)
+    const client = await this.getClient()
+    const rawData = await this.find(this.attributes.id, { depth: 0 })
+    const data = { ...rawData, ...updates } as Omit<T, "id" | "updatedAt" | "createdAt">
+    const updatedData = (await client.update({
+      collection: this.collection,
+      id: this.attributes.id,
+      data,
+    })) as T
+
+    const clone = this.clone()
+    clone.setAttributes(updatedData)
+
+    return clone
+  }
+}
+
+class RecordCollection<T extends BaseDocument = BaseDocument> {
+  constructor(private docs: T[]) {}
+  records: ActiveRecord<T>[] = []
+
+  hydrate(instance: ActiveRecord<T>): typeof this {
+    this.records = this.docs.map((d: T) => {
+      const clone = new (instance.constructor as { new (): ActiveRecord<T> })()
+      clone.setAttributes(d)
+      return clone
     })
-
-    // Extract the updated document from the result
-    this.data = result.doc as T
-
     return this
   }
 
-  // Bulk update method
-  update(updates: Partial<T>): this {
-    Object.assign(this.data, updates)
-    return this
+  toArray(): T[] {
+    return [...(this.records.map((r) => r.getAttributes()) as T[])]
   }
 
-  set<K extends keyof T>(key: K, value: T[K]): this {
-    this.data[key] = value
-    return this
+  toJson(): string {
+    return JSON.stringify(this.records, null, 2)
   }
 
-  get<K extends keyof T>(key: K): T[K] {
-    return this.data[key]
+  first(): ActiveRecord<T> {
+    return this.records.at(0) as ActiveRecord<T>
   }
 
-  toString(): string {
-    return JSON.stringify(this.data, null, 2)
+  count(): number {
+    return this.records.length
+  }
+
+  each(callbackfn: (value: ActiveRecord<T>, index: number, array: ActiveRecord<T>[]) => void) {
+    return this.records.forEach(callbackfn)
+  }
+
+  *[Symbol.iterator](): Iterator<ActiveRecord<T>> {
+    for (const key in this.records) {
+      if (this.records && this.records.hasOwnProperty(key)) {
+        yield this.records[key] as ActiveRecord<T>
+      }
+    }
   }
 }

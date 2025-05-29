@@ -7,11 +7,12 @@ import { PropertyMap } from "@/components/property/map"
 import { PropertyOverview } from "@/components/property/overview"
 import { model } from "@/models"
 import { redirect } from "next/navigation"
+import { SERVER_URL } from "@/config/env"
 
 export async function generateMetadata({ params }: { params: Promise<{ routePath: string[] }> }) {
   const { routePath } = await params
   const propertyId = routePath[routePath.length - 1]
-  const property = await model.property.find(propertyId)
+  const property = await (await model.property.find(propertyId)).decorated()
   if (!property) {
     return {
       title: "Property Not Found",
@@ -19,9 +20,9 @@ export async function generateMetadata({ params }: { params: Promise<{ routePath
     }
   }
   return {
-    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
+    metadataBase: new URL(SERVER_URL || "http://localhost:3000"),
     alternates: {
-      canonical: "asdasd",
+      canonical: property.url,
     },
     title: property.get("address").full_address,
     description: property.get("description"),
@@ -35,7 +36,8 @@ export default async function PropertyDetailPage({
 }) {
   const { routePath } = await params
   const propertyId = routePath[routePath.length - 1]
-  const property = await model.property.findOrFail(propertyId)
+  const property = (await model.property.findOrFail(propertyId)).decorated()
+
   // ensure canonical URL is correct
   const path = `/home/${routePath.join("/")}`
 
@@ -45,7 +47,7 @@ export default async function PropertyDetailPage({
   }
 
   return (
-    <PropertyProvider property={property.data}>
+    <PropertyProvider property={property.original}>
       <div className="w-full flex flex-col">
         <PropertyGallery />
         <div className="max-w-7xl p-4  w-full mx-auto grid grid-cols-12 gap-4">

@@ -1,9 +1,11 @@
-import { Contact } from "./contact/contact-model"
-import { Inquiry } from "./inquiry/inquiry-model"
+import { ContactModel } from "./contact/contact-model"
+import { InquiryModel } from "./inquiry/inquiry-model"
+import { LocationModel } from "./location/location-model"
 import { PropertyModel } from "./property/property-model"
 
 export const model = {
-  property: PropertyModel,
-  contact: Contact,
-  inquiry: Inquiry,
+  property: new PropertyModel(),
+  contact: new ContactModel(),
+  inquiry: new InquiryModel(),
+  location: new LocationModel(),
 }

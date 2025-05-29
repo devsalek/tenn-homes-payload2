@@ -31,11 +31,6 @@ export const PropertyInquiry = () => {
     ? backgroundColors[initials.charCodeAt(0) % backgroundColors.length]
     : backgroundColors[0]
 
-  console.log({
-    bgColor,
-    index: initials.charCodeAt(0) % backgroundColors.length,
-  })
-
   return (
     <div className="bg-white rounded-lg p-6 flex flex-col gap-4">
       <div className="flex items-start gap-4">

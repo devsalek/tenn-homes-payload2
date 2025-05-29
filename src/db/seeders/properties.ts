@@ -1,5 +1,6 @@
 import { heatingTypeOptions } from "@/config/collections/Properties/heating-options"
 import { propertyTypeOptions } from "@/config/collections/Properties/property-type-options"
+import { model } from "@/models"
 import { LocationModel } from "@/models/location/location-model"
 import { PropertyModel } from "@/models/property/property-model"
 import { Property } from "@/payload-types"
@@ -9,7 +10,7 @@ import { Payload } from "payload"
 
 export async function seedProperties(payload: Payload): Promise<void> {
   // Get all locations to randomly assign to properties
-  const locations = await LocationModel.where()
+  const locations = await model.location.findMany()
 
   // Get all features to randomly assign to properties
   const features = await payload.find({
@@ -73,21 +74,21 @@ export async function seedProperties(payload: Payload): Promise<void> {
   const sampleProperties: Omit<Property, "id" | "updatedAt" | "createdAt">[] = Array.from(
     { length: 100 },
     () => {
-      const location = faker.helpers.arrayElement(locations)
+      const location = faker.helpers.arrayElement(locations.docs.toArray())
       const street = faker.location.streetAddress()
       const title = `${faker.helpers.arrayElement(titleAdjectives)} ${faker.helpers.arrayElement(titleNouns)} in the ${faker.helpers.arrayElement(titleRegions)}`
       return {
         title,
         description: faker.lorem.paragraph(),
         street,
-        location: location.get("id"),
+        location: location.id,
         address: {
           street,
-          city: location.get("city") || "",
-          state: location.get("state_name") || "",
-          state_abbr: location.get("state_abbr") || "",
-          zip: location.get("zip") || "",
-          full_address: `${street}, ${location.get("city") || ""}, ${location.get("state_abbr") || ""} ${location.get("zip") || ""}`,
+          city: location.city || "",
+          state: location.state_name || "",
+          state_abbr: location.state_abbr || "",
+          zip: location.zip || "",
+          full_address: `${street}, ${location.city || ""}, ${location.state_abbr || ""} ${location.zip || ""}`,
         },
         price: faker.number.int({ min: 100000, max: 1000000 }),
         listingStatus: faker.helpers.weightedArrayElement([
@@ -126,7 +127,7 @@ export async function seedProperties(payload: Payload): Promise<void> {
   )
 
   for (const property of sampleProperties) {
-    await PropertyModel.create(property)
+    await model.property.create(property)
   }
 
   console.log(`Seeded ${sampleProperties.length} properties`)

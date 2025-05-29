@@ -1,3 +1,4 @@
+import { model } from "@/models"
 import { LocationModel } from "@/models/location/location-model"
 import { Location } from "@/payload-types"
 import csv from "csv-parser"
@@ -43,6 +44,6 @@ export async function seedLocations(): Promise<void> {
   })
 
   for (const location of locations) {
-    await LocationModel.create(location)
+    await model.location.create(location)
   }
 }

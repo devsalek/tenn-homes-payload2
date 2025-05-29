@@ -25,7 +25,7 @@ async function main() {
   await seedUsers(payload)
 
   console.log(`\n[Seeding locations...]\n`)
-  await seedLocations(payload)
+  await seedLocations()
 
   console.log(`\n[Seeding features...]\n`)
   await seedFeatures(payload)

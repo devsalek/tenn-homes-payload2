@@ -35,18 +35,27 @@ export function PropertyInquiryForm() {
     {
       formProps: {
         mode: "onChange",
-        defaultValues: getDefaultValues(property),
+        defaultValues: {},
       },
       actionProps: {
+        onError: ({ error }) => {
+          toast.error("Message failed to send", {
+            description: error.serverError,
+            duration: 3000,
+          })
+        },
         onSuccess: () => {
           toast("Message sent!", {
             description: "Your message has been sent to the agent.",
             duration: 3000,
           })
-          resetFormAndAction()
-          setTimeout(() => {
-            form.reset(getDefaultValues(property))
-          }, 1000)
+          // resetFormAndAction()
+          form.reset({
+            name: "",
+            email: "",
+            message: "",
+            phone: "",
+          })
         },
       },
     },
@@ -88,6 +97,17 @@ export function PropertyInquiryForm() {
 
       <Button type="submit" className="w-full" disabled={!form.formState.isValid}>
         Send
+      </Button>
+
+      <Button
+        type="button"
+        variant={"link"}
+        size={"sm"}
+        onClick={() => {
+          form.reset(getDefaultValues(property))
+        }}
+      >
+        generate test data
       </Button>
     </form>
   )
