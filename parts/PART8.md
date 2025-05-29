@@ -70,3 +70,24 @@ validation, error handling, and user feedback mechanisms.
 - **Demo Data**: Faker.js integration for realistic test data
 
 The implementation provides a complete lead management workflow: property inquiries automatically create or update contacts, track inquiries, assign agents, and provide full CRM functionality through the Payload admin interface.
+
+### Latest Update - ActiveRecord Pattern Implementation (c792451)
+
+#### Major Architectural Shift
+- **ActiveRecord Pattern**: Refactored BaseModel to extend an ActiveRecord-style pattern with built-in query capabilities
+- **Enhanced Model Methods**: Models now include static methods like `find()`, `findById()`, `create()`, `update()`, and `delete()` for cleaner data access
+- **Simplified Data Retrieval**: Removed complex decorator patterns in favor of direct model method calls
+
+#### Key Changes
+- **Property Model**: Streamlined with ActiveRecord methods, improved metadata generation for SEO
+- **Contact Model**: Enhanced with ActiveRecord pattern while maintaining `findOrCreate` functionality
+- **Base Model**: Complete rewrite to provide ORM-like functionality on top of Payload's data layer
+- **Configuration Updates**: Modified server URL handling and environment configuration for better deployment flexibility
+- **Form Improvements**: Enhanced property inquiry form with better validation and user experience
+
+#### Files Modified
+- 18 files changed with 263 additions and 181 deletions
+- Major refactoring of model architecture while maintaining existing functionality
+- Improved code organization and developer experience with more intuitive data access patterns
+
+This update significantly improves the codebase's maintainability and provides a more familiar ORM-like interface for data operations.
