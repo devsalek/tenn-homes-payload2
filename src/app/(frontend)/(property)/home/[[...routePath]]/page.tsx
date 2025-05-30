@@ -12,7 +12,7 @@ import { SERVER_URL } from "@/config/env"
 export async function generateMetadata({ params }: { params: Promise<{ routePath: string[] }> }) {
   const { routePath } = await params
   const propertyId = routePath[routePath.length - 1]
-  const property = await (await model.property.find(propertyId)).decorated()
+  const property = (await model.property.find(propertyId)).decorated()
   if (!property) {
     return {
       title: "Property Not Found",
@@ -36,7 +36,7 @@ export default async function PropertyDetailPage({
 }) {
   const { routePath } = await params
   const propertyId = routePath[routePath.length - 1]
-  const property = (await model.property.findOrFail(propertyId)).decorated()
+  const property = await model.property.findOrFail(propertyId)
 
   // ensure canonical URL is correct
   const path = `/home/${routePath.join("/")}`
@@ -47,7 +47,7 @@ export default async function PropertyDetailPage({
   }
 
   return (
-    <PropertyProvider property={property.original}>
+    <PropertyProvider property={property.getAttributes()}>
       <div className="w-full flex flex-col">
         <PropertyGallery />
         <div className="max-w-7xl p-4  w-full mx-auto grid grid-cols-12 gap-4">

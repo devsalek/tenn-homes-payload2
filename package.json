@@ -69,6 +69,7 @@
     "drizzle-seed": "^0.3.1",
     "eslint": "^9.16.0",
     "eslint-config-next": "15.3.0",
+    "eslint-plugin-import": "^2.31.0",
     "json-schema": "^0.4.0",
     "prettier": "^3.4.2",
     "tw-animate-css": "^1.2.8",
