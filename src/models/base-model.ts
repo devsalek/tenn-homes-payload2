@@ -6,31 +6,48 @@
  * automatic casting of common field types.
  */
 
-import { CollectionSlug, getPayload, PaginatedDocs, SelectType, Where } from "payload"
-import config from "@payload-config"
-import { cache } from "react"
+import { CollectionSlug, getPayload, PaginatedDocs, SelectType } from "payload"
 import { Options } from "node_modules/payload/dist/collections/operations/local/find"
 import { notFound } from "next/navigation"
+import { cache } from "react"
+import config from "@payload-config"
 
 /**
  * Type for functions that cast values from database to JavaScript types
- * @template V - The input value type
+ * @template I - The input value type
  */
-export type CastFunction<V> = (value: V) => any
+export type CastFunction<I, O> = (value: I) => O
 
 /**
- * Type for data input that excludes auto-generated fields
+ * Type helper to convert populated relationship fields to their raw IDs
+ * This represents the document structure at depth 0 (no populated relationships)
  * @template T - The document type
  */
-export type DataInput<T> = Omit<T, "id" | "updatedAt" | "createdAt">
+export type DepthZeroFields<T> = {
+  [K in keyof T]: T[K] extends { id: string | number }
+    ? string | number // Convert populated objects to ID
+    : T[K] extends Array<{ id: string | number }>
+      ? Array<string | number> // Convert populated arrays to ID arrays
+      : T[K] extends Array<infer U>
+        ? U extends { id: string | number }
+          ? Array<string | number> // Handle nested array types
+          : T[K] // Keep as-is if not a relationship array
+        : T[K] // Keep primitive types as-is
+}
+
+/**
+ * Type for update data that only accepts depth-0 field values
+ * @template T - The document type
+ */
+export type DataInput<T> = Partial<Omit<DepthZeroFields<T>, "id" | "updatedAt" | "createdAt">>
 
 /**
  * Base interface for all documents with required fields
  */
 interface BaseDocument {
   id: string | number
-  createdAt?: string | Date
-  updatedAt?: string | Date
+  createdAt: string | Date
+  updatedAt: string | Date
 }
 
 /**
@@ -38,7 +55,7 @@ interface BaseDocument {
  * @param value - The string date value
  * @returns Date object
  */
-function castDate(value: string) {
+const castDate: CastFunction<string, Date> = (value: string) => {
   return new Date(value)
 }
 
@@ -66,7 +83,8 @@ export abstract class ActiveRecord<T extends BaseDocument = BaseDocument> {
   abstract collection: CollectionSlug
 
   /** Field casting configuration for automatic type conversion */
-  protected casts: Record<string, CastFunction<any>> = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  protected casts: Record<string, CastFunction<any, any>> = {
     createdAt: castDate,
     updatedAt: castDate,
   }
@@ -76,6 +94,10 @@ export abstract class ActiveRecord<T extends BaseDocument = BaseDocument> {
 
   /** Tracks which fields have been modified */
   private dirtyFields: Record<string, boolean> = {}
+
+  public id!: T["id"]
+  public createdAt!: T["createdAt"]
+  public updatedAt!: T["updatedAt"]
 
   // =====================
   // ATTRIBUTE MANAGEMENT
@@ -196,6 +218,7 @@ export abstract class ActiveRecord<T extends BaseDocument = BaseDocument> {
 
       return this
     } catch (error) {
+      console.warn(error)
       notFound()
     }
   }
@@ -262,15 +285,15 @@ export abstract class ActiveRecord<T extends BaseDocument = BaseDocument> {
 
   /**
    * Updates the current document with new data
-   * @param updates - The fields to update
+   * @param data - The fields to update (depth-0 values only)
    * @returns Promise resolving to a new instance with updated data
    */
-  async save(updates: DataInput<T>) {
+  async save(data: DataInput<T>) {
     if (this.attributes === null) return this
     console.log(`Saving the ${this.collection} collection...`)
     const client = await this.getClient()
-    const rawData = await this.find(this.attributes.id, { depth: 0 })
-    const data = { ...rawData, ...updates } as DataInput<T>
+
+    // Use data directly since they're guaranteed to be depth-0 values
     const updatedData = (await client.update({
       collection: this.collection,
       id: this.attributes.id,
@@ -297,10 +320,10 @@ export abstract class ActiveRecord<T extends BaseDocument = BaseDocument> {
 
   /**
    * Gets the Payload client instance
-   * @private
+   * @protected
    * @returns Promise resolving to Payload client
    */
-  private async getClient() {
+  protected async getClient() {
     return await getPayload({ config })
   }
 }

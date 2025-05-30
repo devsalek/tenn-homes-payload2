@@ -1,6 +1,6 @@
-'use client'
-import { Feature } from '@/payload-types'
-import { useProperty } from './context'
+"use client"
+import { Feature } from "@/payload-types"
+import { useProperty } from "../providers/property"
 
 export const PropertyFeatures = () => {
   const property = useProperty()

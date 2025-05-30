@@ -1,7 +1,6 @@
 "use client"
 
-import { Media } from "@/payload-types"
-import { useProperty } from "./context"
+import { useProperty } from "@/components/providers/property"
 
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import Image from "next/image"
@@ -9,7 +8,7 @@ import Image from "next/image"
 export const PropertyGallery = () => {
   const property = useProperty()
 
-  const images = property.get("photos") as Media[]
+  const images = property.photos
 
   // Feature image is the first one
   const featureImage = images[0]

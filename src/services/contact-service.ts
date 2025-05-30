@@ -1,6 +1,5 @@
 import { PropertyInquirySchema } from "@/forms/property-inquiry/schema"
 import { model } from "@/models"
-import { Contact } from "@/payload-types"
 
 export class ContactService {
   async processLead({ propertyId, agentId, ...message }: PropertyInquirySchema) {
@@ -10,7 +9,7 @@ export class ContactService {
       const contact = await model.contact.findOrCreate({ ...message, assignedTo: agentId }, "email")
       const inquiry = await model.inquiry.create({
         ...message,
-        contact: contact.get("id"),
+        contact: contact.id,
         property: propertyId,
       })
       return {

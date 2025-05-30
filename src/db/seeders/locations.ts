@@ -1,5 +1,4 @@
 import { model } from "@/models"
-import { LocationModel } from "@/models/location/location-model"
 import { Location } from "@/payload-types"
 import csv from "csv-parser"
 import fs from "fs"

@@ -8,34 +8,32 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { schema } from "./schema"
 import { toast } from "sonner"
-import { useProperty } from "@/components/property/context"
+import { useProperty } from "@/components/providers/property"
 import { faker } from "@faker-js/faker"
-import { PropertyDecorator } from "@/models/property/property-decorator"
-import { Agent } from "@/payload-types"
-
-const getDefaultValues = (property: PropertyDecorator) => {
-  const defaultMessage = `Hello,\n\nI am interested in the property "${property.get("address").full_address}".\n\nPlease let me know how I can proceed with the inquiry.\n\nThank you!`
-  const agent = property.get("agent") as Agent
-  return {
-    name: faker.person.fullName(),
-    email: (faker.internet.username() + "@example.com").toLocaleLowerCase(),
-    message: defaultMessage,
-    phone: faker.phone.number(),
-    propertyId: property.get("id"),
-    agentId: agent.id,
-  }
-}
 
 export function PropertyInquiryForm() {
   const property = useProperty()
 
-  const { form, handleSubmitWithAction, resetFormAndAction } = useHookFormAction(
+  const getDefaultValues = (addFaker: boolean = false) => {
+    const defaultMessage = `Hello,\n\nI am interested in the property "${property.address.full_address}".\n\nPlease let me know how I can proceed with the inquiry.\n\nThank you!`
+    const agent = property.agent
+    return {
+      name: addFaker ? faker.person.fullName() : "",
+      email: addFaker ? (faker.internet.username() + "@example.com").toLocaleLowerCase() : "",
+      message: addFaker ? defaultMessage : "",
+      phone: addFaker ? faker.phone.number() : "",
+      propertyId: property.id,
+      agentId: agent.id,
+    }
+  }
+
+  const { form, handleSubmitWithAction } = useHookFormAction(
     propertyInquiryAction,
     zodResolver(schema),
     {
       formProps: {
         mode: "onChange",
-        defaultValues: {},
+        defaultValues: getDefaultValues(),
       },
       actionProps: {
         onError: ({ error }) => {
@@ -104,7 +102,7 @@ export function PropertyInquiryForm() {
         variant={"link"}
         size={"sm"}
         onClick={() => {
-          form.reset(getDefaultValues(property))
+          form.reset(getDefaultValues())
         }}
       >
         generate test data

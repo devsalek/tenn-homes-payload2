@@ -2,7 +2,7 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { MailIcon, PhoneCallIcon } from "lucide-react"
-import { useProperty } from "./context"
+import { useProperty } from "../providers/property"
 import { Media } from "@/payload-types"
 import { PropertyInquiryForm } from "@/forms/property-inquiry/form"
 

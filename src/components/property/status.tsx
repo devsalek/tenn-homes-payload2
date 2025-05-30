@@ -1,12 +1,12 @@
 "use client"
 import { listingStatusMap } from "@/config/collections/Properties/listing-status-map"
 import { cn } from "@/lib/utils"
-import { useProperty } from "./context"
+import { useProperty } from "../providers/property"
 
 export const PropertyStatus = () => {
   const property = useProperty()
 
-  const listingStatus = property.get("listingStatus")
+  const listingStatus = property.listingStatus
   return (
     <div
       className={cn(

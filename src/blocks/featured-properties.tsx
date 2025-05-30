@@ -6,7 +6,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
-import { PropertyProvider } from "@/components/property/context"
+import { PropertyProvider } from "@/components/providers/property"
 import { model } from "@/models"
 
 export async function FeaturedProperties() {

@@ -1,7 +1,7 @@
 "use client"
 
 import { PropertyAddress } from "./address"
-import { useProperty } from "./context"
+import { useProperty } from "../providers/property"
 import { PropertyStatus } from "./status"
 import { PropertyShare } from "./share"
 export const PropertyDetails = () => {
@@ -10,7 +10,7 @@ export const PropertyDetails = () => {
     <div className="bg-white rounded-lg p-6 flex items-start justify-between">
       <div className="flex flex-col gap-3">
         <div className="flex flex-col gap-1">
-          <h1 className="text-2xl font-bold">{property.original.title}</h1>
+          <h1 className="text-2xl font-bold">{property.title}</h1>
           <div className="flex flex-wrap gap-2">
             <PropertyStatus />
           </div>

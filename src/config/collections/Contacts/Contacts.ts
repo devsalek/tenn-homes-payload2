@@ -112,5 +112,11 @@ export const Contacts: CollectionConfig = {
         },
       ],
     },
+
+    // test
+    {
+      name: "json",
+      type: "json",
+    },
   ],
 }

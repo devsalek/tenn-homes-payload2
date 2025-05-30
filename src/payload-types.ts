@@ -388,6 +388,15 @@ export interface Contact {
       | ('single-family' | 'multi-family' | 'condo' | 'townhouse' | 'land' | 'mobile-home' | 'other')[]
       | null;
   };
+  json?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -640,6 +649,7 @@ export interface ContactsSelect<T extends boolean = true> {
         preferredAreas?: T;
         propertyTypes?: T;
       };
+  json?: T;
   updatedAt?: T;
   createdAt?: T;
 }

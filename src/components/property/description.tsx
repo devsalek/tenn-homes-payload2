@@ -1,7 +1,7 @@
 "use client"
-import { useProperty } from "./context"
+import { useProperty } from "../providers/property"
 
 export const PropertyDescription = () => {
   const property = useProperty()
-  return <div>{property.original.description}</div>
+  return <div>{property.description}</div>
 }
