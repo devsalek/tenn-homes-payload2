@@ -95,9 +95,16 @@ export abstract class ActiveRecord<T extends BaseDocument = BaseDocument> {
   /** Tracks which fields have been modified */
   private dirtyFields: Record<string, boolean> = {}
 
-  public id!: T["id"]
-  public createdAt!: T["createdAt"]
-  public updatedAt!: T["updatedAt"]
+  /** Getters for required fields */
+  get id(): T["id"] {
+    return (this.attributes as T).id
+  }
+  get createdAt() {
+    return this.attributes?.createdAt as Date
+  }
+  get updatedAt() {
+    return this.attributes?.updatedAt as Date
+  }
 
   // =====================
   // ATTRIBUTE MANAGEMENT

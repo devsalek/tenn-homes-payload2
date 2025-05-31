@@ -102,7 +102,7 @@ export function PropertyInquiryForm() {
         variant={"link"}
         size={"sm"}
         onClick={() => {
-          form.reset(getDefaultValues())
+          form.reset(getDefaultValues(true))
         }}
       >
         generate test data
