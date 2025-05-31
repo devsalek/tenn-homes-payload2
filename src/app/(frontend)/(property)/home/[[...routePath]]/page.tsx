@@ -12,7 +12,7 @@ import { SERVER_URL } from "@/config/env"
 export async function generateMetadata({ params }: { params: Promise<{ routePath: string[] }> }) {
   const { routePath } = await params
   const propertyId = routePath[routePath.length - 1]
-  const property = await model.property.find(propertyId)
+  const property = await await model.property.find(propertyId)
   if (!property) {
     return {
       title: "Property Not Found",
@@ -24,8 +24,8 @@ export async function generateMetadata({ params }: { params: Promise<{ routePath
     alternates: {
       canonical: property.url,
     },
-    title: property.address.full_address,
-    description: property.description,
+    title: property.data.address.full_address,
+    description: property.data.description,
   }
 }
 

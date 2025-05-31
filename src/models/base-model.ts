@@ -125,6 +125,13 @@ export abstract class ActiveRecord<T extends BaseDocument = BaseDocument> {
   }
 
   /**
+   * Alias Getter for getAttributes
+   */
+  get data(): NonNullable<T> {
+    return this.attributes as T
+  }
+
+  /**
    * Gets a specific attribute value
    * @param key - The attribute key
    * @returns The attribute value or null
