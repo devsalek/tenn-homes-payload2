@@ -1,67 +1,136 @@
-# Payload Blank Template
+# Real Estate Marketplace
 
-This template comes configured with the bare minimum to get started on anything you need.
+A modern real estate marketplace built with Next.js 15 and Payload CMS 3.33, featuring property listings, agent management, and location-based search capabilities.
 
-## Quick start
+## Features
 
-This template can be deployed directly from our Cloud hosting and it will setup MongoDB and cloud S3 object storage for media.
+- **Property Listings** - Comprehensive property management with custom URLs, gallery support, and detailed specifications
+- **Agent Management** - Real estate agent profiles with property associations and contact information
+- **Location System** - Hierarchical location data with cities, states, and zip codes
+- **Property Features** - Categorized amenities and characteristics for detailed property descriptions
+- **Inquiry System** - Contact forms and inquiry management for potential buyers
+- **Media Management** - Optimized image uploads with multiple sizes and focal point support
 
-## Quick Start - local setup
+## Tech Stack
 
-To spin up this template locally, follow these steps:
+- **Frontend**: Next.js 15 with App Router
+- **CMS**: Payload CMS 3.33
+- **Database**: PostgreSQL
+- **Styling**: Tailwind CSS 4.1.4
+- **UI Components**: Radix UI
+- **Package Manager**: pnpm
 
-### Clone
+## Quick Start
 
-After you click the `Deploy` button above, you'll want to have standalone copy of this repo on your machine. If you've already cloned this repo, skip to [Development](#development).
+1. **Clone and Install**
 
-### Development
+   ```bash
+   git clone <repository-url>
+   cd realestate-demo
+   pnpm install
+   ```
 
-1. First [clone the repo](#clone) if you have not done so already
-2. `cd my-project && cp .env.example .env` to copy the example environment variables. You'll need to add the `MONGODB_URI` from your Cloud project to your `.env` if you want to use S3 storage and the MongoDB database that was created for you.
+2. **Environment Setup**
 
-3. `pnpm install && pnpm dev` to install dependencies and start the dev server
-4. open `http://localhost:3000` to open the app in your browser
+   ```bash
+   cp .env.example .env
+   # Add your PostgreSQL connection string to MONGODB_URI
+   ```
 
-That's it! Changes made in `./src` will be reflected in your app. Follow the on-screen instructions to login and create your first admin user. Then check out [Production](#production) once you're ready to build and serve your app, and [Deployment](#deployment) when you're ready to go live.
+3. **Development**
 
-#### Docker (Optional)
+   ```bash
+   pnpm dev
+   ```
 
-If you prefer to use Docker for local development instead of a local MongoDB instance, the provided docker-compose.yml file can be used.
+4. **Seed Database** (Optional)
+   ```bash
+   pnpm db:seed
+   ```
 
-To do so, follow these steps:
+Visit `http://localhost:3000` for the public marketplace and `http://localhost:3000/admin` for the CMS admin panel.
 
-- Modify the `MONGODB_URI` in your `.env` file to `mongodb://127.0.0.1/<dbname>`
-- Modify the `docker-compose.yml` file's `MONGODB_URI` to match the above `<dbname>`
-- Run `docker-compose up` to start the database, optionally pass `-d` to run in the background.
+## Development Commands
 
-## How it works
+- `pnpm dev` - Start development server
+- `pnpm build` - Build for production
+- `pnpm lint` - Run ESLint
+- `pnpm typecheck` - Run TypeScript type checking
+- `pnpm db:seed` - Seed database with sample data
+- `pnpm generate:types` - Generate Payload types
+- `pnpm generate:importmap` - Generate import map for Payload admin
 
-The Payload config is tailored specifically to the needs of most websites. It is pre-configured in the following ways:
+## Architecture
+
+### Route Structure
+
+- `app/(frontend)` - Public-facing marketplace
+  - Property listings and details
+  - Agent profiles
+  - Search and filtering
+- `app/(payload)` - Payload CMS admin interface
 
 ### Collections
 
-See the [Collections](https://payloadcms.com/docs/configuration/collections) docs for details on how to extend this functionality.
+- **Properties** - Real estate listings with custom ID generation and URL preview
+- **Agents** - Real estate professionals with specializations
+- **Locations** - Geographic hierarchy (cities, states, zip codes)
+- **Features** - Property amenities and characteristics
+- **Inquiries** - Contact forms and buyer inquiries
+- **Media** - File uploads with optimized sizes
+- **Users** - Admin authentication
 
-- #### Users (Authentication)
+### Key Features
 
-  Users are auth-enabled collections that have access to the admin panel.
+#### Custom Primary Keys
 
-  For additional help, see the official [Auth Example](https://github.com/payloadcms/payload/tree/main/examples/auth) or the [Authentication](https://payloadcms.com/docs/authentication/overview#authentication-overview) docs.
+Uses 8-character generated IDs instead of auto-incrementing integers for all collections.
 
-- #### Media
+#### Smart URL Generation
 
-  This is the uploads enabled collection. It features pre-configured sizes, focal point and manual resizing to help you manage your pictures.
+Properties automatically generate SEO-friendly URLs:
 
-### Docker
+```
+/home/{state}/{city}/{street-address}/{zip}/home/{id}
+```
 
-Alternatively, you can use [Docker](https://www.docker.com) to spin up this template locally. To do so, follow these steps:
+#### Address Formatting
 
-1. Follow [steps 1 and 2 from above](#development), the docker-compose file will automatically use the `.env` file in your project root
-1. Next run `docker-compose up`
-1. Follow [steps 4 and 5 from above](#development) to login and create your first admin user
+Automatic address structuring from street address and location relationships.
 
-That's it! The Docker instance will help you get up and running quickly while also standardizing the development environment across your teams.
+#### Repository Pattern
 
-## Questions
+Database operations abstracted through repository classes with common CRUD operations.
 
-If you have any issues or questions, reach out to us on [Discord](https://discord.com/invite/payload) or start a [GitHub discussion](https://github.com/payloadcms/payload/discussions).
+## Docker Setup (Optional)
+
+Use the included `docker-compose.yml` for containerized development:
+
+```bash
+docker-compose up -d
+```
+
+Modify your `.env` file's `DATABASE_URI` to point to the containerized database.
+
+## Database Seeding
+
+The application includes comprehensive sample data:
+
+```bash
+pnpm db:seed
+```
+
+This populates:
+
+- Sample properties with images and details (put images you want to include in `./media)`
+- Real estate agents with specializations
+- Location data for Tennessee
+- Property features and amenities
+- Admin users
+
+## Contributing
+
+1. Follow the existing code patterns and conventions
+2. Use the repository pattern for data access
+3. Maintain TypeScript types with `pnpm generate:types`
+4. Run linting and type checking before commits
