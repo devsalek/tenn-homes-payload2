@@ -17,18 +17,18 @@ The page will be full screen with a 12 column grid. On mobile there will be a si
 
 #### Components
 
-_SearchHeader_
+**SearchHeader**
 
 The SearchHeader component will be a single rowed form with large input with a placeholder on the right for to-be-determined filters.
 
-_PropertySearchCard_
+**PropertySearchCard**
 
 The PropertySearchCard is used to display each property within the the `SearchResults` component. The card will consist of the property photo, price, address and beds, baths and sqft.
 
-_SearchResults_
+**SearchResults**
 
 The SearchResults component will be a list of the search results in a 2x2 grid of `PropertySearchCard`s with pagination if necessary. On mobile it will be a single column with 25 results per page (if pagination is needed).
 
-_SearchResultsMap_
+**SearchResultsMap**
 
 The SearchResultsMap component will be a full-size map of the area that includes pins of each of the results. Do not implement this yet until a later phase. Just a placeholder to start.
