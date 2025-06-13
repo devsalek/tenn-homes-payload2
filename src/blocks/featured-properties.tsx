@@ -7,17 +7,14 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel"
 import { PropertyProvider } from "@/components/providers/property"
-import { model } from "@/models"
+import { local } from "@/repository"
 
 export async function FeaturedProperties() {
-  const result = await model.property.findMany({
-    where: {
-      listingStatus: {
-        equals: "forsale",
-      },
+  const properties = await local.property.getAll({
+    listingStatus: {
+      equals: "forsale",
     },
   })
-  const properties = result.docs.toArray()
   return (
     <section className="py-16 bg-accent text-accent-foreground">
       <div className="container mx-auto px-4">
@@ -35,7 +32,7 @@ export async function FeaturedProperties() {
         >
           <CarouselContent className="pb-1">
             {properties.map((property) => (
-              <PropertyProvider property={property} key={property.id}>
+              <PropertyProvider property={property.original} key={property.id}>
                 <CarouselItem
                   key={property.id}
                   className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4 h-auto"

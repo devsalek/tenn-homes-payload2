@@ -1,5 +1,5 @@
 "use client"
-import { PropertyDecorator } from "@/models/property/property-decorator"
+import { PropertyDecorator } from "@/repository/property/property-decorator"
 import { Property } from "@/payload-types"
 import { createContext, useContext } from "react"
 
@@ -18,7 +18,5 @@ export const PropertyProvider = ({
 export const useProperty = () => {
   const context = useContext(PropertyContext)
   if (!context) throw new Error("useProperty must be used within a PropertyProvider")
-  // const property = model.property
-  // property.setAttributes(context)
   return new PropertyDecorator(context)
 }

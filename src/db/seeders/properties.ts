@@ -1,14 +1,14 @@
 import { heatingTypeOptions } from "@/config/collections/Properties/heating-options"
 import { propertyTypeOptions } from "@/config/collections/Properties/property-type-options"
-import { model } from "@/models"
 import { Property } from "@/payload-types"
+import { local } from "@/repository"
 import { faker } from "@faker-js/faker"
 
 import { Payload } from "payload"
 
 export async function seedProperties(payload: Payload): Promise<void> {
   // Get all locations to randomly assign to properties
-  const locations = await model.location.findMany()
+  const locations = await local.location.getAll()
 
   // Get all features to randomly assign to properties
   const features = await payload.find({
@@ -72,7 +72,7 @@ export async function seedProperties(payload: Payload): Promise<void> {
   const sampleProperties: Omit<Property, "id" | "updatedAt" | "createdAt">[] = Array.from(
     { length: 100 },
     () => {
-      const location = faker.helpers.arrayElement(locations.docs.toArray())
+      const location = faker.helpers.arrayElement(locations).original
       const street = faker.location.streetAddress()
       const title = `${faker.helpers.arrayElement(titleAdjectives)} ${faker.helpers.arrayElement(titleNouns)} in the ${faker.helpers.arrayElement(titleRegions)}`
       return {
@@ -125,7 +125,7 @@ export async function seedProperties(payload: Payload): Promise<void> {
   )
 
   for (const property of sampleProperties) {
-    await model.property.create(property)
+    await local.property.create(property)
   }
 
   console.log(`Seeded ${sampleProperties.length} properties`)
