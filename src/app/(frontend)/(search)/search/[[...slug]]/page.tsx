@@ -6,6 +6,7 @@ import { PaginatedDocs } from "payload"
 import { Property } from "@/payload-types"
 import { parseUrlToSearchCriteria } from "@/lib/search-utils"
 import { SearchResultsProvider } from "../../search-results-provider"
+import { Header } from "@/app/(frontend)/_layouts/header"
 
 interface SearchPageProps {
   params: Promise<{ slug: string[] }>
@@ -27,19 +28,18 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
 
   return (
     <SearchResultsProvider initialData={initialData} searchCriteria={searchCriteria}>
-      <div className="h-screen bg-background flex flex-col border-t relative">
-        <div className="w-full">
+      <div className="h-auto lg:h-screen grid grid-cols-12 grid-rows-[auto_1fr] w-full overflow-hidden">
+        <div className="col-span-12 h-36">
+          <Header />
           <SearchHeader />
         </div>
-
-        <div className="flex-1 flex">
-          <div className="w-full lg:w-1/3 bg-white border-r min-w-lg">
+        <div className="col-span-12 lg:col-span-4 relative border-t">
+          <div className="relative lg:absolute top-0 bg-white overflow-y-auto h-full">
             <SearchResults />
           </div>
-
-          <div className="hidden lg:block lg:w-2/3">
-            <SearchResultsMap />
-          </div>
+        </div>
+        <div className="col-span-12 lg:col-span-8 bg-gray-300">
+          <SearchResultsMap />
         </div>
       </div>
     </SearchResultsProvider>

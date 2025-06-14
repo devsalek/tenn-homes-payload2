@@ -2,13 +2,12 @@ import { Badge } from "@/components/ui/badge"
 import { BathIcon, BedDoubleIcon, RulerIcon } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
-import { PropertyDecorator } from "@/repository/property/property-decorator"
+import { useProperty } from "../providers/property"
+import { PropertyStatus } from "../property/status"
 
-interface PropertySearchCardProps {
-  property: PropertyDecorator
-}
+export const PropertySearchCard = () => {
+  const property = useProperty()
 
-export const PropertySearchCard = ({ property }: PropertySearchCardProps) => {
   const featureImage = property.photos[0] ?? {
     url: "https://placehold.co/400x300",
     alt: property.title,
@@ -30,9 +29,7 @@ export const PropertySearchCard = ({ property }: PropertySearchCardProps) => {
               className="object-cover w-full aspect-video"
             />
             <div className="absolute top-2 left-2">
-              <Badge variant="secondary" className="bg-white/90 text-foreground text-xs">
-                {property.listingStatus}
-              </Badge>
+              <PropertyStatus />
             </div>
           </div>
 
@@ -40,10 +37,11 @@ export const PropertySearchCard = ({ property }: PropertySearchCardProps) => {
             <div className="space-y-2">
               <div>
                 <h3 className="font-semibold text-lg text-primary">{property.price}</h3>
-                <p className="text-sm text-muted-foreground line-clamp-2">
-                  {property.address.street}, {property.address.city}, {property.address.state_abbr}{" "}
-                  {property.address.zip}
-                </p>
+                <div className="line-clamp-2 text-sm transition-all group-hover:text-amber-800">
+                  <span className="font-semibold">{property.address?.street}</span>,{" "}
+                  <span>{property.address?.city}</span>, <span>{property.address?.state_abbr}</span>{" "}
+                  <span>{property.address?.zip}</span>
+                </div>
               </div>
 
               <div className="flex items-center gap-4 text-xs text-muted-foreground">

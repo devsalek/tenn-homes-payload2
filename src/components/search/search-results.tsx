@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/pagination"
 import { useSearchResults } from "@/app/(frontend)/(search)/search-results-provider"
 import { SearchResultsFooter } from "./search-results-footer"
+import { PropertyProvider } from "../providers/property"
 
 export const SearchResults = () => {
   const { searchCriteria, searchResults, updateSearch } = useSearchResults()
@@ -22,69 +23,75 @@ export const SearchResults = () => {
 
   const currentPage = searchResults.page || 1
   return (
-    <div className="h-full flex flex-col">
-      <div className="flex-shrink-0 p-4 border-b">
-        <p className="text-sm text-muted-foreground">
-          {searchResults.limit} of {searchResults.totalDocs} homes
-        </p>
-      </div>
-
-      <div className="flex-1 overflow-y-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 p-4">
-          {searchResults.docs.map((property) => (
-            <PropertySearchCard key={property.id} property={property} />
-          ))}
+    <div className="h-full">
+      <div>
+        <div className="p-4 border-b">
+          <p className="text-sm text-muted-foreground">
+            {searchResults.limit} of {searchResults.totalDocs} homes
+          </p>
         </div>
-      </div>
 
-      <div className="flex-shrink-0 p-4 border-t bg-white">
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                href={updateSearch({ page: searchResults.prevPage ?? 1 })}
-                className={!searchResults.hasPrevPage ? "pointer-events-none opacity-50" : ""}
-              />
-            </PaginationItem>
+        <div className="flex-1 h-full">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 p-4">
+            {searchResults.docs.map((property) => (
+              <PropertyProvider property={property.original} key={property.id}>
+                <PropertySearchCard />
+              </PropertyProvider>
+            ))}
+          </div>
+        </div>
 
-            {Array.from({ length: searchResults.totalPages }, (_, i) => i + 1).map((pageNumber) => {
-              const isCurrentPage = pageNumber === searchResults.page
-              const showPage =
-                pageNumber === 1 ||
-                pageNumber === searchResults.totalPages ||
-                Math.abs(pageNumber - currentPage) <= 2
+        <div className="flex-shrink-0 p-4 border-t bg-white">
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  href={updateSearch({ page: searchResults.prevPage ?? 1 })}
+                  className={!searchResults.hasPrevPage ? "pointer-events-none opacity-50" : ""}
+                />
+              </PaginationItem>
 
-              if (!showPage) {
-                if (pageNumber === currentPage - 3 || pageNumber === currentPage + 3) {
+              {Array.from({ length: searchResults.totalPages }, (_, i) => i + 1).map(
+                (pageNumber) => {
+                  const isCurrentPage = pageNumber === searchResults.page
+                  const showPage =
+                    pageNumber === 1 ||
+                    pageNumber === searchResults.totalPages ||
+                    Math.abs(pageNumber - currentPage) <= 1
+
+                  if (!showPage) {
+                    if (pageNumber === currentPage - 3 || pageNumber === currentPage + 3) {
+                      return (
+                        <PaginationItem key={pageNumber}>
+                          <PaginationEllipsis />
+                        </PaginationItem>
+                      )
+                    }
+                    return null
+                  }
+
                   return (
                     <PaginationItem key={pageNumber}>
-                      <PaginationEllipsis />
+                      <PaginationLink
+                        href={updateSearch({ page: pageNumber })}
+                        isActive={isCurrentPage}
+                      >
+                        {pageNumber}
+                      </PaginationLink>
                     </PaginationItem>
                   )
-                }
-                return null
-              }
+                },
+              )}
 
-              return (
-                <PaginationItem key={pageNumber}>
-                  <PaginationLink
-                    href={updateSearch({ page: pageNumber })}
-                    isActive={isCurrentPage}
-                  >
-                    {pageNumber}
-                  </PaginationLink>
-                </PaginationItem>
-              )
-            })}
-
-            <PaginationItem>
-              <PaginationNext
-                href={updateSearch({ page: searchResults.nextPage ?? searchResults.totalPages })}
-                className={!searchResults.hasNextPage ? "pointer-events-none opacity-50" : ""}
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+              <PaginationItem>
+                <PaginationNext
+                  href={updateSearch({ page: searchResults.nextPage ?? searchResults.totalPages })}
+                  className={!searchResults.hasNextPage ? "pointer-events-none opacity-50 " : ""}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
       </div>
 
       <SearchResultsFooter />
