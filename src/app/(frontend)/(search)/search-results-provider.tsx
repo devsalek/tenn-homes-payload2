@@ -38,7 +38,7 @@ export function SearchResultsProvider({
 
 // Custom hook to use the search results context
 export function useSearchResults() {
-  const updateSearch = (updates: Partial<SearchCriteria>) => {
+  const updateSearch = (updates: Partial<SearchCriteria>, test = "default") => {
     const currentCriteria = getCurrentSearchCriteria() // Get from context
     const newCriteria = { ...currentCriteria, ...updates }
     const newUrl = buildSearchUrl(newCriteria)
@@ -51,9 +51,13 @@ export function useSearchResults() {
   }
 
   // decorate search results
-  const docs = context.searchResults.docs.map((doc) => new PropertyDecorator(doc))
+  const docs = (context.searchResults?.docs ?? []).map((doc) => new PropertyDecorator(doc))
 
-  return { ...context, updateSearch, searchResults: { ...context.searchResults, docs } }
+  return {
+    ...context,
+    updateSearch,
+    searchResults: { ...context.searchResults, docs } as PaginatedDocs<PropertyDecorator>,
+  }
 }
 
 // Helper function to get current search criteria (this was the missing function)

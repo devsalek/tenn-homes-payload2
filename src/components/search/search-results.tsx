@@ -1,100 +1,50 @@
 "use client"
 import { PropertySearchCard } from "./property-search-card"
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-  PaginationEllipsis,
-} from "@/components/ui/pagination"
+
 import { useSearchResults } from "@/app/(frontend)/(search)/search-results-provider"
 import { SearchResultsFooter } from "./search-results-footer"
 import { PropertyProvider } from "../providers/property"
+import { SearchResultsPagination } from "./search-results-pagination"
 
 export const SearchResults = () => {
   const { searchCriteria, searchResults, updateSearch } = useSearchResults()
-  console.log("SearchParams:", searchCriteria)
-
-  if (searchResults === null) {
-    return <div className="p-4">No properties found.</div>
-  }
+  console.log("SearchParams:", searchCriteria, { searchResults })
 
   const currentPage = searchResults.page || 1
   return (
-    <div className="h-full">
-      <div>
-        <div className="p-4 border-b">
+    <div className="flex-1 lg:h-full">
+      <div className="flex-1 h-full w-full flex flex-col">
+        <div className="h-16 p-4 border-b flex items-center justify-between bg-white">
           <p className="text-sm text-muted-foreground">
-            {searchResults.limit} of {searchResults.totalDocs} homes
+            {Math.min(searchResults.limit, searchResults.docs.length)} of {searchResults.totalDocs}{" "}
+            homes
           </p>
         </div>
-
-        <div className="flex-1 h-full">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 p-4">
-            {searchResults.docs.map((property) => (
-              <PropertyProvider property={property.original} key={property.id}>
-                <PropertySearchCard />
-              </PropertyProvider>
-            ))}
-          </div>
+        <div className="bg-white flex-1 h-full overflow-y-auto">
+          {searchResults.totalDocs === 0 ? (
+            <div className="p-4">No properties found.</div>
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 p-4">
+              {searchResults.docs.map((property) => (
+                <PropertyProvider property={property.original} key={property.id}>
+                  <PropertySearchCard />
+                </PropertyProvider>
+              ))}
+            </div>
+          )}
         </div>
-
-        <div className="flex-shrink-0 p-4 border-t bg-white">
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious
-                  href={updateSearch({ page: searchResults.prevPage ?? 1 })}
-                  className={!searchResults.hasPrevPage ? "pointer-events-none opacity-50" : ""}
-                />
-              </PaginationItem>
-
-              {Array.from({ length: searchResults.totalPages }, (_, i) => i + 1).map(
-                (pageNumber) => {
-                  const isCurrentPage = pageNumber === searchResults.page
-                  const showPage =
-                    pageNumber === 1 ||
-                    pageNumber === searchResults.totalPages ||
-                    Math.abs(pageNumber - currentPage) <= 1
-
-                  if (!showPage) {
-                    if (pageNumber === currentPage - 3 || pageNumber === currentPage + 3) {
-                      return (
-                        <PaginationItem key={pageNumber}>
-                          <PaginationEllipsis />
-                        </PaginationItem>
-                      )
-                    }
-                    return null
-                  }
-
-                  return (
-                    <PaginationItem key={pageNumber}>
-                      <PaginationLink
-                        href={updateSearch({ page: pageNumber })}
-                        isActive={isCurrentPage}
-                      >
-                        {pageNumber}
-                      </PaginationLink>
-                    </PaginationItem>
-                  )
-                },
-              )}
-
-              <PaginationItem>
-                <PaginationNext
-                  href={updateSearch({ page: searchResults.nextPage ?? searchResults.totalPages })}
-                  className={!searchResults.hasNextPage ? "pointer-events-none opacity-50 " : ""}
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+        <div className="h-20 flex items-center justify-center">
+          <SearchResultsPagination
+            currentPage={currentPage}
+            searchResults={searchResults}
+            updateSearch={updateSearch}
+          />
         </div>
       </div>
 
-      <SearchResultsFooter />
+      <div className="">
+        <SearchResultsFooter />
+      </div>
     </div>
   )
 }

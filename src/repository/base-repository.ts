@@ -78,7 +78,7 @@ export abstract class BaseRepository<T, D> {
   async getAll(
     where: Where = {},
     searchCriteria: FindOptions = defaultFindOptions,
-  ): Promise<PaginatedDocs<D> | null> {
+  ): Promise<PaginatedDocs<D>> {
     const payload = await getPayloadClient()
 
     const result = (await payload.find({
@@ -86,10 +86,6 @@ export abstract class BaseRepository<T, D> {
       where,
       ...searchCriteria,
     })) as PaginatedDocs<T>
-
-    if (result.totalDocs === 0) {
-      return null
-    }
 
     return {
       ...result,

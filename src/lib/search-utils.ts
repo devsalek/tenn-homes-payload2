@@ -6,32 +6,49 @@ export type ParseUrlOutput = {
   options: FindOptions
 }
 
+export type SearchQueryTypes = "city" | "zip"
+export type SearchFilterKeys =
+  | "city"
+  | "zip"
+  | "property-type"
+  | "min-price"
+  | "max-price"
+  | "min-beds"
+  | "max-beds"
+  | "min-baths"
+
 export function parseUrlToSearchCriteria(
   pathSegments: string[] = [],
   urlQueryParams: Record<string, string | string[] | undefined>,
 ): ParseUrlOutput {
-  // Extract location from path if present
-  const query = pathSegments[0] || ""
-  const propertyType = pathSegments[1] || undefined
+  const [query, queryValue] = pathSegments as [SearchQueryTypes, string]
 
   // Parse query parameters
-  const filters: Record<string, any> = {}
-
-  // Handle property type
-  if (propertyType) {
-    filters["property-type"] = propertyType
-  } else if (urlQueryParams["property-type"]) {
-    filters["property-type"] = urlQueryParams["property-type"]
+  const filters: Record<SearchFilterKeys, string | string[] | number | number[] | undefined> = {
+    city: "",
+    zip: "",
+    "property-type": "",
+    "min-price": "",
+    "max-price": "",
+    "min-beds": "",
+    "max-beds": "",
+    "min-baths": "",
   }
 
+  if (query) {
+    filters[query] = queryValue ? decodeURIComponent(queryValue) : undefined
+  }
+
+  if (urlQueryParams["property-type"]) {
+    filters["property-type"] = urlQueryParams["property-type"] ?? "forsale"
+  }
   // Handle price range
   if (urlQueryParams["min-price"]) {
-    filters["min-price"] = parseInt(urlQueryParams["min-price"] as string) || undefined
+    filters["min-price"] = parseInt(urlQueryParams["min-price"] as string) * 1000 || undefined
   }
   if (urlQueryParams["max-price"]) {
-    filters["max-price"] = parseInt(urlQueryParams["max-price"] as string) || undefined
+    filters["max-price"] = parseInt(urlQueryParams["max-price"] as string) * 1000 || undefined
   }
-
   // Handle bedrooms
   if (urlQueryParams["min-beds"]) {
     filters["min-beds"] = parseInt(urlQueryParams["min-beds"] as string) || undefined
@@ -39,16 +56,14 @@ export function parseUrlToSearchCriteria(
   if (urlQueryParams["max-beds"]) {
     filters["max-beds"] = parseInt(urlQueryParams["max-beds"] as string) || undefined
   }
-
   // Handle bathrooms
   if (urlQueryParams["min-baths"]) {
     filters["min-baths"] = parseFloat(urlQueryParams["min-baths"] as string) || undefined
   }
-
   // Clean up undefined values
   Object.keys(filters).forEach((key) => {
-    if (filters[key] === undefined) {
-      delete filters[key]
+    if (filters[key as SearchFilterKeys] === undefined) {
+      delete filters[key as SearchFilterKeys]
     }
   })
 
@@ -73,8 +88,12 @@ export function buildSearchUrl(searchCriteria: Partial<SearchCriteria>): string 
     pathSegments.push(encodeURIComponent(query.toLowerCase().replace(/\s+/g, "-")))
   }
 
-  if (filters["property-type"]) {
-    pathSegments.push(filters["property-type"])
+  if (filters.city) {
+    pathSegments.push(filters.city)
+  }
+
+  if (filters.zip) {
+    pathSegments.push(filters.zip)
   }
 
   const path = pathSegments.join("/")
@@ -84,7 +103,7 @@ export function buildSearchUrl(searchCriteria: Partial<SearchCriteria>): string 
 
   // Add filters as query params (except property-type which is in path)
   Object.entries(filters).forEach(([key, value]) => {
-    if (key !== "property-type" && value !== undefined) {
+    if (typeof value !== "undefined" && value !== "" && !["city", "zip"].includes(key)) {
       params.set(key, value.toString())
     }
   })
