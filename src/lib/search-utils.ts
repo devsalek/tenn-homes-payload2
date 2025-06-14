@@ -1,6 +1,6 @@
-import { FindOptions, SearchCriteria } from "@/types"
+import { FindOptions, SearchCriteriaInput } from "@/types"
 
-export type ParseUrlOutput = {
+export type SearchCriteria = {
   query: string
   filters: Record<string, any>
   options: FindOptions
@@ -20,7 +20,7 @@ export type SearchFilterKeys =
 export function parseUrlToSearchCriteria(
   pathSegments: string[] = [],
   urlQueryParams: Record<string, string | string[] | undefined>,
-): ParseUrlOutput {
+): SearchCriteria {
   const [query, queryValue] = pathSegments as [SearchQueryTypes, string]
 
   // Parse query parameters
@@ -78,7 +78,7 @@ export function parseUrlToSearchCriteria(
   }
 }
 
-export function buildSearchUrl(searchCriteria: Partial<SearchCriteria>): string {
+export function buildSearchUrl(searchCriteria: Partial<SearchCriteriaInput>): string {
   const { query = "", filters = {}, sort, page, limit } = searchCriteria
 
   // Build path segments

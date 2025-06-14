@@ -7,6 +7,7 @@ import { Property } from "@/payload-types"
 import { parseUrlToSearchCriteria } from "@/lib/search-utils"
 import { SearchResultsProvider } from "../../search-results-provider"
 import { Header } from "@/app/(frontend)/_layouts/header"
+import { service } from "@/services"
 
 interface SearchPageProps {
   params: Promise<{ slug: string[] }>
@@ -19,47 +20,10 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
 
   const searchCriteria = parseUrlToSearchCriteria(slug, queryParams)
   console.log("Search Criteria:", searchCriteria)
-
-  const where: Where = {}
-  where.listingStatus = { equals: searchCriteria.filters["property-status"] || "forsale" }
-
-  if (searchCriteria.filters.city) {
-    where["location.city_slug"] = { equals: searchCriteria.filters.city }
-  }
-  if (searchCriteria.filters.zip) {
-    where["location.zip"] = { equals: searchCriteria.filters.zip }
-  }
-  if (searchCriteria.filters["min-price"] || searchCriteria.filters["max-price"]) {
-    where.price = {
-      greater_than_equal: searchCriteria.filters["min-price"] || 0,
-      less_than_equal: searchCriteria.filters["max-price"] || 10000000,
-    }
-  }
-  if (searchCriteria.filters["min-beds"]) {
-    where["details.bedrooms"] = {
-      greater_than_equal: searchCriteria.filters["min-beds"] || 6,
-    }
-  }
-  if (searchCriteria.filters["min-baths"]) {
-    where["details.bathrooms"] = {
-      greater_than_equal: searchCriteria.filters["min-baths"] || 6,
-    }
-  }
-  if (searchCriteria.filters["property-type"]) {
-    where["details.propertyType"] = {
-      equals: searchCriteria.filters["property-type"] || "house",
-    }
-  }
-
-  const results = await local.property.getAll(where, searchCriteria.options)
-
-  const initialData = {
-    ...results,
-    docs: results?.docs.map((d) => d.original),
-  } as PaginatedDocs<Property>
+  const results = await service.listings.search(searchCriteria)
 
   return (
-    <SearchResultsProvider initialData={initialData} searchCriteria={searchCriteria}>
+    <SearchResultsProvider initialData={results} searchCriteria={searchCriteria}>
       <div className="h-auto lg:h-screen grid grid-cols-12 grid-rows-[auto_1fr] w-full overflow-hidden">
         <div className="col-span-12 h-36 bg-white">
           <Header />

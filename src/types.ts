@@ -1,4 +1,4 @@
-export interface SearchCriteria {
+export interface SearchCriteriaInput {
   query: string
   filters: Record<string, any>
   sort: string

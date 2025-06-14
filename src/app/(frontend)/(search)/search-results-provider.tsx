@@ -1,15 +1,15 @@
 // components/search/SearchResultsProvider.tsx
 "use client"
 
-import { buildSearchUrl, ParseUrlOutput } from "@/lib/search-utils"
+import { buildSearchUrl, SearchCriteria } from "@/lib/search-utils"
 import { Property } from "@/payload-types"
 import { PropertyDecorator } from "@/repository/property/property-decorator"
-import { SearchCriteria } from "@/types"
+import { SearchCriteriaInput } from "@/types"
 import { PaginatedDocs } from "payload"
 import { createContext, useContext, ReactNode } from "react"
 
 interface SearchResultsContextType {
-  searchCriteria: ParseUrlOutput
+  searchCriteria: SearchCriteria
   searchResults: PaginatedDocs<Property>
   isLoading: boolean
 }
@@ -19,7 +19,7 @@ const SearchResultsContext = createContext<SearchResultsContextType | undefined>
 interface SearchResultsProviderProps {
   children: ReactNode
   initialData: PaginatedDocs<Property>
-  searchCriteria: ParseUrlOutput
+  searchCriteria: SearchCriteria
 }
 
 export function SearchResultsProvider({
@@ -38,7 +38,7 @@ export function SearchResultsProvider({
 
 // Custom hook to use the search results context
 export function useSearchResults() {
-  const updateSearch = (updates: Partial<SearchCriteria>, test = "default") => {
+  const updateSearch = (updates: Partial<SearchCriteriaInput>, test = "default") => {
     const currentCriteria = getCurrentSearchCriteria() // Get from context
     const newCriteria = { ...currentCriteria, ...updates }
     const newUrl = buildSearchUrl(newCriteria)
@@ -61,7 +61,7 @@ export function useSearchResults() {
 }
 
 // Helper function to get current search criteria (this was the missing function)
-export function getCurrentSearchCriteria(): ParseUrlOutput {
+export function getCurrentSearchCriteria(): SearchCriteria {
   const { searchCriteria } = useSearchResults()
   return searchCriteria
 }

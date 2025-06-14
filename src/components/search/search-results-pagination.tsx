@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/pagination"
 import { PaginatedDocs } from "payload"
 import { PropertyDecorator } from "@/repository/property/property-decorator"
-import { SearchCriteria } from "@/types"
+import { SearchCriteriaInput } from "@/types"
 
 export const SearchResultsPagination = ({
   searchResults,
@@ -18,7 +18,7 @@ export const SearchResultsPagination = ({
 }: {
   searchResults: PaginatedDocs<PropertyDecorator>
   currentPage: number
-  updateSearch: (params: Partial<SearchCriteria>, test?: string) => string
+  updateSearch: (params: Partial<SearchCriteriaInput>, test?: string) => string
 }) => {
   return (
     <div>
