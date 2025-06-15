@@ -14,7 +14,7 @@ import { Menu } from "lucide-react"
 import { Logo } from "@/components/logo"
 export const Header = () => {
   return (
-    <header className="border-b">
+    <header>
       <div className="max-w-7xl flex h-16 items-center justify-between px-4 py-4 mx-auto">
         <Link href="/" className="flex items-center gap-2">
           <Logo />

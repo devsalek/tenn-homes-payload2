@@ -2,7 +2,7 @@ import { FindOptions, SearchCriteriaInput } from "@/types"
 
 export type SearchCriteria = {
   query: string
-  filters: Record<string, any>
+  filters: Record<SearchFilterKeys, any>
   options: FindOptions
 }
 
@@ -11,6 +11,7 @@ export type SearchFilterKeys =
   | "city"
   | "zip"
   | "property-type"
+  | "property-status"
   | "min-price"
   | "max-price"
   | "min-beds"
@@ -28,6 +29,7 @@ export function parseUrlToSearchCriteria(
     city: "",
     zip: "",
     "property-type": "",
+    "property-status": "",
     "min-price": "",
     "max-price": "",
     "min-beds": "",
@@ -40,14 +42,17 @@ export function parseUrlToSearchCriteria(
   }
 
   if (urlQueryParams["property-type"]) {
-    filters["property-type"] = urlQueryParams["property-type"] ?? "forsale"
+    filters["property-type"] = urlQueryParams["property-type"]
+  }
+  if (urlQueryParams["property-status"]) {
+    filters["property-status"] = urlQueryParams["property-status"]
   }
   // Handle price range
   if (urlQueryParams["min-price"]) {
-    filters["min-price"] = parseInt(urlQueryParams["min-price"] as string) * 1000 || undefined
+    filters["min-price"] = parseInt(urlQueryParams["min-price"] as string) || undefined
   }
   if (urlQueryParams["max-price"]) {
-    filters["max-price"] = parseInt(urlQueryParams["max-price"] as string) * 1000 || undefined
+    filters["max-price"] = parseInt(urlQueryParams["max-price"] as string) || undefined
   }
   // Handle bedrooms
   if (urlQueryParams["min-beds"]) {

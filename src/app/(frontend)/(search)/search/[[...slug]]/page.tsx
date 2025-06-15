@@ -19,14 +19,15 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
   const queryParams = await searchParams
 
   const searchCriteria = parseUrlToSearchCriteria(slug, queryParams)
-  console.log("Search Criteria:", searchCriteria)
   const results = await service.listings.search(searchCriteria)
 
   return (
     <SearchResultsProvider initialData={results} searchCriteria={searchCriteria}>
       <div className="h-auto lg:h-screen grid grid-cols-12 grid-rows-[auto_1fr] w-full overflow-hidden">
         <div className="col-span-12 h-36 bg-white">
-          <Header />
+          <div className="border-b">
+            <Header />
+          </div>
           <SearchHeader />
         </div>
         <div className="flex col-span-12">

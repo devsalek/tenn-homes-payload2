@@ -1,5 +1,5 @@
 import { ContactService } from "./contact-service"
-import { ListingsSearchService } from "./property-search-service"
+import { ListingsSearchService } from "./listings-search-service"
 
 export const service = {
   contact: new ContactService(),

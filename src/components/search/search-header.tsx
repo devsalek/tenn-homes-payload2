@@ -2,6 +2,10 @@
 
 import { Input } from "@/components/ui/input"
 import { Search } from "lucide-react"
+import { FilterStatus } from "./filters/status"
+import { FilterType } from "./filters/type"
+import { FilterBedsBaths } from "./filters/beds-baths"
+import { FilterPrice } from "./filters/price"
 
 export const SearchHeader = () => {
   return (
@@ -17,11 +21,10 @@ export const SearchHeader = () => {
         </div>
 
         <div className="hidden lg:flex items-center gap-2 text-sm text-muted-foreground">
-          <span>Price</span>
-          <span>•</span>
-          <span>Beds & Baths</span>
-          <span>•</span>
-          <span>More</span>
+          <FilterStatus />
+          <FilterType />
+          <FilterBedsBaths />
+          <FilterPrice />
         </div>
       </div>
     </div>

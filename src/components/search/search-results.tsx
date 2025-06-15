@@ -8,7 +8,6 @@ import { SearchResultsPagination } from "./search-results-pagination"
 
 export const SearchResults = () => {
   const { searchCriteria, searchResults, updateSearch } = useSearchResults()
-  console.log("SearchParams:", searchCriteria, { searchResults })
 
   const currentPage = searchResults.page || 1
   return (
@@ -16,8 +15,10 @@ export const SearchResults = () => {
       <div className="flex-1 h-full w-full flex flex-col">
         <div className="h-16 p-4 border-b flex items-center justify-between bg-white">
           <p className="text-sm text-muted-foreground">
-            {Math.min(searchResults.limit, searchResults.docs.length)} of {searchResults.totalDocs}{" "}
-            homes
+            {/* Show the offset based on limit and page number */}
+            {(currentPage - 1) * searchResults.limit + 1} to{" "}
+            {Math.min(currentPage * searchResults.limit, searchResults.totalDocs)} of{" "}
+            {searchResults.totalDocs} homes
           </p>
         </div>
         <div className="bg-white flex-1 h-full overflow-y-auto">

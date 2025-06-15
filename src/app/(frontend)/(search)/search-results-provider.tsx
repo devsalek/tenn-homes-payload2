@@ -38,14 +38,15 @@ export function SearchResultsProvider({
 
 // Custom hook to use the search results context
 export function useSearchResults() {
-  const updateSearch = (updates: Partial<SearchCriteriaInput>, test = "default") => {
-    const currentCriteria = getCurrentSearchCriteria() // Get from context
-    const newCriteria = { ...currentCriteria, ...updates }
-    const newUrl = buildSearchUrl(newCriteria)
-    return newUrl
-  }
   const context = useContext(SearchResultsContext)
-
+  const updateSearch =
+    (context: SearchResultsContextType) =>
+    (updates: Partial<SearchCriteriaInput>, test = "default") => {
+      const currentCriteria = context.searchCriteria
+      const newCriteria = { ...currentCriteria, ...updates }
+      const newUrl = buildSearchUrl(newCriteria)
+      return newUrl
+    }
   if (context === undefined) {
     throw new Error("useSearchResults must be used within a SearchResultsProvider")
   }
@@ -55,13 +56,7 @@ export function useSearchResults() {
 
   return {
     ...context,
-    updateSearch,
+    updateSearch: updateSearch(context),
     searchResults: { ...context.searchResults, docs } as PaginatedDocs<PropertyDecorator>,
   }
-}
-
-// Helper function to get current search criteria (this was the missing function)
-export function getCurrentSearchCriteria(): SearchCriteria {
-  const { searchCriteria } = useSearchResults()
-  return searchCriteria
 }
