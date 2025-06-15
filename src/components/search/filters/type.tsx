@@ -5,11 +5,6 @@ import { Label } from "@/components/ui/label"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import {
-  ListingStatus,
-  listingStatusMap,
-  listingStatusOptions,
-} from "@/config/collections/Properties/listing-status-map"
-import {
   PropertyType,
   propertyTypeMap,
   propertyTypeOptions,
@@ -35,7 +30,11 @@ export function FilterType() {
       }),
     )
   }
-  const label = value ? propertyTypeMap[value] : "Property Type"
+  const label = value ? (
+    <span className="font-semibold text-cyan-800">{propertyTypeMap[value]}</span>
+  ) : (
+    "Property Type"
+  )
 
   return (
     <Popover>
@@ -45,9 +44,9 @@ export function FilterType() {
             variant="ghost"
             size={"sm"}
             onClick={resetFilters}
-            className="absolute right-0 top-1/2 transform -translate-y-1/2 -translate-x-2"
+            className="absolute right-0 top-1/2 transform -translate-y-1/2 -translate-x-2 text-cyan-800"
           >
-            <XIcon size={16} />
+            <XIcon size={16} strokeWidth={3} />
           </Button>
         )}
         <PopoverTrigger asChild>

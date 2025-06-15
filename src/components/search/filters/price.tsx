@@ -37,7 +37,13 @@ export function FilterPrice() {
   const maxPriceLabel = maxPrice === DEFAULT_MAX_PRICE ? "Any" : `${formatLabel(maxPrice)}`
   const minPriceLabel = minPrice > 0 ? `${formatLabel(minPrice)}` : "Any"
   const label =
-    minPrice > 0 || maxPrice < DEFAULT_MAX_PRICE ? `${minPriceLabel} - ${maxPriceLabel}` : "Price"
+    minPrice > 0 || maxPrice < DEFAULT_MAX_PRICE ? (
+      <span className="text-cyan-800 font-semibold">
+        {minPriceLabel} - {maxPriceLabel}
+      </span>
+    ) : (
+      "Price"
+    )
 
   const resetFilters = () => {
     setMinPrice(DEFAULT_MIN_PRICE)
@@ -71,9 +77,9 @@ export function FilterPrice() {
             variant="ghost"
             size={"sm"}
             onClick={resetFilters}
-            className="absolute right-0 top-1/2 transform -translate-y-1/2 -translate-x-2"
+            className="absolute right-0 top-1/2 transform -translate-y-1/2 -translate-x-2 text-cyan-800"
           >
-            <XIcon size={16} />
+            <XIcon size={16} strokeWidth={3} />
           </Button>
         )}
         <PopoverTrigger asChild>

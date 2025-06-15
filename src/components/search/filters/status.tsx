@@ -30,7 +30,11 @@ export function FilterStatus() {
       }),
     )
   }
-  const label = value ? listingStatusMap[value].label : "Status"
+  const label = value ? (
+    <span className="font-semibold text-cyan-800">{listingStatusMap[value].label}</span>
+  ) : (
+    "Status"
+  )
 
   return (
     <Popover>
@@ -40,9 +44,9 @@ export function FilterStatus() {
             variant="ghost"
             size={"sm"}
             onClick={resetFilters}
-            className="absolute right-0 top-1/2 transform -translate-y-1/2 -translate-x-2"
+            className="absolute right-0 top-1/2 transform -translate-y-1/2 -translate-x-2 text-cyan-800"
           >
-            <XIcon size={16} />
+            <XIcon size={16} strokeWidth={3} />
           </Button>
         )}
         <PopoverTrigger asChild>

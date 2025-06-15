@@ -23,7 +23,14 @@ export function FilterBedsBaths() {
   const [beds, setBeds] = useState<number>(filters["min-beds"] || 0)
   const [baths, setBaths] = useState<number>(filters["min-baths"] || 0)
 
-  const label = beds || baths ? `${beds}+ bd / ${baths}+ ba` : "Beds/Baths"
+  const label =
+    beds || baths ? (
+      <span className="font-semibold text-cyan-800">
+        {beds}+ bd / {baths}+ ba
+      </span>
+    ) : (
+      "Beds/Baths"
+    )
 
   const resetFilters = () => {
     setBeds(0)
@@ -43,9 +50,9 @@ export function FilterBedsBaths() {
             variant="ghost"
             size={"sm"}
             onClick={resetFilters}
-            className="absolute right-0 top-1/2 transform -translate-y-1/2 -translate-x-2"
+            className="absolute right-0 top-1/2 transform -translate-y-1/2 -translate-x-2 text-cyan-800"
           >
-            <XIcon size={16} />
+            <XIcon size={16} strokeWidth={3} />
           </Button>
         )}
         <PopoverTrigger asChild>
