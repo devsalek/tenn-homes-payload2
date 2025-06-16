@@ -10,6 +10,29 @@ import { ChevronDownIcon, XIcon } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 
+const priceOptions = [
+  {
+    value: 0,
+    label: "Any",
+  },
+  {
+    value: "100-300",
+    label: "$100K - $300K",
+  },
+  {
+    value: "300-500",
+    label: "$300K - $500K",
+  },
+  {
+    value: "500-750",
+    label: "$500K - $750K",
+  },
+  {
+    value: "750-1000",
+    label: "$750K - $1M",
+  },
+]
+
 const formatLabel = (price: number) => {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -83,7 +106,7 @@ export function FilterPrice() {
           </Button>
         )}
         <PopoverTrigger asChild>
-          <Button className="h-12 flex items-center gap-2" variant={"outline"}>
+          <Button className="h-12 flex items-center justify-between gap-2 w-42" variant={"outline"}>
             <span>{label}</span>
             {!isSet ? (
               <span className="ml-2">
@@ -95,43 +118,33 @@ export function FilterPrice() {
           </Button>
         </PopoverTrigger>
       </div>
-      <PopoverContent className="w-fit grid gap-4">
+      <PopoverContent className="w-56 grid gap-4">
         <div className="grid gap-2">
           <div>
             <h3 className="font-semibold mb-2">Price Range</h3>
-            <RadioGroup
-              className="flex flex-col gap-4 border rounded-md p-4"
-              onValueChange={setPriceRange}
-              value={value}
-            >
-              <div className="flex items-center gap-1">
-                <RadioGroupItem value={"any"} id={`any`} />
-                <Label htmlFor={`any`}>Any Price</Label>
-              </div>
-              <div className="flex items-center gap-1">
-                <RadioGroupItem value={"100-300"} id={`100-300`} />
-                <Label htmlFor={`100-300`}>$100K - $300K</Label>
-              </div>
-              <div className="flex items-center gap-1">
-                <RadioGroupItem value={"300-500"} id={`300-500`} />
-                <Label htmlFor={`300-500`}>$300K - $500K</Label>
-              </div>
-              <div className="flex items-center gap-1">
-                <RadioGroupItem value={"500-750"} id={`500-750`} />
-                <Label htmlFor={`500-750`}>$500K - $750K</Label>
-              </div>
-              <div className="flex items-center gap-1">
-                <RadioGroupItem value={"750-1000"} id={`750-1000`} />
-                <Label htmlFor={`750-1000`}>$750 - $1M</Label>
-              </div>
+            <RadioGroup className="flex flex-col gap-2" onValueChange={setPriceRange} value={value}>
+              {priceOptions.map((option) => (
+                <Label
+                  htmlFor={`baths-${option.label}`}
+                  key={`baths:${option.value}`}
+                  className="has-data-[state=checked]:bg-amber-50 has-data-[state=checked]:text-amber-900 ring  has-data-[state=checked]:ring-2 ring-border has-data-[state=checked]:ring-amber-600 flex items-center justify-center gap-1 border rounded-md px-6 py-3 hover:bg-gray-100 cursor-pointer focus-within:ring-2 focus-within:ring-amber-500"
+                >
+                  <RadioGroupItem
+                    value={String(option.value)}
+                    id={`baths-${option.label}`}
+                    className="sr-only"
+                  />
+                  <div>{option.label}</div>
+                </Label>
+              ))}
             </RadioGroup>
           </div>
         </div>
         <PopoverClose asChild>
           <Button
             type="button"
-            variant="outline"
             className="w-full"
+            size={"lg"}
             onClick={() => {
               const minPriceFilter = minPrice === DEFAULT_MIN_PRICE ? undefined : minPrice
               const maxPriceFilter = maxPrice === DEFAULT_MAX_PRICE ? undefined : maxPrice

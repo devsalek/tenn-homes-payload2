@@ -4,15 +4,61 @@ import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import {
-  ListingStatus,
-  listingStatusMap,
-  listingStatusOptions,
-} from "@/config/collections/Properties/listing-status-map"
+
 import { PopoverClose } from "@radix-ui/react-popover"
 import { ChevronDownIcon, XIcon } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
+
+const bedsOptions = [
+  {
+    value: 0,
+    label: "Any",
+  },
+  {
+    value: 1,
+    label: "1+",
+  },
+  {
+    value: 2,
+    label: "2+",
+  },
+  {
+    value: 3,
+    label: "3+",
+  },
+  {
+    value: 4,
+    label: "4+",
+  },
+  {
+    value: 5,
+    label: "5+",
+  },
+]
+
+const bathsOptions = [
+  {
+    value: 0,
+    label: "Any",
+  },
+  {
+    value: 1,
+    label: "1+",
+  },
+  {
+    value: 2,
+    label: "2+",
+  },
+  {
+    value: 3,
+    label: "3+",
+  },
+  {
+    value: 4,
+    label: "4+",
+  },
+]
 
 export function FilterBedsBaths() {
   const router = useRouter()
@@ -73,74 +119,58 @@ export function FilterBedsBaths() {
           <div>
             <h3 className="font-semibold">Beds</h3>
             <RadioGroup
-              className="flex items-center gap-4 border rounded-md px-6 py-3"
+              className="flex items-center gap-2"
               onValueChange={(value) => {
                 setBeds(Number(value))
               }}
               value={String(beds)}
             >
-              <div className="flex items-center gap-1">
-                <RadioGroupItem value={"0"} id={`beds:0+`} />
-                <Label htmlFor={`beds:0+`}>Any</Label>
-              </div>
-              <div className="flex items-center gap-1">
-                <RadioGroupItem value={"1"} id={`beds:1+`} />
-                <Label htmlFor={`beds:1+`}>1+</Label>
-              </div>
-              <div className="flex items-center gap-1">
-                <RadioGroupItem value={"2"} id={`beds:2+`} />
-                <Label htmlFor={`beds:2+`}>2+</Label>
-              </div>
-              <div className="flex items-center gap-1">
-                <RadioGroupItem value={"3"} id={`beds:3+`} />
-                <Label htmlFor={`beds:3+`}>3+</Label>
-              </div>
-              <div className="flex items-center gap-1">
-                <RadioGroupItem value={"4"} id={`beds:4+`} />
-                <Label htmlFor={`beds:4+`}>4+</Label>
-              </div>
-              <div className="flex items-center gap-1">
-                <RadioGroupItem value={"5"} id={`beds:5+`} />
-                <Label htmlFor={`beds:5+`}>5+</Label>
-              </div>
+              {bedsOptions.map((option) => (
+                <Label
+                  htmlFor={option.label}
+                  key={`beds:${option.value}`}
+                  className="has-data-[state=checked]:bg-amber-50 has-data-[state=checked]:text-amber-900 ring has-data-[state=checked]:ring-2 ring-border has-data-[state=checked]:ring-amber-600 flex items-center gap-1 border rounded-md px-6 py-3 hover:bg-gray-100 cursor-pointer focus-within:ring-2 focus-within:ring-amber-500"
+                >
+                  <RadioGroupItem
+                    value={String(option.value)}
+                    id={option.label}
+                    className="sr-only"
+                  />
+                  <div>{option.label}</div>
+                </Label>
+              ))}
             </RadioGroup>
           </div>
           <div>
             <h3 className="font-semibold">Baths</h3>
             <RadioGroup
-              className="flex items-center gap-4 border rounded-md px-6 py-3"
+              className="flex items-center gap-2"
               onValueChange={(value) => {
                 setBaths(Number(value))
               }}
               value={String(baths)}
             >
-              <div className="flex items-center gap-1">
-                <RadioGroupItem value={"0"} id={`baths:0+`} />
-                <Label htmlFor={`baths:0+`}>Any</Label>
-              </div>
-              <div className="flex items-center gap-1">
-                <RadioGroupItem value={"1"} id={`baths:1+`} />
-                <Label htmlFor={`baths:1+`}>1+</Label>
-              </div>
-              <div className="flex items-center gap-1">
-                <RadioGroupItem value={"2"} id={`baths:2+`} />
-                <Label htmlFor={`baths:2+`}>2+</Label>
-              </div>
-              <div className="flex items-center gap-1">
-                <RadioGroupItem value={"3"} id={`baths:3+`} />
-                <Label htmlFor={`baths:3+`}>3+</Label>
-              </div>
-              <div className="flex items-center gap-1">
-                <RadioGroupItem value={"4"} id={`baths:4+`} />
-                <Label htmlFor={`baths:4+`}>4+</Label>
-              </div>
+              {bathsOptions.map((option) => (
+                <Label
+                  htmlFor={`baths-${option.label}`}
+                  key={`baths:${option.value}`}
+                  className="has-data-[state=checked]:bg-amber-50 has-data-[state=checked]:text-amber-900 ring  has-data-[state=checked]:ring-2 ring-border has-data-[state=checked]:ring-amber-600 flex items-center gap-1 border rounded-md px-6 py-3 hover:bg-gray-100 cursor-pointer focus-within:ring-2 focus-within:ring-amber-500"
+                >
+                  <RadioGroupItem
+                    value={String(option.value)}
+                    id={`baths-${option.label}`}
+                    className="sr-only"
+                  />
+                  <div>{option.label}</div>
+                </Label>
+              ))}
             </RadioGroup>
           </div>
         </div>
         <PopoverClose asChild>
           <Button
             type="button"
-            variant="outline"
+            size="lg"
             className="w-full"
             onClick={() => {
               const url = updateSearch({

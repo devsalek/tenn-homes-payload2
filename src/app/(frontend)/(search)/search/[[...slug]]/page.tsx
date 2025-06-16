@@ -24,7 +24,7 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
   return (
     <SearchResultsProvider initialData={results} searchCriteria={searchCriteria}>
       <div className="h-auto lg:h-screen grid grid-cols-12 grid-rows-[auto_1fr] w-full overflow-hidden">
-        <div className="col-span-12 h-36 bg-white">
+        <div className="col-span-12 lg:h-36 bg-white">
           <div className="border-b">
             <Header />
           </div>
