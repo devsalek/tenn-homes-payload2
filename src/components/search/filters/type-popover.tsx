@@ -20,6 +20,7 @@ export function FilterTypePopover() {
   const {
     updateSearch,
     searchCriteria: { filters },
+    searchResults,
   } = useSearchResults()
   const [value, setValue] = useState<PropertyType | undefined>(filters["property-type"])
 
@@ -85,6 +86,11 @@ export function FilterTypePopover() {
           className="grid grid-cols-4 gap-4 mb-4"
           onValueChange={(value) => {
             setValue(value as PropertyType)
+            router.push(
+              updateSearch({
+                filters: { ...filters, "property-type": value },
+              }),
+            )
           }}
           value={value}
         >
@@ -100,7 +106,7 @@ export function FilterTypePopover() {
               router.push(url)
             }}
           >
-            Apply
+            See {searchResults.totalDocs} homes
           </Button>
         </PopoverClose>
       </PopoverContent>

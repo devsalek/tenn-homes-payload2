@@ -65,6 +65,7 @@ export function FilterBedsBaths() {
   const {
     updateSearch,
     searchCriteria: { filters },
+    searchResults,
   } = useSearchResults()
   const [beds, setBeds] = useState<number>(filters["min-beds"] || 0)
   const [baths, setBaths] = useState<number>(filters["min-baths"] || 0)
@@ -122,6 +123,11 @@ export function FilterBedsBaths() {
               className="flex items-center gap-2"
               onValueChange={(value) => {
                 setBeds(Number(value))
+                router.push(
+                  updateSearch({
+                    filters: { ...filters, "min-beds": value, "min-baths": baths },
+                  }),
+                )
               }}
               value={String(beds)}
             >
@@ -147,6 +153,11 @@ export function FilterBedsBaths() {
               className="flex items-center gap-2"
               onValueChange={(value) => {
                 setBaths(Number(value))
+                router.push(
+                  updateSearch({
+                    filters: { ...filters, "min-beds": beds, "min-baths": value },
+                  }),
+                )
               }}
               value={String(baths)}
             >
@@ -179,7 +190,7 @@ export function FilterBedsBaths() {
               router.push(url)
             }}
           >
-            Apply
+            See {searchResults.totalDocs} homes
           </Button>
         </PopoverClose>
       </PopoverContent>

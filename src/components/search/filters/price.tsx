@@ -50,12 +50,15 @@ export function FilterPrice() {
   const {
     updateSearch,
     searchCriteria: { filters },
+    searchResults,
   } = useSearchResults()
   const [minPrice, setMinPrice] = useState<number>(filters["min-price"] || DEFAULT_MIN_PRICE)
   const [maxPrice, setMaxPrice] = useState<number>(filters["max-price"] || DEFAULT_MAX_PRICE)
   const [value, setValue] = useState<string>(
     minPrice > 0 || maxPrice < DEFAULT_MAX_PRICE ? `${minPrice / 1000}-${maxPrice / 1000}` : "any",
   )
+
+  console.log({ maxPrice, minPrice, value })
 
   const maxPriceLabel = maxPrice === DEFAULT_MAX_PRICE ? "Any" : `${formatLabel(maxPrice)}`
   const minPriceLabel = minPrice > 0 ? `${formatLabel(minPrice)}` : "Any"
@@ -71,6 +74,7 @@ export function FilterPrice() {
   const resetFilters = () => {
     setMinPrice(DEFAULT_MIN_PRICE)
     setMaxPrice(DEFAULT_MAX_PRICE)
+    setValue("any")
     router.push(
       updateSearch({
         filters: { ...filters, "min-price": undefined, "max-price": undefined },
@@ -80,14 +84,24 @@ export function FilterPrice() {
 
   const setPriceRange = (value: string) => {
     setValue(value)
+    let newMinPrice = undefined
+    let newMaxPrice = undefined
     if (value === "any") {
       setMinPrice(DEFAULT_MIN_PRICE)
       setMaxPrice(DEFAULT_MAX_PRICE)
     } else {
       const [min, max] = value.split("-").map(Number)
-      setMinPrice(min * 1000)
-      setMaxPrice(max * 1000)
+      newMinPrice = min * 1000
+      newMaxPrice = max * 1000
+      setMinPrice(newMinPrice)
+      setMaxPrice(newMaxPrice)
     }
+
+    router.push(
+      updateSearch({
+        filters: { ...filters, "min-price": newMinPrice, "max-price": newMaxPrice },
+      }),
+    )
   }
 
   const isSet = minPrice > 0 || maxPrice < DEFAULT_MAX_PRICE
@@ -155,7 +169,7 @@ export function FilterPrice() {
               router.push(url)
             }}
           >
-            Apply
+            See {searchResults.totalDocs} homes
           </Button>
         </PopoverClose>
       </PopoverContent>

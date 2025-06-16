@@ -20,10 +20,13 @@ export function FilterStatusPopover({ children }: { children?: React.ReactNode }
   const {
     updateSearch,
     searchCriteria: { filters },
+    searchResults,
   } = useSearchResults()
-  const [value, setValue] = useState<ListingStatus | undefined>(filters["property-type"])
+
+  const [value, setValue] = useState<ListingStatus | undefined>(filters["property-status"])
 
   const resetFilters = () => {
+    setValue(undefined)
     router.push(
       updateSearch({
         filters: { ...filters, "property-status": undefined },
@@ -68,6 +71,11 @@ export function FilterStatusPopover({ children }: { children?: React.ReactNode }
           value={value}
           onValueChange={(value) => {
             setValue(value as ListingStatus)
+            router.push(
+              updateSearch({
+                filters: { ...filters, "property-status": value },
+              }),
+            )
           }}
         >
           {listingStatusOptions.map((option) => (
@@ -91,7 +99,7 @@ export function FilterStatusPopover({ children }: { children?: React.ReactNode }
               router.push(url)
             }}
           >
-            Apply
+            See {searchResults.totalDocs} homes
           </Button>
         </PopoverClose>
       </PopoverContent>
