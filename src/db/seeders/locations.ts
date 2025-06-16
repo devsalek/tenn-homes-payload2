@@ -25,7 +25,7 @@ export async function seedLocations(): Promise<void> {
         locations.push({
           zip: String(data.code),
           city: data.city,
-          city_slug: slugify(data.city, {
+          slug: slugify(data.city, {
             lower: true,
             strict: true,
           }),

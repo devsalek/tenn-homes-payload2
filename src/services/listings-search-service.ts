@@ -9,7 +9,7 @@ export class ListingsSearchService {
     const where: Where = {}
 
     if (criteria.filters.city) {
-      where["location.city_slug"] = { equals: criteria.filters.city }
+      where["location.slug"] = { equals: criteria.filters.city }
     }
     if (criteria.filters.zip) {
       where["location.zip"] = { equals: criteria.filters.zip }

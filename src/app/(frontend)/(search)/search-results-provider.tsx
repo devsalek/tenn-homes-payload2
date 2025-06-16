@@ -2,7 +2,7 @@
 "use client"
 
 import { buildSearchUrl, SearchCriteria } from "@/lib/search-utils"
-import { Property } from "@/payload-types"
+import { Location, Property } from "@/payload-types"
 import { PropertyDecorator } from "@/repository/property/property-decorator"
 import { SearchCriteriaInput } from "@/types"
 import { PaginatedDocs } from "payload"
@@ -11,6 +11,7 @@ import { createContext, useContext, ReactNode } from "react"
 interface SearchResultsContextType {
   searchCriteria: SearchCriteria
   searchResults: PaginatedDocs<Property>
+  query?: Location
   isLoading: boolean
 }
 
@@ -20,14 +21,17 @@ interface SearchResultsProviderProps {
   children: ReactNode
   initialData: PaginatedDocs<Property>
   searchCriteria: SearchCriteria
+  query?: Location
 }
 
 export function SearchResultsProvider({
   children,
   initialData,
   searchCriteria,
+  query,
 }: SearchResultsProviderProps) {
   const value: SearchResultsContextType = {
+    query,
     searchCriteria,
     searchResults: initialData,
     isLoading: false, // You might want to add loading state management

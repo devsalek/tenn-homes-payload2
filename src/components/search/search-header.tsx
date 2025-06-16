@@ -25,24 +25,44 @@ import { FilterType } from "./filters/type"
 import { Autosuggest } from "../autosuggest"
 
 export const SearchHeader = () => {
+  const router = useRouter()
+
   const {
+    query,
     updateSearch,
     searchCriteria: { filters },
   } = useSearchResults()
 
+  const defaultInputValue = query?.city || query?.zip || ""
+
   return (
     <div className="bg-white border-b h-20 flex items-center justify-center">
-      <div className="flex items-center gap-4 w-full max-w-6xl px-4">
-        <div className="flex-1 relative w-full">
+      <div className="flex items-center gap-4 w-full max-w-7xl px-4">
+        <div className="flex-1 w-1/2 relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Autosuggest
             type="text"
             placeholder="City, Address, ZIP"
+            defaultValue={defaultInputValue}
             className="pl-10 h-12 border-gray-300 md:text-base w-full"
+            onSelect={(suggestion) => {
+              if (suggestion.type === "address") {
+                router.push(suggestion.url)
+              }
+              const key =
+                suggestion.type === "city" ? "city" : suggestion.type === "zip" ? "zip" : null
+              if (!key) return
+              const otherKey = key === "city" ? "zip" : "city"
+              router.push(
+                updateSearch({
+                  filters: { ...filters, [key]: suggestion.value, [otherKey]: undefined },
+                }),
+              )
+            }}
           />
         </div>
 
-        <div>
+        <div className="w-1/2">
           <Filters />
         </div>
       </div>

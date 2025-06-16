@@ -12,3 +12,11 @@ export type FindOptions = {
   sort?: string
   depth?: number
 }
+
+export interface LocationSuggestion {
+  id: string
+  type: "address" | "city" | "zip"
+  value: string
+  display: string
+  url: string
+}

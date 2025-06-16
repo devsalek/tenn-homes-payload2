@@ -89,17 +89,15 @@ export function buildSearchUrl(searchCriteria: Partial<SearchCriteriaInput>): st
   // Build path segments
   const pathSegments = ["/search"]
 
-  if (query) {
-    pathSegments.push(encodeURIComponent(query.toLowerCase().replace(/\s+/g, "-")))
-  }
-
   if (filters.city) {
-    pathSegments.push(filters.city)
+    pathSegments.push(`city/${encodeURIComponent(filters.city.toLowerCase())}`)
   }
 
   if (filters.zip) {
-    pathSegments.push(filters.zip)
+    pathSegments.push(`zip/${encodeURIComponent(filters.zip)}`)
   }
+
+  console.log({ pathSegments, query })
 
   const path = pathSegments.join("/")
 

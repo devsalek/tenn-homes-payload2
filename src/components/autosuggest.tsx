@@ -5,13 +5,7 @@ import { useFloating, autoUpdate, offset, flip, shift, size } from "@floating-ui
 import { Input } from "./ui/input"
 import { cn } from "@/lib/utils"
 import { Building2Icon, HomeIcon, MailboxIcon, PinIcon } from "lucide-react"
-
-interface LocationSuggestion {
-  id: string
-  type: "address" | "city" | "zip"
-  value: string
-  display: string
-}
+import { LocationSuggestion } from "@/types"
 
 interface AutosuggestProps extends Omit<React.ComponentProps<"input">, "onChange" | "onSelect"> {
   onSelect?: (suggestion: LocationSuggestion) => void
@@ -20,35 +14,15 @@ interface AutosuggestProps extends Omit<React.ComponentProps<"input">, "onChange
   debounceMs?: number
 }
 
-const mockSuggestions: LocationSuggestion[] = [
-  {
-    id: "1",
-    type: "address",
-    value: "123 Main St, Nashville, TN 37201",
-    display: "123 Main St, Nashville, TN 37201",
-  },
-  {
-    id: "2",
-    type: "address",
-    value: "456 Oak Ave, Memphis, TN 38103",
-    display: "456 Oak Ave, Memphis, TN 38103",
-  },
-  { id: "3", type: "city", value: "Nashville, TN", display: "Nashville, TN" },
-  { id: "4", type: "city", value: "Memphis, TN", display: "Memphis, TN" },
-  { id: "5", type: "city", value: "Knoxville, TN", display: "Knoxville, TN" },
-  { id: "6", type: "zip", value: "37201", display: "37201 - Nashville, TN" },
-  { id: "7", type: "zip", value: "38103", display: "38103 - Memphis, TN" },
-  { id: "8", type: "zip", value: "37920", display: "37920 - Knoxville, TN" },
-]
-
 const fetchSuggestions = async (query: string): Promise<LocationSuggestion[]> => {
-  await new Promise((resolve) => setTimeout(resolve, 200))
-
   if (query.length < 2) return []
 
-  return mockSuggestions.filter((suggestion) =>
-    suggestion.display.toLowerCase().includes(query.toLowerCase()),
-  )
+  const response = await fetch(`/api/autosuggest?query=${encodeURIComponent(query)}`)
+  if (!response.ok) {
+    return []
+  }
+  const data: LocationSuggestion[] = await response.json()
+  return data
 }
 
 export const Autosuggest = ({
@@ -57,9 +31,10 @@ export const Autosuggest = ({
   onChange,
   placeholder = "Search by address, city, or zip code",
   debounceMs = 300,
+  defaultValue = "",
   ...props
 }: AutosuggestProps) => {
-  const [query, setQuery] = useState("")
+  const [query, setQuery] = useState<string>(String(defaultValue))
   const [suggestions, setSuggestions] = useState<LocationSuggestion[]>([])
   const [isOpen, setIsOpen] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState(-1)
@@ -100,7 +75,6 @@ export const Autosuggest = ({
       try {
         const results = await fetchSuggestions(query)
         setSuggestions(results)
-        setIsOpen(results.length > 0)
         setSelectedIndex(-1)
       } catch (error) {
         console.error("Error fetching suggestions:", error)
@@ -121,6 +95,7 @@ export const Autosuggest = ({
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     setQuery(value)
+    setIsOpen(value.length >= 2)
     onChange?.(value)
   }
 
@@ -129,7 +104,6 @@ export const Autosuggest = ({
     setIsOpen(false)
     setSelectedIndex(-1)
     onSelect?.(suggestion)
-    onChange?.(suggestion.display)
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {

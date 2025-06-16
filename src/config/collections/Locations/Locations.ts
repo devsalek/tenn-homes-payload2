@@ -47,7 +47,7 @@ export const Locations: CollectionConfig = {
           label: "City",
         },
         {
-          name: "city_slug",
+          name: "slug",
           type: "text",
           required: true,
           admin: {

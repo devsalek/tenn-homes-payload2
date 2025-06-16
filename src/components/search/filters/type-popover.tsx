@@ -15,6 +15,24 @@ import { ChevronDownIcon, XIcon } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 
+import { ApartmentIcon } from "@/components/icons/apartment"
+import { CastleIcon } from "@/components/icons/castle"
+import { CondoIcon } from "@/components/icons/condo"
+import { HouseIcon } from "@/components/icons/house"
+import { LandIcon } from "@/components/icons/land"
+import { MobileHomeIcon } from "@/components/icons/mobile-home"
+import { TownhouseIcon } from "@/components/icons/townhouse"
+
+const iconMap: Record<PropertyType, React.ComponentType> = {
+  "single-family": HouseIcon,
+  "multi-family": ApartmentIcon,
+  condo: CondoIcon,
+  townhouse: TownhouseIcon,
+  land: LandIcon,
+  "mobile-home": MobileHomeIcon,
+  other: CastleIcon,
+}
+
 export function FilterTypePopover() {
   const router = useRouter()
   const {
@@ -39,7 +57,7 @@ export function FilterTypePopover() {
   )
 
   const renderOption = (option: PropertyTypeOption) => {
-    const Icon = option.icon
+    const Icon = iconMap[option.value] || HouseIcon
     return (
       <Label
         key={option.value}

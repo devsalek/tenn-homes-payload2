@@ -8,6 +8,8 @@ import { parseUrlToSearchCriteria } from "@/lib/search-utils"
 import { SearchResultsProvider } from "../../search-results-provider"
 import { Header } from "@/app/(frontend)/_layouts/header"
 import { service } from "@/services"
+import { BaseDecorator } from "@/repository/base-decorator"
+import { LocationDecorator } from "@/repository/location/location-repository"
 
 interface SearchPageProps {
   params: Promise<{ slug: string[] }>
@@ -20,9 +22,20 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
 
   const searchCriteria = parseUrlToSearchCriteria(slug, queryParams)
   const results = await service.listings.search(searchCriteria)
+  console.log({ searchCriteria })
+  let query
+  if (searchCriteria.query === "city" && searchCriteria.filters.city) {
+    query = (await local.location.getBySlug(searchCriteria.filters.city)) as LocationDecorator
+  }
+
+  console.log({ query })
 
   return (
-    <SearchResultsProvider initialData={results} searchCriteria={searchCriteria}>
+    <SearchResultsProvider
+      query={query?.original}
+      initialData={results}
+      searchCriteria={searchCriteria}
+    >
       <div className="h-auto lg:h-screen grid grid-cols-12 grid-rows-[auto_1fr] w-full overflow-hidden">
         <div className="col-span-12 lg:h-36 bg-white">
           <div className="border-b">
