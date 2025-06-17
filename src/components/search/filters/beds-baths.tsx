@@ -60,7 +60,7 @@ export function FilterBedsBaths() {
   const label =
     beds || baths ? (
       <span className="font-semibold text-cyan-800">
-        {beds}+ bd / {baths}+ ba
+        {beds || "0"}+ bd / {baths || "0"}+ ba
       </span>
     ) : (
       "Beds/Baths"

@@ -49,7 +49,7 @@ export function FilterTypePopover() {
     return (
       <Label
         key={option.value}
-        className="has-data-[state=checked]:bg-amber-50 has-data-[state=checked]:text-amber-900 ring ring-border has-data-[state=checked]:ring-amber-600 flex flex-col items-center justify-center group gap-3 size-28 border rounded-md p-2 cursor-pointer hover:bg-gray-50 "
+        className="has-data-[state=checked]:bg-amber-50 has-data-[state=checked]:text-amber-900 ring has-data-[state=checked]:ring-2 ring-border has-data-[state=checked]:ring-amber-600 flex flex-col items-center justify-center group gap-3 size-28 border rounded-md p-2 cursor-pointer hover:bg-gray-50 "
       >
         <RadioGroupItem value={option.value} id={option.value} className="sr-only" />
         <Icon />
