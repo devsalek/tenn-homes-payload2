@@ -17,7 +17,6 @@ export function FilterStatus({
     <RadioGroup
       className="grid grid-cols-2 gap-2 mb-4"
       onValueChange={(value) => {
-        console.log("FilterStatus onValueChange", value)
         onChange("property-status")(value as ListingStatus)
       }}
       value={value}

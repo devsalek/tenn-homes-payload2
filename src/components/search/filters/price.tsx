@@ -8,27 +8,22 @@ import { DEFAULT_MAX_PRICE, DEFAULT_MIN_PRICE } from "@/constants"
 import { PopoverClose } from "@radix-ui/react-popover"
 import { ChevronDownIcon, XIcon } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
 
 const priceOptions = [
   {
-    value: 0,
-    label: "Any",
-  },
-  {
-    value: "100-300",
+    value: "100|300",
     label: "$100K - $300K",
   },
   {
-    value: "300-500",
+    value: "300|500",
     label: "$300K - $500K",
   },
   {
-    value: "500-750",
+    value: "500|750",
     label: "$500K - $750K",
   },
   {
-    value: "750-1000",
+    value: "750|1000",
     label: "$750K - $1M",
   },
 ]
@@ -52,18 +47,26 @@ export function FilterPrice() {
     searchCriteria: { filters },
     searchResults,
   } = useSearchResults()
-  const [minPrice, setMinPrice] = useState<number>(filters["min-price"] || DEFAULT_MIN_PRICE)
-  const [maxPrice, setMaxPrice] = useState<number>(filters["max-price"] || DEFAULT_MAX_PRICE)
-  const [value, setValue] = useState<string>(
-    minPrice > 0 || maxPrice < DEFAULT_MAX_PRICE ? `${minPrice / 1000}-${maxPrice / 1000}` : "any",
-  )
 
-  console.log({ maxPrice, minPrice, value })
+  const minPrice =
+    filters["min-price"] && Number(filters["min-price"]) > DEFAULT_MIN_PRICE
+      ? Number(filters["min-price"])
+      : DEFAULT_MIN_PRICE
+  const maxPrice =
+    filters["max-price"] && Number(filters["max-price"]) < DEFAULT_MAX_PRICE
+      ? Number(filters["max-price"])
+      : DEFAULT_MAX_PRICE
 
   const maxPriceLabel = maxPrice === DEFAULT_MAX_PRICE ? "Any" : `${formatLabel(maxPrice)}`
   const minPriceLabel = minPrice > 0 ? `${formatLabel(minPrice)}` : "Any"
+
+  const value =
+    minPrice > DEFAULT_MIN_PRICE || maxPrice < DEFAULT_MAX_PRICE
+      ? `${minPrice / 1000}|${maxPrice / 1000}`
+      : "any"
+
   const label =
-    minPrice > 0 || maxPrice < DEFAULT_MAX_PRICE ? (
+    minPrice > DEFAULT_MIN_PRICE || maxPrice < DEFAULT_MAX_PRICE ? (
       <span className="text-cyan-800 font-semibold">
         {minPriceLabel} - {maxPriceLabel}
       </span>
@@ -72,9 +75,6 @@ export function FilterPrice() {
     )
 
   const resetFilters = () => {
-    setMinPrice(DEFAULT_MIN_PRICE)
-    setMaxPrice(DEFAULT_MAX_PRICE)
-    setValue("any")
     router.push(
       updateSearch({
         filters: { ...filters, "min-price": undefined, "max-price": undefined },
@@ -83,18 +83,12 @@ export function FilterPrice() {
   }
 
   const setPriceRange = (value: string) => {
-    setValue(value)
     let newMinPrice = undefined
     let newMaxPrice = undefined
-    if (value === "any") {
-      setMinPrice(DEFAULT_MIN_PRICE)
-      setMaxPrice(DEFAULT_MAX_PRICE)
-    } else {
-      const [min, max] = value.split("-").map(Number)
+    if (value !== "any") {
+      const [min, max] = value.split("|").map(Number)
       newMinPrice = min * 1000
       newMaxPrice = max * 1000
-      setMinPrice(newMinPrice)
-      setMaxPrice(newMaxPrice)
     }
 
     router.push(
@@ -139,13 +133,13 @@ export function FilterPrice() {
             <RadioGroup className="flex flex-col gap-2" onValueChange={setPriceRange} value={value}>
               {priceOptions.map((option) => (
                 <Label
-                  htmlFor={`baths-${option.label}`}
-                  key={`baths:${option.value}`}
-                  className="has-data-[state=checked]:bg-amber-50 has-data-[state=checked]:text-amber-900 ring  has-data-[state=checked]:ring-2 ring-border has-data-[state=checked]:ring-amber-600 flex items-center justify-center gap-1 border rounded-md px-6 py-3 hover:bg-gray-100 cursor-pointer focus-within:ring-2 focus-within:ring-amber-500"
+                  htmlFor={`price-${option.label}`}
+                  key={`price:${option.value}`}
+                  className="has-data-[state=checked]:bg-amber-50 has-data-[state=checked]:text-amber-900 ring  has-data-[state=checked]:ring-2 ring-border has-data-[state=checked]:ring-amber-600 flex items-center justify-center gap-1 border rounded-md px-6 py-3 hover:bg-gray-100 cursor-pointer"
                 >
                   <RadioGroupItem
                     value={String(option.value)}
-                    id={`baths-${option.label}`}
+                    id={`price-${option.label}`}
                     className="sr-only"
                   />
                   <div>{option.label}</div>
@@ -155,20 +149,7 @@ export function FilterPrice() {
           </div>
         </div>
         <PopoverClose asChild>
-          <Button
-            type="button"
-            className="w-full"
-            size={"lg"}
-            onClick={() => {
-              const minPriceFilter = minPrice === DEFAULT_MIN_PRICE ? undefined : minPrice
-              const maxPriceFilter = maxPrice === DEFAULT_MAX_PRICE ? undefined : maxPrice
-
-              const url = updateSearch({
-                filters: { ...filters, "min-price": minPriceFilter, "max-price": maxPriceFilter },
-              })
-              router.push(url)
-            }}
-          >
+          <Button type="button" className="w-full" size={"lg"}>
             See {searchResults.totalDocs} homes
           </Button>
         </PopoverClose>

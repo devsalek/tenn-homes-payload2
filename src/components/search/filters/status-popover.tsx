@@ -13,7 +13,6 @@ import {
 import { PopoverClose } from "@radix-ui/react-popover"
 import { ChevronDownIcon, XIcon } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
 
 export function FilterStatusPopover({ children }: { children?: React.ReactNode }) {
   const router = useRouter()
@@ -23,10 +22,9 @@ export function FilterStatusPopover({ children }: { children?: React.ReactNode }
     searchResults,
   } = useSearchResults()
 
-  const [value, setValue] = useState<ListingStatus | undefined>(filters["property-status"])
+  const value = filters["property-status"] as ListingStatus | undefined
 
   const resetFilters = () => {
-    setValue(undefined)
     router.push(
       updateSearch({
         filters: { ...filters, "property-status": undefined },
@@ -70,10 +68,11 @@ export function FilterStatusPopover({ children }: { children?: React.ReactNode }
           className="grid grid-cols-2 gap-2 mb-4"
           value={value}
           onValueChange={(value) => {
-            setValue(value as ListingStatus)
+            const newValue = value === "any" ? undefined : (value as ListingStatus)
+
             router.push(
               updateSearch({
-                filters: { ...filters, "property-status": value },
+                filters: { ...filters, "property-status": newValue },
               }),
             )
           }}
@@ -82,7 +81,7 @@ export function FilterStatusPopover({ children }: { children?: React.ReactNode }
             <Label
               htmlFor={option.value}
               key={option.value}
-              className="has-data-[state=checked]:bg-amber-50 has-data-[state=checked]:text-amber-900 ring  has-data-[state=checked]:ring-2 ring-border has-data-[state=checked]:ring-amber-600 flex items-center justify-center gap-1 border rounded-md px-6 py-3 hover:bg-gray-100 cursor-pointer focus-within:ring-2 focus-within:ring-amber-500"
+              className="has-data-[state=checked]:bg-amber-50 has-data-[state=checked]:text-amber-900 ring  has-data-[state=checked]:ring-2 ring-border has-data-[state=checked]:ring-amber-600 flex items-center justify-center gap-1 border rounded-md px-6 py-3 hover:bg-gray-100 cursor-pointer"
             >
               <RadioGroupItem value={option.value} id={option.value} className="sr-only" />
               <div>{option.label}</div>
@@ -90,15 +89,7 @@ export function FilterStatusPopover({ children }: { children?: React.ReactNode }
           ))}
         </RadioGroup>
         <PopoverClose asChild>
-          <Button
-            type="button"
-            size={"lg"}
-            className="w-full"
-            onClick={() => {
-              const url = updateSearch({ filters: { ...filters, "property-status": value } })
-              router.push(url)
-            }}
-          >
+          <Button type="button" size={"lg"} className="w-full">
             See {searchResults.totalDocs} homes
           </Button>
         </PopoverClose>

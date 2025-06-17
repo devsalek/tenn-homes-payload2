@@ -8,13 +8,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { PopoverClose } from "@radix-ui/react-popover"
 import { ChevronDownIcon, XIcon } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
 
 const bedsOptions = [
-  {
-    value: 0,
-    label: "Any",
-  },
   {
     value: 1,
     label: "1+",
@@ -38,10 +33,6 @@ const bedsOptions = [
 ]
 
 const bathsOptions = [
-  {
-    value: 0,
-    label: "Any",
-  },
   {
     value: 1,
     label: "1+",
@@ -67,8 +58,9 @@ export function FilterBedsBaths() {
     searchCriteria: { filters },
     searchResults,
   } = useSearchResults()
-  const [beds, setBeds] = useState<number>(filters["min-beds"] || 0)
-  const [baths, setBaths] = useState<number>(filters["min-baths"] || 0)
+
+  const beds = Number(filters["min-beds"]) ?? 0
+  const baths = Number(filters["min-baths"]) ?? 0
 
   const label =
     beds || baths ? (
@@ -80,8 +72,6 @@ export function FilterBedsBaths() {
     )
 
   const resetFilters = () => {
-    setBeds(0)
-    setBaths(0)
     router.push(
       updateSearch({
         filters: { ...filters, "min-beds": undefined, "min-baths": undefined },
@@ -122,7 +112,6 @@ export function FilterBedsBaths() {
             <RadioGroup
               className="flex items-center gap-2"
               onValueChange={(value) => {
-                setBeds(Number(value))
                 router.push(
                   updateSearch({
                     filters: { ...filters, "min-beds": value, "min-baths": baths },
@@ -152,7 +141,6 @@ export function FilterBedsBaths() {
             <RadioGroup
               className="flex items-center gap-2"
               onValueChange={(value) => {
-                setBaths(Number(value))
                 router.push(
                   updateSearch({
                     filters: { ...filters, "min-beds": beds, "min-baths": value },
@@ -165,7 +153,7 @@ export function FilterBedsBaths() {
                 <Label
                   htmlFor={`baths-${option.label}`}
                   key={`baths:${option.value}`}
-                  className="has-data-[state=checked]:bg-amber-50 has-data-[state=checked]:text-amber-900 ring  has-data-[state=checked]:ring-2 ring-border has-data-[state=checked]:ring-amber-600 flex items-center gap-1 border rounded-md px-6 py-3 hover:bg-gray-100 cursor-pointer focus-within:ring-2 focus-within:ring-amber-500"
+                  className="has-data-[state=checked]:bg-amber-50 has-data-[state=checked]:text-amber-900 ring  has-data-[state=checked]:ring-2 ring-border has-data-[state=checked]:ring-amber-600 flex items-center gap-1 border rounded-md px-6 py-3 hover:bg-gray-100 cursor-pointer"
                 >
                   <RadioGroupItem
                     value={String(option.value)}
@@ -179,17 +167,7 @@ export function FilterBedsBaths() {
           </div>
         </div>
         <PopoverClose asChild>
-          <Button
-            type="button"
-            size="lg"
-            className="w-full"
-            onClick={() => {
-              const url = updateSearch({
-                filters: { ...filters, "min-beds": beds, "min-baths": baths },
-              })
-              router.push(url)
-            }}
-          >
+          <Button type="button" size="lg" className="w-full">
             See {searchResults.totalDocs} homes
           </Button>
         </PopoverClose>

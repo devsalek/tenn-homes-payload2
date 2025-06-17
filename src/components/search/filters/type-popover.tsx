@@ -40,18 +40,21 @@ export function FilterTypePopover() {
     searchCriteria: { filters },
     searchResults,
   } = useSearchResults()
-  const [value, setValue] = useState<PropertyType | undefined>(filters["property-type"])
+  const defaultValue = (!!filters["property-type"] ? filters["property-type"] : undefined) as
+    | PropertyType
+    | undefined
+
+  console.log({ value: defaultValue })
 
   const resetFilters = () => {
-    setValue(undefined)
     router.push(
       updateSearch({
         filters: { ...filters, "property-type": undefined },
       }),
     )
   }
-  const label = value ? (
-    <span className="font-semibold text-cyan-800">{propertyTypeMap[value].label}</span>
+  const label = defaultValue ? (
+    <span className="font-semibold text-cyan-800">{propertyTypeMap[defaultValue].label}</span>
   ) : (
     "Property Type"
   )
@@ -61,7 +64,7 @@ export function FilterTypePopover() {
     return (
       <Label
         key={option.value}
-        className="has-data-[state=checked]:bg-amber-50 has-data-[state=checked]:text-amber-900 ring ring-border has-data-[state=checked]:ring-amber-600 flex flex-col items-center justify-center group gap-3 size-28 border rounded-md p-2 cursor-pointer hover:bg-gray-50 focus-within:ring-2 focus-within:ring-amber-500 "
+        className="has-data-[state=checked]:bg-amber-50 has-data-[state=checked]:text-amber-900 ring ring-border has-data-[state=checked]:ring-amber-600 flex flex-col items-center justify-center group gap-3 size-28 border rounded-md p-2 cursor-pointer hover:bg-gray-50 "
       >
         <RadioGroupItem value={option.value} id={option.value} className="sr-only" />
         <Icon />
@@ -73,7 +76,7 @@ export function FilterTypePopover() {
   return (
     <Popover>
       <div className="relative">
-        {value && (
+        {defaultValue && (
           <Button
             variant="ghost"
             size={"sm"}
@@ -89,7 +92,7 @@ export function FilterTypePopover() {
             variant={"outline"}
           >
             <span>{label}</span>
-            {!value ? (
+            {!defaultValue ? (
               <span className="ml-2">
                 <ChevronDownIcon size={16} />
               </span>
@@ -103,27 +106,21 @@ export function FilterTypePopover() {
         <RadioGroup
           className="grid grid-cols-4 gap-4 mb-4"
           onValueChange={(value) => {
-            setValue(value as PropertyType)
+            const newValue = value === defaultValue ? undefined : (value as PropertyType)
+            console.log("New value:", newValue)
+
             router.push(
               updateSearch({
-                filters: { ...filters, "property-type": value },
+                filters: { ...filters, "property-type": newValue },
               }),
             )
           }}
-          value={value}
+          value={defaultValue}
         >
           {propertyTypeOptions.map(renderOption)}
         </RadioGroup>
         <PopoverClose asChild>
-          <Button
-            type="button"
-            size={"lg"}
-            className="w-full"
-            onClick={() => {
-              const url = updateSearch({ filters: { ...filters, "property-type": value } })
-              router.push(url)
-            }}
-          >
+          <Button type="button" size={"lg"} className="w-full">
             See {searchResults.totalDocs} homes
           </Button>
         </PopoverClose>

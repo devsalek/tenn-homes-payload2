@@ -62,7 +62,6 @@ export async function GET(request: Request) {
   }
 
   const suggestions = await fetchSuggestions(query)
-  console.log("Autosuggest query:", query)
 
   return new Response(JSON.stringify(suggestions), {
     headers: { "Content-Type": "application/json" },

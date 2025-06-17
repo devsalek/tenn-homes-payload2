@@ -97,8 +97,6 @@ export function buildSearchUrl(searchCriteria: Partial<SearchCriteriaInput>): st
     pathSegments.push(`zip/${encodeURIComponent(filters.zip)}`)
   }
 
-  console.log({ pathSegments, query })
-
   const path = pathSegments.join("/")
 
   // Build query parameters

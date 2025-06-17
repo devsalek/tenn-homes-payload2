@@ -6,7 +6,7 @@ import { Location, Property } from "@/payload-types"
 import { PropertyDecorator } from "@/repository/property/property-decorator"
 import { SearchCriteriaInput } from "@/types"
 import { PaginatedDocs } from "payload"
-import { createContext, useContext, ReactNode } from "react"
+import { createContext, useContext, ReactNode, useState } from "react"
 
 interface SearchResultsContextType {
   searchCriteria: SearchCriteria
@@ -43,6 +43,7 @@ export function SearchResultsProvider({
 // Custom hook to use the search results context
 export function useSearchResults() {
   const context = useContext(SearchResultsContext)
+
   const updateSearch =
     (context: SearchResultsContextType) =>
     (updates: Partial<SearchCriteriaInput>, test = "default") => {
