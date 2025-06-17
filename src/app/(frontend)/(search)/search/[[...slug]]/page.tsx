@@ -22,21 +22,23 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
 
   const searchCriteria = parseUrlToSearchCriteria(slug, queryParams)
   const results = await service.listings.search(searchCriteria)
-  let query
+  let locationInput
   if (searchCriteria.query === "city" && searchCriteria.filters.city) {
-    query = (await local.location.getBySlug(searchCriteria.filters.city)) as LocationDecorator
+    locationInput = (await local.location.getBySlug(
+      searchCriteria.filters.city,
+    )) as LocationDecorator
   }
   if (searchCriteria.query === "zip" && searchCriteria.filters.zip) {
-    query = (await local.location.getFirst({
+    locationInput = (await local.location.getFirst({
       zip: { equals: searchCriteria.filters.zip },
     })) as LocationDecorator
   }
 
-  console.log({ query })
+  console.log({ locationInput })
 
   return (
     <SearchResultsProvider
-      query={query?.original}
+      locationInput={locationInput?.original}
       initialData={results}
       searchCriteria={searchCriteria}
     >

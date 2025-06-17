@@ -1,7 +1,6 @@
 "use client"
 
-import { Input } from "@/components/ui/input"
-import { Filter, Search, SlidersIcon } from "lucide-react"
+import { Search, SlidersIcon } from "lucide-react"
 import { FilterStatusPopover } from "./filters/status-popover"
 import { FilterTypePopover } from "./filters/type-popover"
 import { FilterBedsBaths } from "./filters/beds-baths"
@@ -15,32 +14,15 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet"
-import { FilterStatus } from "./filters/status"
 import { useSearchResults } from "@/app/(frontend)/(search)/search-results-provider"
 import { Button } from "../ui/button"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
-import { SearchFilterKeys } from "@/lib/search-utils"
-import { FilterType } from "./filters/type"
 import { Autosuggest } from "../autosuggest"
 
 export const SearchHeader = () => {
   const router = useRouter()
 
-  const {
-    query,
-    updateSearch,
-    searchCriteria: { filters, query: searchQuery },
-  } = useSearchResults()
-
-  console.log({ query })
-
-  const defaultInputValue =
-    searchQuery === "city" && query?.city
-      ? query.city
-      : searchQuery === "zip" && query?.zip
-        ? query.zip
-        : ""
+  const { locationInputValue, setFilters } = useSearchResults()
 
   return (
     <div className="bg-white border-b h-20 flex items-center justify-center">
@@ -50,13 +32,14 @@ export const SearchHeader = () => {
           <Autosuggest
             type="text"
             placeholder="City, Address, ZIP"
-            defaultValue={defaultInputValue}
+            defaultValue={locationInputValue}
             className="pl-10 h-12 border-gray-300 md:text-base w-full"
             onChange={(value) => {
               if (!value) {
-                router.push(
-                  updateSearch({ filters: { ...filters, city: undefined, zip: undefined } }),
-                )
+                setFilters({
+                  city: undefined,
+                  zip: undefined,
+                })
               }
             }}
             onSelect={(suggestion) => {
@@ -67,11 +50,10 @@ export const SearchHeader = () => {
                 suggestion.type === "city" ? "city" : suggestion.type === "zip" ? "zip" : null
               if (!key) return
               const otherKey = key === "city" ? "zip" : "city"
-              router.push(
-                updateSearch({
-                  filters: { ...filters, [key]: suggestion.value, [otherKey]: undefined },
-                }),
-              )
+              setFilters({
+                [key]: suggestion.value,
+                [otherKey]: undefined,
+              })
             }}
           />
         </div>
@@ -85,36 +67,8 @@ export const SearchHeader = () => {
 }
 
 const Filters = () => {
-  const router = useRouter()
+  const { searchResults } = useSearchResults()
 
-  const {
-    searchResults,
-    searchCriteria: { filters },
-    updateSearch,
-  } = useSearchResults()
-
-  const updateFilter = () => {
-    const url = updateSearch({ filters: { ...filters, "property-status": status } })
-    router.push(url)
-  }
-
-  const handleFilterApply = (filter: SearchFilterKeys) => {
-    return (value: string) => {
-      const newFilters = { ...filters, [filter]: value }
-      setFilterState(newFilters)
-      const newUrl = updateSearch({ filters: newFilters })
-      router.push(newUrl)
-    }
-  }
-
-  const handleFilterChange = (filter: SearchFilterKeys) => {
-    return (value: string) => {
-      const newFilters = { ...filters, [filter]: value }
-      setFilterState(newFilters)
-    }
-  }
-
-  const [filterState, setFilterState] = useState<Record<SearchFilterKeys, any>>(filters)
   return (
     <div>
       <div className="hidden lg:flex items-center gap-2 text-sm text-muted-foreground">
@@ -134,14 +88,7 @@ const Filters = () => {
               <SheetDescription>Adjust your search criteria</SheetDescription>
             </SheetHeader>
             <div className="flex flex-col gap-4 p-4">
-              <div className="grid gap-3">
-                <h3 className="font-semibold">Property Status</h3>
-                <FilterStatus value={filterState["property-status"]} onChange={handleFilterApply} />
-              </div>
-              <div className="grid gap-3">
-                <h3 className="font-semibold">Property Type</h3>
-                <FilterType value={filterState["property-type"]} onChange={handleFilterApply} />
-              </div>
+              Placeholder
               <SheetClose asChild>
                 <Button type="button" variant="outline" className="w-full">
                   See {searchResults.totalDocs} homes
