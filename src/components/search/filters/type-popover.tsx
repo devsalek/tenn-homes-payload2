@@ -33,16 +33,13 @@ const iconMap: Record<PropertyType, React.ComponentType> = {
 
 export function FilterTypePopover() {
   const {
-    searchCriteria: { filters },
     searchResults,
     setFilters,
+    filters: { propertyType },
   } = useSearchResults()
-  const defaultValue = (!!filters["property-type"] ? filters["property-type"] : undefined) as
-    | PropertyType
-    | undefined
 
-  const label = defaultValue ? (
-    <span className="font-semibold text-cyan-800">{propertyTypeMap[defaultValue].label}</span>
+  const label = propertyType ? (
+    <span className="font-semibold text-cyan-800">{propertyTypeMap[propertyType].label}</span>
   ) : (
     "Property Type"
   )
@@ -64,7 +61,7 @@ export function FilterTypePopover() {
   return (
     <Popover>
       <div className="relative">
-        {defaultValue && (
+        {propertyType && (
           <Button
             variant="ghost"
             size={"sm"}
@@ -82,7 +79,7 @@ export function FilterTypePopover() {
             variant={"outline"}
           >
             <span>{label}</span>
-            {!defaultValue ? (
+            {!propertyType ? (
               <span className="ml-2">
                 <ChevronDownIcon size={16} />
               </span>
@@ -96,12 +93,9 @@ export function FilterTypePopover() {
         <RadioGroup
           className="grid grid-cols-4 gap-4 mb-4"
           onValueChange={(value) => {
-            const newValue = value === defaultValue ? undefined : (value as PropertyType)
-            console.log("New value:", newValue)
-
-            setFilters({ "property-type": newValue })
+            setFilters({ "property-type": value })
           }}
-          value={defaultValue}
+          value={propertyType}
         >
           {propertyTypeOptions.map(renderOption)}
         </RadioGroup>

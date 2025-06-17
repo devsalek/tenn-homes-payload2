@@ -1,6 +1,9 @@
 // components/search/SearchResultsProvider.tsx
 "use client"
 
+import { ListingStatus } from "@/config/collections/Properties/listing-status-map"
+import { PropertyType } from "@/config/collections/Properties/property-type-options"
+import { DEFAULT_MAX_PRICE, DEFAULT_MIN_PRICE } from "@/constants"
 import { buildSearchUrl, SearchCriteria, SearchFilterKeys } from "@/lib/search-utils"
 import { Location, Property } from "@/payload-types"
 import { PropertyDecorator } from "@/repository/property/property-decorator"
@@ -59,16 +62,43 @@ export function useSearchResults() {
     }
 
   const setFilters = (filters: Partial<Record<SearchFilterKeys, any>>) => {
-    router.push(updateSearch(context)({ filters }))
+    router.push(
+      updateSearch(context)({ filters: { ...context.searchCriteria.filters, ...filters } }),
+    )
   }
 
   // decorate search results
   const docs = (context.searchResults?.docs ?? []).map((doc) => new PropertyDecorator(doc))
+
+  const filters = context.searchCriteria.filters || {}
+
+  const minPrice =
+    filters["min-price"] && Number(filters["min-price"]) > DEFAULT_MIN_PRICE
+      ? Number(filters["min-price"])
+      : DEFAULT_MIN_PRICE
+  const maxPrice =
+    filters["max-price"] && Number(filters["max-price"]) < DEFAULT_MAX_PRICE
+      ? Number(filters["max-price"])
+      : DEFAULT_MAX_PRICE
+
+  const beds = Number(filters["min-beds"]) ?? 0
+  const baths = Number(filters["min-baths"]) ?? 0
+
+  const propertyStatus = filters["property-status"] as ListingStatus | undefined
+  const propertyType = filters["property-type"] as PropertyType | undefined
 
   return {
     ...context,
     setFilters,
     updateSearch: updateSearch(context),
     searchResults: { ...context.searchResults, docs } as PaginatedDocs<PropertyDecorator>,
+    filters: {
+      beds,
+      baths,
+      minPrice,
+      maxPrice,
+      propertyStatus,
+      propertyType,
+    },
   }
 }

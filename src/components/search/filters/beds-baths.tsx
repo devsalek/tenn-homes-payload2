@@ -52,13 +52,10 @@ const bathsOptions = [
 
 export function FilterBedsBaths() {
   const {
-    searchCriteria: { filters },
     searchResults,
     setFilters,
+    filters: { beds, baths },
   } = useSearchResults()
-
-  const beds = Number(filters["min-beds"]) ?? 0
-  const baths = Number(filters["min-baths"]) ?? 0
 
   const label =
     beds || baths ? (

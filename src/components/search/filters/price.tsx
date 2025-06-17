@@ -41,19 +41,10 @@ const formatLabel = (price: number) => {
 
 export function FilterPrice() {
   const {
-    searchCriteria: { filters },
     searchResults,
     setFilters,
+    filters: { minPrice, maxPrice },
   } = useSearchResults()
-
-  const minPrice =
-    filters["min-price"] && Number(filters["min-price"]) > DEFAULT_MIN_PRICE
-      ? Number(filters["min-price"])
-      : DEFAULT_MIN_PRICE
-  const maxPrice =
-    filters["max-price"] && Number(filters["max-price"]) < DEFAULT_MAX_PRICE
-      ? Number(filters["max-price"])
-      : DEFAULT_MAX_PRICE
 
   const maxPriceLabel = maxPrice === DEFAULT_MAX_PRICE ? "Any" : `${formatLabel(maxPrice)}`
   const minPriceLabel = minPrice > 0 ? `${formatLabel(minPrice)}` : "Any"

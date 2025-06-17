@@ -15,15 +15,13 @@ import { ChevronDownIcon, XIcon } from "lucide-react"
 
 export function FilterStatusPopover() {
   const {
-    searchCriteria: { filters },
     searchResults,
     setFilters,
+    filters: { propertyStatus },
   } = useSearchResults()
 
-  const value = filters["property-status"] as ListingStatus | undefined
-
-  const label = value ? (
-    <span className="font-semibold text-cyan-800">{listingStatusMap[value].label}</span>
+  const label = propertyStatus ? (
+    <span className="font-semibold text-cyan-800">{listingStatusMap[propertyStatus].label}</span>
   ) : (
     "Status"
   )
@@ -31,7 +29,7 @@ export function FilterStatusPopover() {
   return (
     <Popover>
       <div className="relative">
-        {value && (
+        {propertyStatus && (
           <Button
             variant="ghost"
             size={"sm"}
@@ -46,7 +44,7 @@ export function FilterStatusPopover() {
         <PopoverTrigger asChild>
           <Button className="h-12 flex items-center justify-between gap-2 w-42" variant={"outline"}>
             <span>{label}</span>
-            {!value ? (
+            {!propertyStatus ? (
               <span className="ml-2">
                 <ChevronDownIcon size={16} />
               </span>
@@ -59,7 +57,7 @@ export function FilterStatusPopover() {
       <PopoverContent className="w-96">
         <RadioGroup
           className="grid grid-cols-2 gap-2 mb-4"
-          value={value}
+          value={propertyStatus}
           onValueChange={(value) => {
             const newValue = value === "any" ? undefined : (value as ListingStatus)
 
