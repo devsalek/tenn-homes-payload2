@@ -66,7 +66,7 @@
   --muted-foreground: oklch(0.52 0.01 240);
 
   /* Elegant gold accent */
-  --accent: oklch(89.651% 0.06766 84.424);
+  --accent: oklch(94.66% 0.03688 84.573);
   --accent-foreground: oklch(0.25 0.04 85);
 
   /* Professional red for warnings */
