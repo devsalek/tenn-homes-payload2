@@ -2,6 +2,7 @@ import { getPayloadClient } from "@/db/client"
 import { FindOptions } from "@/types"
 import { notFound } from "next/navigation"
 import { CollectionSlug, PaginatedDocs, Where } from "payload"
+import { cache } from "react"
 
 /**
  * Type helper to constrain relationship fields to their raw IDs only
@@ -56,15 +57,16 @@ export abstract class BaseRepository<T, D> {
 
     return result
   }
-  async getFirst(where: Where = {}): Promise<D | null> {
+
+  getFirst = cache(async (where: Where = {}): Promise<D | null> => {
     const result = await this.getAll(where)
     if (!result || result.totalDocs === 0) {
       return null
     }
     return result.docs[0]
-  }
+  })
 
-  async getBySlug(slug: string): Promise<D | null> {
+  getBySlug = cache(async (slug: string): Promise<D | null> => {
     const payload = await getPayloadClient()
 
     const result = (await payload.find({
@@ -74,25 +76,29 @@ export abstract class BaseRepository<T, D> {
     })) as PaginatedDocs<T>
 
     return this.createDecorator(result.docs[0]) ?? null
-  }
-  async getAll(
-    where: Where = {},
-    searchCriteria: FindOptions = defaultFindOptions,
-  ): Promise<PaginatedDocs<D>> {
-    const payload = await getPayloadClient()
+  })
 
-    const result = (await payload.find({
-      collection: this.collection,
-      where,
-      ...searchCriteria,
-    })) as PaginatedDocs<T>
+  getAll = cache(
+    async (
+      where: Where = {},
+      searchCriteria: FindOptions = defaultFindOptions,
+    ): Promise<PaginatedDocs<D>> => {
+      const payload = await getPayloadClient()
 
-    return {
-      ...result,
-      docs: result.docs.map((doc) => this.createDecorator(doc)),
-    } as PaginatedDocs<D>
-  }
-  async getByID(id: number | string): Promise<D> {
+      const result = (await payload.find({
+        collection: this.collection,
+        where,
+        ...searchCriteria,
+      })) as PaginatedDocs<T>
+
+      return {
+        ...result,
+        docs: result.docs.map((doc) => this.createDecorator(doc)),
+      } as PaginatedDocs<D>
+    },
+  )
+
+  getByID = cache(async (id: number | string): Promise<D> => {
     const payload = await getPayloadClient()
 
     const result = (await payload.find({
@@ -105,7 +111,7 @@ export abstract class BaseRepository<T, D> {
     }
 
     return this.createDecorator(result.docs[0]) //
-  }
+  })
 
   /**
    * Finds an existing document or creates a new one

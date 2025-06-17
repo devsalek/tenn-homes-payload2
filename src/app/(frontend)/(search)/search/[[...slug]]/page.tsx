@@ -2,13 +2,10 @@ import { SearchHeader } from "@/components/search/search-header"
 import { SearchResults } from "@/components/search/search-results"
 import { SearchResultsMap } from "@/components/search/search-results-map"
 import { local } from "@/repository"
-import { PaginatedDocs, Where } from "payload"
-import { Property } from "@/payload-types"
 import { parseUrlToSearchCriteria } from "@/lib/search-utils"
 import { SearchResultsProvider } from "../../search-results-provider"
 import { Header } from "@/app/(frontend)/_layouts/header"
 import { service } from "@/services"
-import { BaseDecorator } from "@/repository/base-decorator"
 import { LocationDecorator } from "@/repository/location/location-repository"
 
 interface SearchPageProps {
@@ -33,8 +30,6 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
       zip: { equals: searchCriteria.filters.zip },
     })) as LocationDecorator
   }
-
-  console.log({ locationInput })
 
   return (
     <SearchResultsProvider
