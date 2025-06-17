@@ -45,6 +45,13 @@ export const SearchHeader = () => {
             placeholder="City, Address, ZIP"
             defaultValue={defaultInputValue}
             className="pl-10 h-12 border-gray-300 md:text-base w-full"
+            onChange={(value) => {
+              if (!value) {
+                router.push(
+                  updateSearch({ filters: { ...filters, city: undefined, zip: undefined } }),
+                )
+              }
+            }}
             onSelect={(suggestion) => {
               if (suggestion.type === "address") {
                 router.push(suggestion.url)
