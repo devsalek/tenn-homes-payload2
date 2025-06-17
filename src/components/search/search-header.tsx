@@ -111,9 +111,7 @@ const Filters = () => {
   return (
     <div>
       <div className="hidden lg:flex items-center gap-2 text-sm text-muted-foreground">
-        <FilterStatusPopover>
-          <FilterStatus value={filterState["property-status"]} onChange={handleFilterChange} />
-        </FilterStatusPopover>
+        <FilterStatusPopover />
         <FilterTypePopover />
         <FilterBedsBaths />
         <FilterPrice />

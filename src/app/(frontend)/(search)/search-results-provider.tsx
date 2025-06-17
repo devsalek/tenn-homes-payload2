@@ -1,10 +1,11 @@
 // components/search/SearchResultsProvider.tsx
 "use client"
 
-import { buildSearchUrl, SearchCriteria } from "@/lib/search-utils"
+import { buildSearchUrl, SearchCriteria, SearchFilterKeys } from "@/lib/search-utils"
 import { Location, Property } from "@/payload-types"
 import { PropertyDecorator } from "@/repository/property/property-decorator"
 import { SearchCriteriaInput } from "@/types"
+import { useRouter } from "next/navigation"
 import { PaginatedDocs } from "payload"
 import { createContext, useContext, ReactNode, useState } from "react"
 
@@ -43,17 +44,22 @@ export function SearchResultsProvider({
 // Custom hook to use the search results context
 export function useSearchResults() {
   const context = useContext(SearchResultsContext)
+  const router = useRouter()
+
+  if (context === undefined) {
+    throw new Error("useSearchResults must be used within a SearchResultsProvider")
+  }
 
   const updateSearch =
-    (context: SearchResultsContextType) =>
-    (updates: Partial<SearchCriteriaInput>, test = "default") => {
+    (context: SearchResultsContextType) => (updates: Partial<SearchCriteriaInput>) => {
       const currentCriteria = context.searchCriteria
       const newCriteria = { ...currentCriteria, ...updates }
       const newUrl = buildSearchUrl(newCriteria)
       return newUrl
     }
-  if (context === undefined) {
-    throw new Error("useSearchResults must be used within a SearchResultsProvider")
+
+  const setFilters = (filters: Partial<Record<SearchFilterKeys, any>>) => {
+    router.push(updateSearch(context)({ filters }))
   }
 
   // decorate search results
@@ -61,6 +67,7 @@ export function useSearchResults() {
 
   return {
     ...context,
+    setFilters,
     updateSearch: updateSearch(context),
     searchResults: { ...context.searchResults, docs } as PaginatedDocs<PropertyDecorator>,
   }

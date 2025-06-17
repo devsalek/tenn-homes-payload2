@@ -12,25 +12,16 @@ import {
 } from "@/config/collections/Properties/listing-status-map"
 import { PopoverClose } from "@radix-ui/react-popover"
 import { ChevronDownIcon, XIcon } from "lucide-react"
-import { useRouter } from "next/navigation"
 
-export function FilterStatusPopover({ children }: { children?: React.ReactNode }) {
-  const router = useRouter()
+export function FilterStatusPopover() {
   const {
-    updateSearch,
     searchCriteria: { filters },
     searchResults,
+    setFilters,
   } = useSearchResults()
 
   const value = filters["property-status"] as ListingStatus | undefined
 
-  const resetFilters = () => {
-    router.push(
-      updateSearch({
-        filters: { ...filters, "property-status": undefined },
-      }),
-    )
-  }
   const label = value ? (
     <span className="font-semibold text-cyan-800">{listingStatusMap[value].label}</span>
   ) : (
@@ -44,7 +35,9 @@ export function FilterStatusPopover({ children }: { children?: React.ReactNode }
           <Button
             variant="ghost"
             size={"sm"}
-            onClick={resetFilters}
+            onClick={setFilters.bind(null, {
+              "property-status": undefined,
+            })}
             className="absolute right-0 top-1/2 transform -translate-y-1/2 -translate-x-2 text-cyan-800"
           >
             <XIcon size={16} strokeWidth={3} />
@@ -70,11 +63,7 @@ export function FilterStatusPopover({ children }: { children?: React.ReactNode }
           onValueChange={(value) => {
             const newValue = value === "any" ? undefined : (value as ListingStatus)
 
-            router.push(
-              updateSearch({
-                filters: { ...filters, "property-status": newValue },
-              }),
-            )
+            setFilters({ "property-status": newValue })
           }}
         >
           {listingStatusOptions.map((option) => (

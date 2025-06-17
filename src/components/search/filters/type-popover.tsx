@@ -12,8 +12,6 @@ import {
 } from "@/config/collections/Properties/property-type-options"
 import { PopoverClose } from "@radix-ui/react-popover"
 import { ChevronDownIcon, XIcon } from "lucide-react"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
 
 import { ApartmentIcon } from "@/components/icons/apartment"
 import { CastleIcon } from "@/components/icons/castle"
@@ -34,25 +32,15 @@ const iconMap: Record<PropertyType, React.ComponentType> = {
 }
 
 export function FilterTypePopover() {
-  const router = useRouter()
   const {
-    updateSearch,
     searchCriteria: { filters },
     searchResults,
+    setFilters,
   } = useSearchResults()
   const defaultValue = (!!filters["property-type"] ? filters["property-type"] : undefined) as
     | PropertyType
     | undefined
 
-  console.log({ value: defaultValue })
-
-  const resetFilters = () => {
-    router.push(
-      updateSearch({
-        filters: { ...filters, "property-type": undefined },
-      }),
-    )
-  }
   const label = defaultValue ? (
     <span className="font-semibold text-cyan-800">{propertyTypeMap[defaultValue].label}</span>
   ) : (
@@ -80,7 +68,9 @@ export function FilterTypePopover() {
           <Button
             variant="ghost"
             size={"sm"}
-            onClick={resetFilters}
+            onClick={setFilters.bind(null, {
+              "property-type": undefined,
+            })}
             className="absolute right-0 top-1/2 transform -translate-y-1/2 -translate-x-2 text-cyan-800"
           >
             <XIcon size={16} strokeWidth={3} />
@@ -109,11 +99,7 @@ export function FilterTypePopover() {
             const newValue = value === defaultValue ? undefined : (value as PropertyType)
             console.log("New value:", newValue)
 
-            router.push(
-              updateSearch({
-                filters: { ...filters, "property-type": newValue },
-              }),
-            )
+            setFilters({ "property-type": newValue })
           }}
           value={defaultValue}
         >

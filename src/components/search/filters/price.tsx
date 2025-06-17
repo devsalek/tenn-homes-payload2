@@ -7,7 +7,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { DEFAULT_MAX_PRICE, DEFAULT_MIN_PRICE } from "@/constants"
 import { PopoverClose } from "@radix-ui/react-popover"
 import { ChevronDownIcon, XIcon } from "lucide-react"
-import { useRouter } from "next/navigation"
 
 const priceOptions = [
   {
@@ -41,11 +40,10 @@ const formatLabel = (price: number) => {
 }
 
 export function FilterPrice() {
-  const router = useRouter()
   const {
-    updateSearch,
     searchCriteria: { filters },
     searchResults,
+    setFilters,
   } = useSearchResults()
 
   const minPrice =
@@ -74,14 +72,6 @@ export function FilterPrice() {
       "Price"
     )
 
-  const resetFilters = () => {
-    router.push(
-      updateSearch({
-        filters: { ...filters, "min-price": undefined, "max-price": undefined },
-      }),
-    )
-  }
-
   const setPriceRange = (value: string) => {
     let newMinPrice = undefined
     let newMaxPrice = undefined
@@ -91,11 +81,7 @@ export function FilterPrice() {
       newMaxPrice = max * 1000
     }
 
-    router.push(
-      updateSearch({
-        filters: { ...filters, "min-price": newMinPrice, "max-price": newMaxPrice },
-      }),
-    )
+    setFilters({ "min-price": newMinPrice, "max-price": newMaxPrice })
   }
 
   const isSet = minPrice > 0 || maxPrice < DEFAULT_MAX_PRICE
@@ -107,7 +93,7 @@ export function FilterPrice() {
           <Button
             variant="ghost"
             size={"sm"}
-            onClick={resetFilters}
+            onClick={setFilters.bind(null, { "min-price": undefined, "max-price": undefined })}
             className="absolute right-0 top-1/2 transform -translate-y-1/2 -translate-x-2 text-cyan-800"
           >
             <XIcon size={16} strokeWidth={3} />
