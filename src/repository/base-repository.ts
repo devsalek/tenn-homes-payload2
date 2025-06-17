@@ -23,7 +23,7 @@ export type DepthZeroFields<T> = {
 }
 
 export const defaultFindOptions: FindOptions = {
-  limit: 25,
+  limit: 100,
   page: 1,
   sort: "relevance",
   depth: 2, // Default to no population

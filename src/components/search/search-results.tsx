@@ -7,12 +7,12 @@ import { PropertyProvider } from "../providers/property"
 import { SearchResultsPagination } from "./search-results-pagination"
 
 export const SearchResults = () => {
-  const { searchCriteria, searchResults, updateSearch } = useSearchResults()
+  const { searchResults, updateSearch } = useSearchResults()
 
   const currentPage = searchResults.page || 1
   return (
-    <div className="flex-1 lg:h-full">
-      <div className="flex-1 h-full w-full flex flex-col">
+    <div className="flex-1">
+      <div className="flex-1 w-full flex flex-col">
         <div className="h-16 p-4 border-b flex items-center justify-between bg-white">
           <p className="text-sm text-muted-foreground">
             {/* Show the offset based on limit and page number */}
@@ -21,11 +21,11 @@ export const SearchResults = () => {
             {searchResults.totalDocs} homes
           </p>
         </div>
-        <div className="bg-white flex-1 h-full overflow-y-auto">
+        <div className="bg-white flex-1">
           {searchResults.totalDocs === 0 ? (
             <div className="p-4">No properties found.</div>
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 p-4">
+            <div className="grid grid-cols-1 2xl:grid-cols-2 gap-4 p-4">
               {searchResults.docs.map((property) => (
                 <PropertyProvider property={property.original} key={property.id}>
                   <PropertySearchCard />

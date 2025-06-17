@@ -22,14 +22,14 @@ export function FilterPopover({
   const { searchResults } = useSearchResults()
 
   const renderLabel = isSet ? (
-    <span className="font-semibold text-cyan-800">{label}</span>
+    <span className="font-semibold text-primary">{label}</span>
   ) : (
     placeholder
   )
 
   return (
     <Popover>
-      <div className="relative">
+      <div className="relative w-42">
         {isSet && (
           <Button
             variant="ghost"
@@ -41,7 +41,10 @@ export function FilterPopover({
           </Button>
         )}
         <PopoverTrigger asChild>
-          <Button className="h-12 flex items-center justify-between gap-2 w-42" variant={"outline"}>
+          <Button
+            className="h-12 flex items-center justify-between gap-2 w-full"
+            variant={"outline"}
+          >
             <span>{renderLabel}</span>
             {!isSet ? (
               <span className="ml-2">

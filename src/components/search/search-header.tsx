@@ -1,6 +1,6 @@
 "use client"
 
-import { Divide, Search, SlidersIcon } from "lucide-react"
+import { Search, SlidersIcon } from "lucide-react"
 import { FilterType } from "./filters/type"
 import { FilterBedsBaths } from "./filters/beds-baths"
 import { FilterPrice } from "./filters/price"
@@ -19,13 +19,7 @@ import { Button } from "../ui/button"
 import { useRouter } from "next/navigation"
 import { Autosuggest } from "../autosuggest"
 import { FilterPopover } from "./filters/filter-popover"
-import {
-  listingStatusMap,
-  listingStatusOptions,
-} from "@/config/collections/Properties/listing-status-map"
-import { Label } from "../ui/label"
-import { RadioGroupItem } from "@radix-ui/react-radio-group"
-import { RadioGroup } from "../ui/radio-group"
+import { listingStatusMap } from "@/config/collections/Properties/listing-status-map"
 import { FilterStatus } from "./filters/status"
 import { propertyTypeMap } from "@/config/collections/Properties/property-type-options"
 import { DEFAULT_MAX_PRICE, DEFAULT_MIN_PRICE } from "@/constants"
@@ -37,9 +31,9 @@ export const SearchHeader = () => {
   const { locationInputValue, setFilters } = useSearchResults()
 
   return (
-    <div className="bg-white border-b h-20 flex items-center justify-center">
-      <div className="flex items-center gap-4 w-full max-w-7xl px-4">
-        <div className="flex-1 lg:w-1/2 relative">
+    <div className="h-20 flex items-center justify-center">
+      <div className="grid grid-cols-12 gap-4 w-full">
+        <div className="relative w-full col-span-10 lg:col-span-5">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Autosuggest
             type="text"
@@ -70,7 +64,7 @@ export const SearchHeader = () => {
           />
         </div>
 
-        <div className="lg:w-1/2">
+        <div className="col-span-2 lg:col-span-7 flex items-center justify-center">
           <Filters />
         </div>
       </div>
@@ -89,8 +83,8 @@ const Filters = () => {
   const minPriceLabel = minPrice > 0 ? `${formatPriceShort(minPrice)}` : "Any"
 
   return (
-    <div>
-      <div className="hidden lg:flex items-center gap-2 text-sm text-muted-foreground">
+    <div className="flex flex-row lg:flex-col items-center justify-center">
+      <div className="hidden lg:flex items-center justify-center gap-2 w-full text-sm text-muted-foreground">
         <FilterPopover
           label={propertyStatus ? listingStatusMap[propertyStatus]?.label : undefined}
           placeholder="Status"

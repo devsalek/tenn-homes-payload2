@@ -37,20 +37,22 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
       initialData={results}
       searchCriteria={searchCriteria}
     >
-      <div className="h-auto lg:h-screen grid grid-cols-12 grid-rows-[auto_1fr] w-full overflow-hidden">
-        <div className="col-span-12 lg:h-36 bg-white">
-          <div className="border-b">
+      <div>
+        <div className="sticky top-0 z-50">
+          <div className="bg-white border-b">
             <Header />
           </div>
-          <SearchHeader />
-        </div>
-        <div className="flex col-span-12">
-          <div className="w-full lg:w-1/3 lg:min-w-[570px] relative border-t">
-            <div className="relative lg:absolute top-0 w-full bg-white overflow-y-auto h-full">
-              <SearchResults />
+          <div className=" bg-white border-b">
+            <div className="max-w-7xl  mx-auto px-4">
+              <SearchHeader />
             </div>
           </div>
-          <div className="hidden lg:flex flex-1 w-full lg:w-2/3 bg-gray-300">
+        </div>
+        <div className="flex relative">
+          <aside className="w-full lg:w-4/12 border-r">
+            <SearchResults />
+          </aside>
+          <div className="w-8/12 right-0 fixed hidden lg:block h-[calc(100vh-146px)]">
             <SearchResultsMap />
           </div>
         </div>

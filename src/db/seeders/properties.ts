@@ -71,7 +71,7 @@ export async function seedProperties(payload: Payload): Promise<void> {
   ]
 
   const sampleProperties: Omit<Property, "id" | "updatedAt" | "createdAt">[] = Array.from(
-    { length: 100 },
+    { length: 500 },
     () => {
       const location = faker.helpers.arrayElement(locationDocs).original
       const street = faker.location.streetAddress()
