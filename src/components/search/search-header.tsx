@@ -130,19 +130,11 @@ const Filters = () => {
               <SheetDescription>Adjust your search criteria</SheetDescription>
             </SheetHeader>
             <div className="flex flex-col justify-between overflow-y-scroll gap-4">
-              <div className="grid divide-border divide-y">
-                <div className="p-4">
-                  <FilterStatus />
-                </div>
-                <div className="p-4">
-                  <FilterType />
-                </div>
-                <div className="p-4">
-                  <FilterBedsBaths />
-                </div>
-                <div className="p-4">
-                  <FilterPrice />
-                </div>
+              <div className="grid divide-y">
+                <FilterStatus />
+                <FilterType />
+                <FilterBedsBaths />
+                <FilterPrice />
               </div>
             </div>
             <SheetFooter>

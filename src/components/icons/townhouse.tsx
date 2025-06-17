@@ -1,8 +1,8 @@
 export const TownhouseIcon = () => {
   return (
-    <svg width={100} height={100} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <svg width={50} height={50} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
       {/* Left roof */}
-      <polygon points="12,45 27.5,25 43,45" fill="none" stroke="currentColor" strokeWidth={4} />
+      <polygon points="12,45 27.5,25 43,45" fill="#ffffff" stroke="currentColor" strokeWidth={4} />
 
       {/* Right roof */}
       <polygon points="62,45 77.5,25 93,45" fill="#ffffff" stroke="currentColor" strokeWidth={4} />
@@ -23,7 +23,7 @@ export const TownhouseIcon = () => {
         y={45}
         width={27}
         height={40}
-        fill="none"
+        fill="#ffffff"
         stroke="currentColor"
         strokeWidth={4}
       />
@@ -42,17 +42,89 @@ export const TownhouseIcon = () => {
       <polygon points="37,50 52.5,30 68,50" fill="#ffffff" stroke="currentColor" strokeWidth={4} />
 
       {/* Windows */}
-      <rect x={18} y={55} width={6} height={8} fill="none" stroke="currentColor" strokeWidth={2} />
-      <rect x={32} y={55} width={6} height={8} fill="none" stroke="currentColor" strokeWidth={2} />
-      <rect x={43} y={60} width={6} height={6} fill="none" stroke="currentColor" strokeWidth={2} />
-      <rect x={56} y={60} width={6} height={6} fill="none" stroke="currentColor" strokeWidth={2} />
-      <rect x={70} y={55} width={6} height={8} fill="none" stroke="currentColor" strokeWidth={2} />
-      <rect x={82} y={55} width={6} height={8} fill="none" stroke="currentColor" strokeWidth={2} />
+      <rect
+        x={18}
+        y={55}
+        width={6}
+        height={8}
+        fill="#ffffff"
+        stroke="currentColor"
+        strokeWidth={2}
+      />
+      <rect
+        x={32}
+        y={55}
+        width={6}
+        height={8}
+        fill="#ffffff"
+        stroke="currentColor"
+        strokeWidth={2}
+      />
+      <rect
+        x={43}
+        y={60}
+        width={6}
+        height={6}
+        fill="#ffffff"
+        stroke="currentColor"
+        strokeWidth={2}
+      />
+      <rect
+        x={56}
+        y={60}
+        width={6}
+        height={6}
+        fill="#ffffff"
+        stroke="currentColor"
+        strokeWidth={2}
+      />
+      <rect
+        x={70}
+        y={55}
+        width={6}
+        height={8}
+        fill="#ffffff"
+        stroke="currentColor"
+        strokeWidth={2}
+      />
+      <rect
+        x={82}
+        y={55}
+        width={6}
+        height={8}
+        fill="#ffffff"
+        stroke="currentColor"
+        strokeWidth={2}
+      />
 
       {/* Doors */}
-      <rect x={22} y={70} width={8} height={15} fill="none" stroke="currentColor" strokeWidth={2} />
-      <rect x={47} y={70} width={8} height={15} fill="none" stroke="currentColor" strokeWidth={2} />
-      <rect x={72} y={70} width={8} height={15} fill="none" stroke="currentColor" strokeWidth={2} />
+      <rect
+        x={22}
+        y={70}
+        width={8}
+        height={15}
+        fill="#ffffff"
+        stroke="currentColor"
+        strokeWidth={2}
+      />
+      <rect
+        x={47}
+        y={70}
+        width={8}
+        height={15}
+        fill="#ffffff"
+        stroke="currentColor"
+        strokeWidth={2}
+      />
+      <rect
+        x={72}
+        y={70}
+        width={8}
+        height={15}
+        fill="#ffffff"
+        stroke="currentColor"
+        strokeWidth={2}
+      />
     </svg>
   )
 }

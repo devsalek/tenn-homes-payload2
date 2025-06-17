@@ -3,6 +3,7 @@ import { useSearchResults } from "@/app/(frontend)/(search)/search-results-provi
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { DEFAULT_MAX_PRICE, DEFAULT_MIN_PRICE } from "@/constants"
+import { FilterGroupItem } from "./filter-group-item"
 
 const priceOptions = [
   {
@@ -47,7 +48,7 @@ export function FilterPrice() {
   }
 
   return (
-    <div className="grid gap-2">
+    <div className="grid gap-2 p-4">
       <div className="flex items-center gap-3">
         <h3 className="font-semibold">Price</h3>
         {value && (
@@ -62,18 +63,13 @@ export function FilterPrice() {
       </div>
       <RadioGroup className="flex flex-col gap-2" onValueChange={setPriceRange} value={value}>
         {priceOptions.map((option) => (
-          <Label
-            htmlFor={`price-${option.label}`}
+          <FilterGroupItem
+            id={`price:${option.value}`}
             key={`price:${option.value}`}
-            className="has-data-[state=checked]:bg-amber-50 has-data-[state=checked]:text-amber-900 ring  has-data-[state=checked]:ring-2 ring-border has-data-[state=checked]:ring-amber-600 flex items-center justify-center gap-1 border rounded-md px-6 py-3 hover:bg-gray-100 cursor-pointer"
+            value={String(option.value)}
           >
-            <RadioGroupItem
-              value={String(option.value)}
-              id={`price-${option.label}`}
-              className="sr-only"
-            />
-            <div>{option.label}</div>
-          </Label>
+            {option.label}
+          </FilterGroupItem>
         ))}
       </RadioGroup>
     </div>

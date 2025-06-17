@@ -2,6 +2,7 @@
 import { useSearchResults } from "@/app/(frontend)/(search)/search-results-provider"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { FilterGroupItem } from "./filter-group-item"
 
 const bedsOptions = [
   {
@@ -52,7 +53,7 @@ export function FilterBedsBaths() {
   } = useSearchResults()
 
   return (
-    <div className="grid gap-4">
+    <div className="grid gap-4 p-4">
       <div className="grid gap-2">
         <div className="flex items-center gap-3">
           <h3 className="font-semibold">Beds</h3>
@@ -67,21 +68,20 @@ export function FilterBedsBaths() {
           )}
         </div>
         <RadioGroup
-          className="flex items-center gap-2"
+          className="flex items-center gap-1"
           onValueChange={(value) => {
             setFilters({ "min-beds": value, "min-baths": baths })
           }}
           value={String(beds)}
         >
           {bedsOptions.map((option) => (
-            <Label
-              htmlFor={option.label}
+            <FilterGroupItem
+              id={`beds:${option.value}`}
               key={`beds:${option.value}`}
-              className="has-data-[state=checked]:bg-amber-50 has-data-[state=checked]:text-amber-900 ring has-data-[state=checked]:ring-2 ring-border has-data-[state=checked]:ring-amber-600 flex items-center gap-1 border rounded-md px-6 py-3 hover:bg-gray-100 cursor-pointer"
+              value={String(option.value)}
             >
-              <RadioGroupItem value={String(option.value)} id={option.label} className="sr-only" />
-              <div>{option.label}</div>
-            </Label>
+              {option.label}
+            </FilterGroupItem>
           ))}
         </RadioGroup>
       </div>
@@ -99,25 +99,20 @@ export function FilterBedsBaths() {
           )}
         </div>
         <RadioGroup
-          className="flex items-center gap-2"
+          className="flex items-center gap-1"
           onValueChange={(value) => {
             setFilters({ "min-beds": beds, "min-baths": value })
           }}
           value={String(baths)}
         >
           {bathsOptions.map((option) => (
-            <Label
-              htmlFor={`baths-${option.label}`}
+            <FilterGroupItem
+              id={`baths:${option.value}`}
               key={`baths:${option.value}`}
-              className="has-data-[state=checked]:bg-amber-50 has-data-[state=checked]:text-amber-900 ring  has-data-[state=checked]:ring-2 ring-border has-data-[state=checked]:ring-amber-600 flex items-center gap-1 border rounded-md px-6 py-3 hover:bg-gray-100 cursor-pointer"
+              value={String(option.value)}
             >
-              <RadioGroupItem
-                value={String(option.value)}
-                id={`baths-${option.label}`}
-                className="sr-only"
-              />
-              <div>{option.label}</div>
-            </Label>
+              {option.label}
+            </FilterGroupItem>
           ))}
         </RadioGroup>
       </div>

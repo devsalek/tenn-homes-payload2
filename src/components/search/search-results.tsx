@@ -12,7 +12,7 @@ export const SearchResults = () => {
   const currentPage = searchResults.page || 1
   return (
     <div className="flex-1">
-      <div className="flex-1 w-full flex flex-col">
+      <div className="flex-1 w-full flex flex-col justify-between h-[calc(100vh-144px)]">
         <div className="h-16 p-4 border-b flex items-center justify-between bg-white">
           <p className="text-sm text-muted-foreground">
             {/* Show the offset based on limit and page number */}
@@ -21,7 +21,7 @@ export const SearchResults = () => {
             {searchResults.totalDocs} homes
           </p>
         </div>
-        <div className="bg-white flex-1">
+        <div className="bg-white relative flex-1 h-[calc(100vh-244px)] overflow-y-auto">
           {searchResults.totalDocs === 0 ? (
             <div className="p-4">No properties found.</div>
           ) : (

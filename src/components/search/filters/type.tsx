@@ -16,6 +16,7 @@ import { LandIcon } from "@/components/icons/land"
 import { MobileHomeIcon } from "@/components/icons/mobile-home"
 import { TownhouseIcon } from "@/components/icons/townhouse"
 import { Button } from "@/components/ui/button"
+import { FilterGroupItem } from "./filter-group-item"
 
 const iconMap: Record<PropertyType, React.ComponentType> = {
   "single-family": HouseIcon,
@@ -36,19 +37,23 @@ export function FilterType() {
   const renderOption = (option: PropertyTypeOption) => {
     const Icon = iconMap[option.value] || HouseIcon
     return (
-      <Label
-        key={option.value}
-        className="has-data-[state=checked]:bg-amber-50 w-full h-28 has-data-[state=checked]:text-amber-900 ring has-data-[state=checked]:ring-2 ring-border has-data-[state=checked]:ring-amber-600 flex flex-col items-center justify-center group gap-3 border rounded-md p-2 cursor-pointer hover:bg-gray-50 "
+      <FilterGroupItem
+        id={`type:${option.value}`}
+        key={`type:${option.value}`}
+        value={String(option.value)}
       >
-        <RadioGroupItem value={option.value} id={option.value} className="sr-only" />
-        <Icon />
-        <div>{option.label}</div>
-      </Label>
+        <div className="flex flex-col items-center">
+          <div className="w-12">
+            <Icon />
+          </div>
+          <div>{option.label}</div>
+        </div>
+      </FilterGroupItem>
     )
   }
 
   return (
-    <div className="grid gap-2">
+    <div className="grid gap-2 p-4">
       <div className="flex items-center gap-3">
         <h3 className="font-semibold">Property Type</h3>
         {propertyType && (
