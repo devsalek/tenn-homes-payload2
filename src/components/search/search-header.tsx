@@ -30,10 +30,17 @@ export const SearchHeader = () => {
   const {
     query,
     updateSearch,
-    searchCriteria: { filters },
+    searchCriteria: { filters, query: searchQuery },
   } = useSearchResults()
 
-  const defaultInputValue = query?.city || query?.zip || ""
+  console.log({ query })
+
+  const defaultInputValue =
+    searchQuery === "city" && query?.city
+      ? query.city
+      : searchQuery === "zip" && query?.zip
+        ? query.zip
+        : ""
 
   return (
     <div className="bg-white border-b h-20 flex items-center justify-center">

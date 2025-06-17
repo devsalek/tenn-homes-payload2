@@ -26,6 +26,13 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
   if (searchCriteria.query === "city" && searchCriteria.filters.city) {
     query = (await local.location.getBySlug(searchCriteria.filters.city)) as LocationDecorator
   }
+  if (searchCriteria.query === "zip" && searchCriteria.filters.zip) {
+    query = (await local.location.getFirst({
+      zip: { equals: searchCriteria.filters.zip },
+    })) as LocationDecorator
+  }
+
+  console.log({ query })
 
   return (
     <SearchResultsProvider
