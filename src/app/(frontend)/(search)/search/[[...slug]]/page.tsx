@@ -21,6 +21,10 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
 
   const searchCriteria = parseUrlToSearchCriteria(slug, queryParams)
   const results = await service.listings.search(searchCriteria)
+  const mapResults = await service.listings.search({
+    ...searchCriteria,
+    options: { ...searchCriteria.options, limit: 100 },
+  })
   let locationInput
   if (searchCriteria.query === "city" && searchCriteria.filters.city) {
     locationInput = (await local.location.getBySlug(
@@ -37,6 +41,7 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
     <SearchResultsProvider
       locationInput={locationInput?.original}
       initialData={results}
+      mapResults={mapResults}
       searchCriteria={searchCriteria}
     >
       <div>

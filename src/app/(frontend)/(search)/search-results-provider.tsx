@@ -15,6 +15,7 @@ import { createContext, useContext, ReactNode, useState } from "react"
 interface SearchResultsContextType {
   searchCriteria: SearchCriteria
   searchResults: PaginatedDocs<Property>
+  mapResults: PaginatedDocs<Property>
   locationInput?: Location
   isLoading: boolean
 }
@@ -24,6 +25,7 @@ const SearchResultsContext = createContext<SearchResultsContextType | undefined>
 interface SearchResultsProviderProps {
   children: ReactNode
   initialData: PaginatedDocs<Property>
+  mapResults: PaginatedDocs<Property>
   searchCriteria: SearchCriteria
   locationInput?: Location
 }
@@ -31,6 +33,7 @@ interface SearchResultsProviderProps {
 export function SearchResultsProvider({
   children,
   initialData,
+  mapResults,
   searchCriteria,
   locationInput,
 }: SearchResultsProviderProps) {
@@ -38,6 +41,7 @@ export function SearchResultsProvider({
     locationInput,
     searchCriteria,
     searchResults: initialData,
+    mapResults,
     isLoading: false, // You might want to add loading state management
   }
 
@@ -69,6 +73,7 @@ export function useSearchResults() {
 
   // decorate search results
   const docs = (context.searchResults?.docs ?? []).map((doc) => new PropertyDecorator(doc))
+  const mapDocs = (context.mapResults?.docs ?? []).map((doc) => new PropertyDecorator(doc))
 
   const filters = context.searchCriteria.filters || {}
 
@@ -98,6 +103,7 @@ export function useSearchResults() {
     ...context,
     setFilters,
     updateSearch: updateSearch(context),
+    mapResults: { ...context.mapResults, docs: mapDocs } as PaginatedDocs<PropertyDecorator>,
     searchResults: { ...context.searchResults, docs } as PaginatedDocs<PropertyDecorator>,
     locationInputValue,
     filters: {

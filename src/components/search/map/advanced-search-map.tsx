@@ -26,7 +26,7 @@ export const AdvancedSearchMap = ({
   mapStyle = "real-estate",
   onMapBoundsChange,
 }: AdvancedSearchMapProps) => {
-  const { searchResults } = useSearchResults()
+  const { mapResults } = useSearchResults()
   const [selectedProperty, setSelectedProperty] = useState<PropertyDecorator | null>(null)
   const [hoveredProperty, setHoveredProperty] = useState<PropertyDecorator | null>(null)
   const [selectedCluster, setSelectedCluster] = useState<PropertyDecorator[] | null>(null)
@@ -54,8 +54,8 @@ export const AdvancedSearchMap = ({
   }
 
   // Get properties with valid location data and calculate map bounds
-  const propertiesWithLocation = getPropertiesWithLocation(searchResults.docs)
-  const mapConfig = useMapBounds(searchResults.docs)
+  const propertiesWithLocation = getPropertiesWithLocation(mapResults.docs)
+  const mapConfig = useMapBounds(mapResults.docs)
 
   // Use clustering if enabled
   const clusters = useMapClustering({
@@ -260,7 +260,7 @@ export const AdvancedSearchMap = ({
       <div className="absolute top-4 right-4 flex flex-col gap-2">
         {/* Stats panel */}
         <div className="bg-white rounded-lg shadow-md p-3 text-sm">
-          <div className="font-semibold">{searchResults.totalDocs} properties</div>
+          <div className="font-semibold">{mapResults.totalDocs} properties</div>
           <div className="text-muted-foreground">{propertiesWithLocation.length} shown on map</div>
           {enableClustering && (
             <div className="text-muted-foreground">
