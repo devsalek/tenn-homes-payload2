@@ -25,7 +25,7 @@ export const SearchResults = () => {
           {searchResults.totalDocs === 0 ? (
             <div className="p-4">No properties found.</div>
           ) : (
-            <div className="grid grid-cols-1 2xl:grid-cols-2 gap-4 p-4">
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 p-4">
               {searchResults.docs.map((property) => (
                 <PropertyProvider property={property.original} key={property.id}>
                   <PropertySearchCard />

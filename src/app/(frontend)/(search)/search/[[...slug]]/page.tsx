@@ -49,10 +49,10 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
           </div>
         </div>
         <div className="flex relative">
-          <aside className="w-full lg:w-5/12 border-r">
+          <aside className="w-full lg:w-5/12 2xl:w-4/12 border-r">
             <SearchResults />
           </aside>
-          <div className="w-7/12 right-0 fixed hidden lg:block h-[calc(100vh-146px)]">
+          <div className="w-7/12 2xl:w-8/12 right-0 fixed hidden lg:block h-[calc(100vh-146px)]">
             <SearchResultsMap />
           </div>
         </div>

@@ -33,7 +33,7 @@ export const SearchHeader = () => {
   return (
     <div className="h-20 flex items-center justify-center">
       <div className="grid grid-cols-12 gap-4 w-full">
-        <div className="relative w-full col-span-10 lg:col-span-5">
+        <div className="relative w-full md:col-span-10 lg:col-span-5">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Autosuggest
             type="text"
@@ -83,7 +83,7 @@ const Filters = () => {
   const minPriceLabel = minPrice > 0 ? `${formatPriceShort(minPrice)}` : "Any"
 
   return (
-    <div className="flex flex-row lg:flex-col items-center justify-center">
+    <div className="flex flex-row gap-4 items-center justify-center">
       <div className="hidden lg:flex items-center justify-center gap-2 w-full text-sm text-muted-foreground">
         <FilterPopover
           label={propertyStatus ? listingStatusMap[propertyStatus]?.label : undefined}
@@ -110,16 +110,18 @@ const Filters = () => {
           <FilterBedsBaths />
         </FilterPopover>
 
-        <FilterPopover
-          label={`${minPriceLabel} - ${maxPriceLabel}`}
-          placeholder="Price"
-          isSet={minPrice > DEFAULT_MIN_PRICE || maxPrice < DEFAULT_MAX_PRICE}
-          onClear={() => setFilters({ "min-price": undefined, "max-price": undefined })}
-        >
-          <FilterPrice />
-        </FilterPopover>
+        <div className="hidden xl:block">
+          <FilterPopover
+            label={`${minPriceLabel} - ${maxPriceLabel}`}
+            placeholder="Price"
+            isSet={minPrice > DEFAULT_MIN_PRICE || maxPrice < DEFAULT_MAX_PRICE}
+            onClear={() => setFilters({ "min-price": undefined, "max-price": undefined })}
+          >
+            <FilterPrice />
+          </FilterPopover>
+        </div>
       </div>
-      <div className="lg:hidden flex">
+      <div className="xl:hidden flex">
         <Sheet>
           <SheetTrigger>
             <SlidersIcon />
