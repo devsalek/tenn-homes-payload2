@@ -1,28 +1,106 @@
 "use client"
 
-import { MapPin } from "lucide-react"
-// import Image from "next/image"
+import { useState, useCallback } from "react"
+import GoogleMapReact from "google-map-react"
+import { useSearchResults } from "@/app/(frontend)/(search)/search-results-provider"
+import { PropertyMarker } from "./map/property-marker"
+import { PropertyPopup } from "./map/property-popup"
+import { MockMap } from "./map/mock-map"
+import { PropertyDecorator } from "@/repository/property/property-decorator"
+import { useMapBounds, getPropertiesWithLocation } from "@/hooks/use-map-bounds"
 
 export const SearchResultsMap = () => {
+  const { searchResults } = useSearchResults()
+  const [selectedProperty, setSelectedProperty] = useState<PropertyDecorator | null>(null)
+  const [hoveredProperty, setHoveredProperty] = useState<PropertyDecorator | null>(null)
+
+  // Check if Google Maps API key is available
+  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
+
+  if (!apiKey || apiKey === "your_google_maps_api_key_here") {
+    return <MockMap />
+  }
+
+  // Get properties with valid location data and calculate map bounds
+  const propertiesWithLocation = getPropertiesWithLocation(searchResults.docs)
+  const mapConfig = useMapBounds(searchResults.docs)
+
+  const handleMarkerClick = useCallback(
+    (property: PropertyDecorator) => {
+      setSelectedProperty(property === selectedProperty ? null : property)
+    },
+    [selectedProperty],
+  )
+
+  const handleMarkerHover = useCallback((property: PropertyDecorator | null) => {
+    setHoveredProperty(property)
+  }, [])
+
+  const handleClosePopup = useCallback(() => {
+    setSelectedProperty(null)
+  }, [])
+
   return (
-    <div className="h-full w-full">
-      {/* <Image
-        src="/sample-map.png"
-        alt="Map"
-        width={800}
-        height={600}
-        className="w-full h-full object-cover"
-      /> */}
-      <div className="flex items-center justify-center h-full bg-muted/30">
-        <div className="text-center space-y-4">
-          <MapPin className="h-16 w-16 text-muted-foreground mx-auto" />
-          <div>
-            <h3 className="text-lg font-semibold text-muted-foreground">Map View</h3>
-            <p className="text-sm text-muted-foreground">
-              Interactive map with property pins coming soon
-            </p>
-          </div>
-        </div>
+    <div className="h-full w-full relative">
+      <GoogleMapReact
+        bootstrapURLKeys={{ key: apiKey }}
+        center={mapConfig.center}
+        zoom={mapConfig.zoom}
+        options={{
+          fullscreenControl: false,
+          streetViewControl: false,
+          mapTypeControl: false,
+          styles: [
+            // Optional: Custom map styling
+            {
+              featureType: "poi",
+              elementType: "labels",
+              stylers: [{ visibility: "off" }],
+            },
+          ],
+        }}
+      >
+        {propertiesWithLocation.map((property) => {
+          const [lat, lng] = property.original.point
+          const isSelected = selectedProperty?.original.id === property.original.id
+          const isHovered = hoveredProperty?.original.id === property.original.id
+
+          return (
+            <PropertyMarker
+              // @ts-ignore - google-map-react expects lat/lng props
+              lat={lat}
+              lng={lng}
+              key={property.original.id}
+              property={property}
+              isSelected={isSelected}
+              isHovered={isHovered}
+              onClick={() => handleMarkerClick(property)}
+              onMouseEnter={() => handleMarkerHover(property)}
+              onMouseLeave={() => handleMarkerHover(null)}
+            />
+          )
+        })}
+
+        {selectedProperty &&
+          (() => {
+            const [lat, lng] = selectedProperty.original.point
+            return (
+              <PropertyPopup
+                // @ts-ignore - google-map-react expects lat/lng props
+                lat={lat}
+                lng={lng}
+                property={selectedProperty}
+                onClose={handleClosePopup}
+                position={{ lat, lng }}
+              />
+            )
+          })()}
+      </GoogleMapReact>
+
+      {/* Map controls overlay */}
+      <div className="absolute top-4 right-4 bg-white rounded-lg shadow-md p-3 text-sm">
+        <div className="font-semibold">{searchResults.totalDocs} properties</div>
+        <div className="text-muted-foreground">{propertiesWithLocation.length} shown on map</div>
       </div>
     </div>
   )

@@ -6,6 +6,19 @@ import { faker } from "@faker-js/faker"
 
 import { Payload } from "payload"
 
+/**
+ * Generate a random coordinate near a location with slight variation
+ * This ensures properties aren't all at the exact same spot
+ */
+function generateNearbyCoordinate(baseLat: number, baseLng: number): [number, number] {
+  // Add small random variation (roughly within 2-3 miles)
+  const variation = 0.02 // roughly 1-2 miles in degrees
+  const latOffset = (Math.random() - 0.5) * variation
+  const lngOffset = (Math.random() - 0.5) * variation
+
+  return [baseLat + latOffset, baseLng + lngOffset]
+}
+
 export async function seedProperties(payload: Payload): Promise<void> {
   // Get all locations to randomly assign to properties
   const locations = await local.location.getAll()
@@ -81,6 +94,10 @@ export async function seedProperties(payload: Payload): Promise<void> {
         description: faker.lorem.paragraph(),
         street,
         location: location.id,
+        point:
+          location.latitude && location.longitude
+            ? generateNearbyCoordinate(location.latitude, location.longitude)
+            : [35.9606, -83.9207], // Default to Knoxville if no coordinates
         address: {
           street,
           city: location.city || "",

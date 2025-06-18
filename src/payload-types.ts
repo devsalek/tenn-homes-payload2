@@ -239,6 +239,13 @@ export interface Property {
   };
   photos?: (number | Media)[] | null;
   street: string;
+  /**
+   * Select the location on the map.
+   *
+   * @minItems 2
+   * @maxItems 2
+   */
+  point: [number, number];
   address: {
     street: string;
     city: string;
@@ -578,6 +585,7 @@ export interface PropertiesSelect<T extends boolean = true> {
       };
   photos?: T;
   street?: T;
+  point?: T;
   address?: T;
   location?: T;
   features?: T;
