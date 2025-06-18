@@ -8,6 +8,7 @@ import { Header } from "@/app/(frontend)/_layouts/header"
 import { service } from "@/services"
 import { LocationDecorator } from "@/repository/location/location-repository"
 import { AdvancedSearchMap } from "@/components/search/map/advanced-search-map"
+import { SearchMapWithStyles } from "@/components/search/map/search-map-with-styles"
 
 interface SearchPageProps {
   params: Promise<{ slug: string[] }>
@@ -54,7 +55,7 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
             <SearchResults />
           </aside>
           <div className="w-7/12 2xl:w-8/12 right-0 fixed hidden lg:block h-[calc(100vh-146px)]">
-            <AdvancedSearchMap />
+            <AdvancedSearchMap mapStyle="light" />
           </div>
         </div>
       </div>

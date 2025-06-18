@@ -1,13 +1,10 @@
 "use client"
 import { listingStatusMap } from "@/config/collections/Properties/listing-status-map"
 import { cn } from "@/lib/utils"
-import { useProperty } from "../providers/property"
 import { Badge } from "../ui/badge"
+import { Property } from "@/payload-types"
 
-export const PropertyStatus = () => {
-  const property = useProperty()
-
-  const listingStatus = property.listingStatus
+export const PropertyStatus = ({ listingStatus }: { listingStatus: Property["listingStatus"] }) => {
   return (
     <Badge
       className={cn(

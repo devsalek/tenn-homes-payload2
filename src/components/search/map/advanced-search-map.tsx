@@ -9,18 +9,21 @@ import { PropertyPopup } from "./property-popup"
 import { PropertyDecorator } from "@/repository/property/property-decorator"
 import { useMapBounds, getPropertiesWithLocation } from "@/hooks/use-map-bounds"
 import { useMapClustering } from "@/hooks/use-map-clustering"
+import { getMapStyle, type MapStyle } from "@/lib/map-styles"
 import { MapPin, ZoomIn, ZoomOut, Maximize2, RotateCcw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 interface AdvancedSearchMapProps {
   enableClustering?: boolean
   enableMapControls?: boolean
+  mapStyle?: MapStyle
   onMapBoundsChange?: (bounds: any) => void
 }
 
 export const AdvancedSearchMap = ({
   enableClustering = true,
   enableMapControls = true,
+  mapStyle = "real-estate",
   onMapBoundsChange,
 }: AdvancedSearchMapProps) => {
   const { searchResults } = useSearchResults()
@@ -33,7 +36,7 @@ export const AdvancedSearchMap = ({
 
   // Check if Google Maps API key is available
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
-  
+
   if (!apiKey) {
     return (
       <div className="flex items-center justify-center h-full bg-muted/30">
@@ -53,37 +56,48 @@ export const AdvancedSearchMap = ({
   // Get properties with valid location data and calculate map bounds
   const propertiesWithLocation = getPropertiesWithLocation(searchResults.docs)
   const mapConfig = useMapBounds(searchResults.docs)
-  
+
   // Use clustering if enabled
   const clusters = useMapClustering({
     properties: propertiesWithLocation,
     zoom: currentZoom,
   })
 
-  const handleMarkerClick = useCallback((property: PropertyDecorator) => {
-    setSelectedProperty(property === selectedProperty ? null : property)
-    setSelectedCluster(null)
-  }, [selectedProperty])
+  const handleMarkerClick = useCallback(
+    (property: PropertyDecorator) => {
+      setSelectedProperty(property === selectedProperty ? null : property)
+      setSelectedCluster(null)
+    },
+    [selectedProperty],
+  )
 
-  const handleClusterClick = useCallback((properties: PropertyDecorator[]) => {
-    if (properties.length === 1) {
-      handleMarkerClick(properties[0])
-    } else {
-      setSelectedCluster(properties)
-      setSelectedProperty(null)
-      
-      // Zoom to cluster bounds if map instance is available
-      if (mapInstance && properties.length > 1 && typeof window !== 'undefined' && (window as any).google?.maps) {
-        const google = (window as any).google
-        const bounds = new google.maps.LatLngBounds()
-        properties.forEach(property => {
-          const [lat, lng] = property.original.point
-          bounds.extend(new google.maps.LatLng(lat, lng))
-        })
-        mapInstance.fitBounds(bounds)
+  const handleClusterClick = useCallback(
+    (properties: PropertyDecorator[]) => {
+      if (properties.length === 1) {
+        handleMarkerClick(properties[0])
+      } else {
+        setSelectedCluster(properties)
+        setSelectedProperty(null)
+
+        // Zoom to cluster bounds if map instance is available
+        if (
+          mapInstance &&
+          properties.length > 1 &&
+          typeof window !== "undefined" &&
+          (window as any).google?.maps
+        ) {
+          const google = (window as any).google
+          const bounds = new google.maps.LatLngBounds()
+          properties.forEach((property) => {
+            const [lat, lng] = property.original.point
+            bounds.extend(new google.maps.LatLng(lat, lng))
+          })
+          mapInstance.fitBounds(bounds)
+        }
       }
-    }
-  }, [mapInstance, handleMarkerClick])
+    },
+    [mapInstance, handleMarkerClick],
+  )
 
   const handleMarkerHover = useCallback((property: PropertyDecorator | null) => {
     setHoveredProperty(property)
@@ -94,12 +108,15 @@ export const AdvancedSearchMap = ({
     setSelectedCluster(null)
   }, [])
 
-  const handleMapChange = useCallback(({ zoom, bounds }: any) => {
-    setCurrentZoom(zoom)
-    if (onMapBoundsChange && bounds) {
-      onMapBoundsChange(bounds)
-    }
-  }, [onMapBoundsChange])
+  const handleMapChange = useCallback(
+    ({ zoom, bounds }: any) => {
+      setCurrentZoom(zoom)
+      if (onMapBoundsChange && bounds) {
+        onMapBoundsChange(bounds)
+      }
+    },
+    [onMapBoundsChange],
+  )
 
   const handleZoomIn = useCallback(() => {
     if (mapInstance) {
@@ -114,10 +131,15 @@ export const AdvancedSearchMap = ({
   }, [mapInstance])
 
   const handleResetView = useCallback(() => {
-    if (mapInstance && propertiesWithLocation.length > 0 && typeof window !== 'undefined' && (window as any).google?.maps) {
+    if (
+      mapInstance &&
+      propertiesWithLocation.length > 0 &&
+      typeof window !== "undefined" &&
+      (window as any).google?.maps
+    ) {
       const google = (window as any).google
       const bounds = new google.maps.LatLngBounds()
-      propertiesWithLocation.forEach(property => {
+      propertiesWithLocation.forEach((property) => {
         const [lat, lng] = property.original.point
         bounds.extend(new google.maps.LatLng(lat, lng))
       })
@@ -142,9 +164,9 @@ export const AdvancedSearchMap = ({
   return (
     <div ref={mapRef} className="h-full w-full relative">
       <GoogleMapReact
-        bootstrapURLKeys={{ 
+        bootstrapURLKeys={{
           key: apiKey,
-          libraries: ['geometry', 'drawing', 'places']
+          libraries: ["geometry", "drawing", "places"],
         }}
         center={mapConfig.center}
         zoom={mapConfig.zoom}
@@ -158,44 +180,55 @@ export const AdvancedSearchMap = ({
           streetViewControl: false,
           mapTypeControl: false,
           zoomControl: false,
-          styles: [
-            {
-              featureType: "poi",
-              elementType: "labels",
-              stylers: [{ visibility: "off" }]
-            },
-            {
-              featureType: "transit",
-              elementType: "labels",
-              stylers: [{ visibility: "off" }]
-            }
-          ]
+          styles: getMapStyle(mapStyle),
         }}
       >
-        {enableClustering ? (
-          // Render clusters
-          clusters.map((cluster) => {
-            if (cluster.isCluster) {
-              return (
-                <PropertyCluster
-                  // @ts-ignore - google-map-react expects lat/lng props
-                  lat={cluster.position.lat}
-                  lng={cluster.position.lng}
-                  key={cluster.id}
-                  properties={cluster.properties}
-                  onClick={() => handleClusterClick(cluster.properties)}
-                />
-              )
-            } else {
-              const property = cluster.properties[0]
+        {enableClustering
+          ? // Render clusters
+            clusters.map((cluster) => {
+              if (cluster.isCluster) {
+                return (
+                  <PropertyCluster
+                    // @ts-ignore - google-map-react expects lat/lng props
+                    lat={cluster.position.lat}
+                    lng={cluster.position.lng}
+                    key={cluster.id}
+                    properties={cluster.properties}
+                    onClick={() => handleClusterClick(cluster.properties)}
+                  />
+                )
+              } else {
+                const property = cluster.properties[0]
+                const isSelected = selectedProperty?.original.id === property.original.id
+                const isHovered = hoveredProperty?.original.id === property.original.id
+
+                return (
+                  <PropertyMarker
+                    // @ts-ignore - google-map-react expects lat/lng props
+                    lat={cluster.position.lat}
+                    lng={cluster.position.lng}
+                    key={property.original.id}
+                    property={property}
+                    isSelected={isSelected}
+                    isHovered={isHovered}
+                    onClick={() => handleMarkerClick(property)}
+                    onMouseEnter={() => handleMarkerHover(property)}
+                    onMouseLeave={() => handleMarkerHover(null)}
+                  />
+                )
+              }
+            })
+          : // Render individual markers without clustering
+            propertiesWithLocation.map((property) => {
+              const [lat, lng] = property.original.point
               const isSelected = selectedProperty?.original.id === property.original.id
               const isHovered = hoveredProperty?.original.id === property.original.id
 
               return (
                 <PropertyMarker
                   // @ts-ignore - google-map-react expects lat/lng props
-                  lat={cluster.position.lat}
-                  lng={cluster.position.lng}
+                  lat={lat}
+                  lng={lng}
                   key={property.original.id}
                   property={property}
                   isSelected={isSelected}
@@ -205,45 +238,22 @@ export const AdvancedSearchMap = ({
                   onMouseLeave={() => handleMarkerHover(null)}
                 />
               )
-            }
-          })
-        ) : (
-          // Render individual markers without clustering
-          propertiesWithLocation.map((property) => {
-            const [lat, lng] = property.original.point
-            const isSelected = selectedProperty?.original.id === property.original.id
-            const isHovered = hoveredProperty?.original.id === property.original.id
+            })}
 
+        {selectedProperty &&
+          (() => {
+            const [lat, lng] = selectedProperty.original.point
             return (
-              <PropertyMarker
+              <PropertyPopup
                 // @ts-ignore - google-map-react expects lat/lng props
                 lat={lat}
                 lng={lng}
-                key={property.original.id}
-                property={property}
-                isSelected={isSelected}
-                isHovered={isHovered}
-                onClick={() => handleMarkerClick(property)}
-                onMouseEnter={() => handleMarkerHover(property)}
-                onMouseLeave={() => handleMarkerHover(null)}
+                property={selectedProperty}
+                onClose={handleClosePopup}
+                position={{ lat, lng }}
               />
             )
-          })
-        )}
-
-        {selectedProperty && (() => {
-          const [lat, lng] = selectedProperty.original.point
-          return (
-            <PropertyPopup
-              // @ts-ignore - google-map-react expects lat/lng props
-              lat={lat}
-              lng={lng}
-              property={selectedProperty}
-              onClose={handleClosePopup}
-              position={{ lat, lng }}
-            />
-          )
-        })()}
+          })()}
       </GoogleMapReact>
 
       {/* Map controls overlay */}
@@ -251,19 +261,17 @@ export const AdvancedSearchMap = ({
         {/* Stats panel */}
         <div className="bg-white rounded-lg shadow-md p-3 text-sm">
           <div className="font-semibold">{searchResults.totalDocs} properties</div>
-          <div className="text-muted-foreground">
-            {propertiesWithLocation.length} shown on map
-          </div>
+          <div className="text-muted-foreground">{propertiesWithLocation.length} shown on map</div>
           {enableClustering && (
             <div className="text-muted-foreground">
-              {clusters.filter(c => c.isCluster).length} clusters
+              {clusters.filter((c) => c.isCluster).length} clusters
             </div>
           )}
         </div>
 
         {/* Map controls */}
         {enableMapControls && (
-          <div className="bg-white rounded-lg shadow-md p-2 flex flex-col gap-1">
+          <div className="bg-white rounded-lg shadow-md p-2 flex gap-1">
             <Button
               variant="ghost"
               size="sm"
@@ -308,15 +316,8 @@ export const AdvancedSearchMap = ({
       {selectedCluster && (
         <div className="absolute bottom-4 left-4 right-4 bg-white rounded-lg shadow-lg p-4 max-h-48 overflow-y-auto">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="font-semibold">
-              {selectedCluster.length} Properties in this area
-            </h3>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleClosePopup}
-              className="h-6 w-6 p-0"
-            >
+            <h3 className="font-semibold">{selectedCluster.length} Properties in this area</h3>
+            <Button variant="ghost" size="sm" onClick={handleClosePopup} className="h-6 w-6 p-0">
               ×
             </Button>
           </div>
@@ -334,7 +335,9 @@ export const AdvancedSearchMap = ({
                   </div>
                 </div>
                 <div className="font-semibold">
-                  {property.original.price ? `$${property.original.price.toLocaleString()}` : 'Price on Request'}
+                  {property.original.price
+                    ? `$${property.original.price.toLocaleString()}`
+                    : "Price on Request"}
                 </div>
               </div>
             ))}

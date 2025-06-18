@@ -8,6 +8,7 @@ import { PropertyPopup } from "./map/property-popup"
 import { MockMap } from "./map/mock-map"
 import { PropertyDecorator } from "@/repository/property/property-decorator"
 import { useMapBounds, getPropertiesWithLocation } from "@/hooks/use-map-bounds"
+import { getMapStyle } from "@/lib/map-styles"
 
 export const SearchResultsMap = () => {
   const { searchResults } = useSearchResults()
@@ -50,14 +51,7 @@ export const SearchResultsMap = () => {
           fullscreenControl: false,
           streetViewControl: false,
           mapTypeControl: false,
-          styles: [
-            // Optional: Custom map styling
-            {
-              featureType: "poi",
-              elementType: "labels",
-              stylers: [{ visibility: "off" }],
-            },
-          ],
+          styles: getMapStyle("real-estate"), // Change this to any style you want
         }}
       >
         {propertiesWithLocation.map((property) => {

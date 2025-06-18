@@ -29,7 +29,7 @@ export const PropertySearchCard = () => {
               className="object-cover w-full aspect-video transition-transform duration-500 group-hover:scale-105"
             />
             <div className="absolute top-2 left-2">
-              <PropertyStatus />
+              <PropertyStatus listingStatus={property.listingStatus} />
             </div>
           </div>
 
