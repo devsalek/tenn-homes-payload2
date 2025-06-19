@@ -86,8 +86,8 @@ export function useSearchResults() {
       ? Number(filters["max-price"])
       : DEFAULT_MAX_PRICE
 
-  const beds = Number(filters["min-beds"]) ?? 0
-  const baths = Number(filters["min-baths"]) ?? 0
+  const beds = filters["min-beds"]
+  const baths = filters["min-baths"]
 
   const propertyStatus = filters["property-status"] as ListingStatus | undefined
   const propertyType = filters["property-type"] as PropertyType | undefined

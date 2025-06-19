@@ -123,7 +123,7 @@ export async function seedProperties(payload: Payload): Promise<void> {
         ),
         details: {
           bedrooms: faker.number.int({ min: 1, max: 5 }),
-          bathrooms: faker.number.int({ min: 1, max: 3 }),
+          bathrooms: faker.number.float({ min: 1, max: 4, multipleOf: 0.5 }),
           squareFeet: faker.number.int({ min: 1000, max: 5000 }),
           lotSize: faker.number.int({ min: 0, max: 10 }),
           yearBuilt: faker.number.int({ min: 1900, max: 2024 }),

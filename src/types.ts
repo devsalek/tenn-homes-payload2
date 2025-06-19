@@ -11,6 +11,7 @@ export type FindOptions = {
   page: number
   sort?: string
   depth?: number
+  pagination?: boolean
 }
 
 export interface LocationSuggestion {

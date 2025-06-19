@@ -23,7 +23,7 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
   const results = await service.listings.search(searchCriteria)
   const mapResults = await service.listings.search({
     ...searchCriteria,
-    options: { ...searchCriteria.options, limit: 100 },
+    options: { ...searchCriteria.options, limit: 100, page: 1, pagination: false },
   })
   let locationInput
   if (searchCriteria.query === "city" && searchCriteria.filters.city) {

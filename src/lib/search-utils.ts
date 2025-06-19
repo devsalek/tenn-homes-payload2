@@ -48,21 +48,21 @@ export function parseUrlToSearchCriteria(
     filters["property-status"] = urlQueryParams["property-status"]
   }
   // Handle price range
-  if (urlQueryParams["min-price"]) {
+  if (urlQueryParams["min-price"] !== undefined) {
     filters["min-price"] = parseInt(urlQueryParams["min-price"] as string) || undefined
   }
-  if (urlQueryParams["max-price"]) {
+  if (urlQueryParams["max-price"] !== undefined) {
     filters["max-price"] = parseInt(urlQueryParams["max-price"] as string) || undefined
   }
   // Handle bedrooms
-  if (urlQueryParams["min-beds"]) {
+  if (urlQueryParams["min-beds"] !== undefined) {
     filters["min-beds"] = parseInt(urlQueryParams["min-beds"] as string) || undefined
   }
-  if (urlQueryParams["max-beds"]) {
+  if (urlQueryParams["max-beds"] !== undefined) {
     filters["max-beds"] = parseInt(urlQueryParams["max-beds"] as string) || undefined
   }
   // Handle bathrooms
-  if (urlQueryParams["min-baths"]) {
+  if (urlQueryParams["min-baths"] !== undefined) {
     filters["min-baths"] = parseFloat(urlQueryParams["min-baths"] as string) || undefined
   }
   // Clean up undefined values
@@ -79,6 +79,8 @@ export function parseUrlToSearchCriteria(
       sort: (urlQueryParams.sort as string) || "relevance",
       page: parseInt((urlQueryParams.page as string) || "1"),
       limit: parseInt((urlQueryParams.limit as string) || "12"),
+      pagination: true,
+      depth: 2,
     },
   }
 }
@@ -101,6 +103,8 @@ export function buildSearchUrl(searchCriteria: Partial<SearchCriteriaInput>): st
 
   // Build query parameters
   const params = new URLSearchParams()
+
+  console.log({ filters })
 
   // Add filters as query params (except property-type which is in path)
   Object.entries(filters).forEach(([key, value]) => {
