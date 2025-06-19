@@ -1,5 +1,6 @@
 import { heatingTypeOptions } from "@/config/collections/Properties/heating-options"
 import { propertyTypeOptions } from "@/config/collections/Properties/property-type-options"
+import { DEFAULT_MAX_PRICE } from "@/constants"
 import { Property } from "@/payload-types"
 import { local } from "@/repository"
 import { faker } from "@faker-js/faker"
@@ -106,7 +107,7 @@ export async function seedProperties(payload: Payload): Promise<void> {
           zip: location.zip || "",
           full_address: `${street}, ${location.city || ""}, ${location.state_abbr || ""} ${location.zip || ""}`,
         },
-        price: faker.number.int({ min: 100000, max: 1000000 }),
+        price: faker.number.int({ min: 100000, max: DEFAULT_MAX_PRICE }),
         listingStatus: faker.helpers.weightedArrayElement([
           { weight: 5, value: "forsale" },
           { weight: 2, value: "pending" },

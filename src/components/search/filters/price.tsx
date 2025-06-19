@@ -18,8 +18,8 @@ const priceOptions = [
     label: "$500K - $750K",
   },
   {
-    value: "750|1000",
-    label: "$750K - $1M",
+    value: "750|10000",
+    label: "$750K - $10M",
   },
 ]
 
