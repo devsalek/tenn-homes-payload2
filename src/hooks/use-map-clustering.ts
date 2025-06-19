@@ -46,7 +46,7 @@ export function useMapClustering({
     // Simple grid-based clustering
     const clusters: ClusterItem[] = []
     const processed = new Set<string>()
-    
+
     // Calculate grid size based on zoom level
     const gridSize = getGridSize(zoom)
 
@@ -72,16 +72,18 @@ export function useMapClustering({
       })
 
       // Calculate cluster center
-      const centerLat = clusterProperties.reduce((sum, p) => {
-        return sum + p.original.point[0]
-      }, 0) / clusterProperties.length
+      const centerLat =
+        clusterProperties.reduce((sum, p) => {
+          return sum + p.original.point[0]
+        }, 0) / clusterProperties.length
 
-      const centerLng = clusterProperties.reduce((sum, p) => {
-        return sum + p.original.point[1]
-      }, 0) / clusterProperties.length
+      const centerLng =
+        clusterProperties.reduce((sum, p) => {
+          return sum + p.original.point[1]
+        }, 0) / clusterProperties.length
 
       clusters.push({
-        id: clusterProperties.map(p => p.original.id).join('-'),
+        id: clusterProperties.map((p) => p.original.id).join("-"),
         position: { lat: centerLat, lng: centerLng },
         properties: clusterProperties,
         isCluster: clusterProperties.length > 1,
@@ -101,8 +103,7 @@ function calculateDistance(lat1: number, lng1: number, lat2: number, lng2: numbe
   const dLng = toRadians(lng2 - lng1)
   const a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) *
-    Math.sin(dLng / 2) * Math.sin(dLng / 2)
+    Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) * Math.sin(dLng / 2) * Math.sin(dLng / 2)
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
   return R * c
 }
@@ -117,7 +118,7 @@ function toRadians(degrees: number): number {
 function getGridSize(zoom: number): number {
   // Adjust these values based on your needs
   const gridSizes: Record<number, number> = {
-    1: 50,    // Very wide clustering at low zoom
+    1: 50, // Very wide clustering at low zoom
     2: 40,
     3: 30,
     4: 25,
@@ -130,7 +131,7 @@ function getGridSize(zoom: number): number {
     11: 4,
     12: 2,
     13: 1,
-    14: 0.5,  // Minimal clustering at high zoom
+    14: 0.5, // Minimal clustering at high zoom
   }
 
   return gridSizes[Math.floor(zoom)] || 0.5
