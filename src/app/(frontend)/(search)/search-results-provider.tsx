@@ -90,7 +90,7 @@ export function useSearchResults() {
   const baths = filters["min-baths"]
 
   const propertyStatus = filters["property-status"] as ListingStatus | undefined
-  const propertyType = filters["property-type"] as PropertyType | undefined
+  const propertyType = filters["property-type"] as PropertyType[] | undefined
 
   const locationInputValue =
     context.searchCriteria.query === "city" && context.locationInput?.city

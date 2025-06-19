@@ -22,7 +22,7 @@ export function FilterPopover({
   const { searchResults } = useSearchResults()
 
   const renderLabel = isSet ? (
-    <span className="font-semibold text-primary">{label}</span>
+    <div className="font-semibold text-primary truncate w-28">{label}</div>
   ) : (
     placeholder
   )

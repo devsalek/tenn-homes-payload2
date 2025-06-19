@@ -1,7 +1,6 @@
 "use client"
 import { useSearchResults } from "@/app/(frontend)/(search)/search-results-provider"
-import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { RadioGroup } from "@/components/ui/radio-group"
 import {
   PropertyType,
   PropertyTypeOption,
@@ -15,8 +14,8 @@ import { HouseIcon } from "@/components/icons/house"
 import { LandIcon } from "@/components/icons/land"
 import { MobileHomeIcon } from "@/components/icons/mobile-home"
 import { TownhouseIcon } from "@/components/icons/townhouse"
-import { Button } from "@/components/ui/button"
 import { FilterGroupItem } from "./filter-group-item"
+import { CheckedState } from "@radix-ui/react-checkbox"
 
 const iconMap: Record<PropertyType, React.ComponentType> = {
   "single-family": HouseIcon,
@@ -34,6 +33,25 @@ export function FilterType() {
     filters: { propertyType },
   } = useSearchResults()
 
+  console.log({ propertyType })
+
+  const handleChange = (value: string, checked: CheckedState) => {
+    const selectedTypes = propertyType || []
+    if (checked) {
+      // Add the selected type if it's not already in the list
+      if (!selectedTypes.includes(value as PropertyType)) {
+        selectedTypes.push(value as PropertyType)
+      }
+    } else {
+      // Remove the type if it exists in the list
+      const index = selectedTypes.indexOf(value as PropertyType)
+      if (index !== -1) {
+        selectedTypes.splice(index, 1)
+      }
+    }
+    setFilters({ "property-type": selectedTypes.length > 0 ? selectedTypes : undefined })
+  }
+
   const renderOption = (option: PropertyTypeOption) => {
     const Icon = iconMap[option.value] || HouseIcon
     return (
@@ -41,6 +59,8 @@ export function FilterType() {
         id={`type:${option.value}`}
         key={`type:${option.value}`}
         value={String(option.value)}
+        checked={propertyType?.includes(option.value) ?? false}
+        onChange={handleChange}
       >
         <div className="flex flex-col items-center">
           <div className="w-12">
@@ -66,15 +86,9 @@ export function FilterType() {
           </button>
         )}
       </div>
-      <RadioGroup
-        className="grid grid-cols-3 lg:grid-cols-4 gap-2"
-        onValueChange={(value) => {
-          setFilters({ "property-type": value })
-        }}
-        value={propertyType}
-      >
+      <div className="grid grid-cols-3 lg:grid-cols-4 gap-2">
         {propertyTypeOptions.map(renderOption)}
-      </RadioGroup>
+      </div>
     </div>
   )
 }

@@ -1,6 +1,5 @@
 import { SearchHeader } from "@/components/search/search-header"
 import { SearchResults } from "@/components/search/search-results"
-import { SearchResultsMap } from "@/components/search/search-results-map"
 import { local } from "@/repository"
 import { parseUrlToSearchCriteria } from "@/lib/search-utils"
 import { SearchResultsProvider } from "../../search-results-provider"
@@ -8,11 +7,11 @@ import { Header } from "@/app/(frontend)/_layouts/header"
 import { service } from "@/services"
 import { LocationDecorator } from "@/repository/location/location-repository"
 import { AdvancedSearchMap } from "@/components/search/map/advanced-search-map"
-import { SearchMapWithStyles } from "@/components/search/map/search-map-with-styles"
+import { SearchParams } from "@/types"
 
 interface SearchPageProps {
   params: Promise<{ slug: string[] }>
-  searchParams: Promise<Record<string, string | string[] | undefined>>
+  searchParams: Promise<SearchParams>
 }
 
 export default async function SearchPage({ params, searchParams }: SearchPageProps) {
@@ -20,6 +19,7 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
   const queryParams = await searchParams
 
   const searchCriteria = parseUrlToSearchCriteria(slug, queryParams)
+
   const results = await service.listings.search(searchCriteria)
   const mapResults = await service.listings.search({
     ...searchCriteria,
@@ -28,7 +28,7 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
   let locationInput
   if (searchCriteria.query === "city" && searchCriteria.filters.city) {
     locationInput = (await local.location.getBySlug(
-      searchCriteria.filters.city,
+      searchCriteria.filters.city as string,
     )) as LocationDecorator
   }
   if (searchCriteria.query === "zip" && searchCriteria.filters.zip) {

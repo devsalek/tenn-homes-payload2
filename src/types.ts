@@ -1,3 +1,5 @@
+export type SearchParams = { [key: string]: string | string[] | undefined }
+
 export interface SearchCriteriaInput {
   query: string
   filters: Record<string, any>
@@ -9,9 +11,9 @@ export interface SearchCriteriaInput {
 export type FindOptions = {
   limit: number
   page: number
-  sort?: string
-  depth?: number
-  pagination?: boolean
+  sort: string
+  depth: number
+  pagination: boolean
 }
 
 export interface LocationSuggestion {

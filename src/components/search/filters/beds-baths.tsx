@@ -75,23 +75,21 @@ export function FilterBedsBaths() {
             </button>
           )}
         </div>
-        <RadioGroup
-          className="flex items-center gap-1"
-          onValueChange={(value) => {
-            setFilters({ "min-beds": value, "min-baths": baths })
-          }}
-          value={String(beds)}
-        >
+        <div className="flex items-center gap-1">
           {bedsOptions.map((option) => (
             <FilterGroupItem
               id={`beds:${option.value}`}
               key={`beds:${option.value}`}
               value={String(option.value)}
+              checked={String(beds) === String(option.value)}
+              onChange={() => {
+                setFilters({ "min-beds": option.value, "min-baths": baths })
+              }}
             >
               {option.label}
             </FilterGroupItem>
           ))}
-        </RadioGroup>
+        </div>
       </div>
       <div className="grid gap-2">
         <div className="flex items-center gap-3">
@@ -118,6 +116,10 @@ export function FilterBedsBaths() {
               id={`baths:${option.value}`}
               key={`baths:${option.value}`}
               value={String(option.value)}
+              checked={String(baths) === String(option.value)}
+              onChange={() => {
+                setFilters({ "min-beds": beds, "min-baths": option.value })
+              }}
             >
               {option.label}
             </FilterGroupItem>

@@ -36,9 +36,10 @@ export class ListingsSearchService {
         equals: criteria.filters["property-status"],
       }
     }
-    if (criteria.filters["property-type"]) {
+
+    if (Array.isArray(criteria.filters["property-type"])) {
       where["details.propertyType"] = {
-        equals: criteria.filters["property-type"],
+        in: criteria.filters["property-type"],
       }
     }
 

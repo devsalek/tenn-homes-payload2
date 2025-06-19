@@ -1,6 +1,5 @@
 import { useSearchResults } from "@/app/(frontend)/(search)/search-results-provider"
-import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { RadioGroup } from "@/components/ui/radio-group"
 import { listingStatusOptions } from "@/config/collections/Properties/listing-status-map"
 import { FilterGroupItem } from "./filter-group-item"
 
@@ -37,6 +36,12 @@ export function FilterStatus() {
             id={`status:${option.value}`}
             key={`status:${option.value}`}
             value={String(option.value)}
+            checked={propertyStatus === option.value}
+            onChange={() => {
+              setFilters({
+                "property-status": option.value,
+              })
+            }}
           >
             {option.label}
           </FilterGroupItem>

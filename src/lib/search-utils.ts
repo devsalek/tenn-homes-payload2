@@ -1,8 +1,10 @@
-import { FindOptions, SearchCriteriaInput } from "@/types"
+import { FindOptions, SearchCriteriaInput, SearchParams } from "@/types"
+
+export type SearchFilters = Record<SearchFilterKeys, string | number | string[] | number[] | null>
 
 export type SearchCriteria = {
   query: string
-  filters: Record<SearchFilterKeys, any>
+  filters: SearchFilters
   options: FindOptions
 }
 
@@ -15,70 +17,73 @@ export type SearchFilterKeys =
   | "min-price"
   | "max-price"
   | "min-beds"
-  | "max-beds"
   | "min-baths"
+
+function getSingleParameterValue(
+  param: string | string[] | undefined,
+  defaultValue: string | number | null,
+): string | number | null {
+  if (Array.isArray(param)) {
+    return param.length > 0 ? param[0] : defaultValue
+  }
+  return typeof param === "string" ? param : defaultValue
+}
+
+function getParameterValues(
+  param: string | string[] | undefined,
+  defaultValue: string[] | null,
+): string[] | null {
+  if (Array.isArray(param)) {
+    return param.length > 0 ? param : defaultValue
+  }
+  return typeof param === "string" ? [param] : defaultValue
+}
 
 export function parseUrlToSearchCriteria(
   pathSegments: string[] = [],
-  urlQueryParams: Record<string, string | string[] | undefined>,
+  urlQueryParams: SearchParams,
 ): SearchCriteria {
   const [query, queryValue] = pathSegments as [SearchQueryTypes, string]
 
   // Parse query parameters
-  const filters: Record<SearchFilterKeys, string | string[] | number | number[] | undefined> = {
+  const filters: SearchFilters = {
     city: "",
     zip: "",
-    "property-type": "",
+    "property-type": [],
     "property-status": "",
-    "min-price": "",
-    "max-price": "",
-    "min-beds": "",
-    "max-beds": "",
-    "min-baths": "",
+    "min-price": 0,
+    "max-price": 0,
+    "min-beds": 0,
+    "min-baths": 0,
   }
 
-  if (query) {
-    filters[query] = queryValue ? decodeURIComponent(queryValue) : undefined
+  if (query && queryValue) {
+    filters[query] = getSingleParameterValue(queryValue, "")
   }
 
-  if (urlQueryParams["property-type"]) {
-    filters["property-type"] = urlQueryParams["property-type"]
-  }
-  if (urlQueryParams["property-status"]) {
-    filters["property-status"] = urlQueryParams["property-status"]
-  }
-  // Handle price range
-  if (urlQueryParams["min-price"] !== undefined) {
-    filters["min-price"] = parseInt(urlQueryParams["min-price"] as string) || undefined
-  }
-  if (urlQueryParams["max-price"] !== undefined) {
-    filters["max-price"] = parseInt(urlQueryParams["max-price"] as string) || undefined
-  }
-  // Handle bedrooms
-  if (urlQueryParams["min-beds"] !== undefined) {
-    filters["min-beds"] = parseInt(urlQueryParams["min-beds"] as string) || undefined
-  }
-  if (urlQueryParams["max-beds"] !== undefined) {
-    filters["max-beds"] = parseInt(urlQueryParams["max-beds"] as string) || undefined
-  }
-  // Handle bathrooms
-  if (urlQueryParams["min-baths"] !== undefined) {
-    filters["min-baths"] = parseFloat(urlQueryParams["min-baths"] as string) || undefined
-  }
+  filters["property-type"] = getParameterValues(urlQueryParams["property-type"], null)
+  filters["property-status"] = getSingleParameterValue(urlQueryParams["property-status"], "")
+  filters["min-price"] = getSingleParameterValue(urlQueryParams["min-price"], null)
+  filters["max-price"] = getSingleParameterValue(urlQueryParams["max-price"], null)
+  filters["min-beds"] = getSingleParameterValue(urlQueryParams["min-beds"], null)
+  filters["min-baths"] = getSingleParameterValue(urlQueryParams["min-baths"], null)
+
   // Clean up undefined values
   Object.keys(filters).forEach((key) => {
-    if (filters[key as SearchFilterKeys] === undefined) {
+    if (filters[key as SearchFilterKeys] === null) {
       delete filters[key as SearchFilterKeys]
     }
   })
+
+  console.log({ filters })
 
   return {
     query,
     filters,
     options: {
-      sort: (urlQueryParams.sort as string) || "relevance",
-      page: parseInt((urlQueryParams.page as string) || "1"),
-      limit: parseInt((urlQueryParams.limit as string) || "12"),
+      sort: getSingleParameterValue(urlQueryParams["sort"], "relevance") as string,
+      page: getSingleParameterValue(urlQueryParams["page"], 1) as number,
+      limit: getSingleParameterValue(urlQueryParams["limit"], 12) as number,
       pagination: true,
       depth: 2,
     },
@@ -104,12 +109,14 @@ export function buildSearchUrl(searchCriteria: Partial<SearchCriteriaInput>): st
   // Build query parameters
   const params = new URLSearchParams()
 
-  console.log({ filters })
-
   // Add filters as query params (except property-type which is in path)
   Object.entries(filters).forEach(([key, value]) => {
     if (typeof value !== "undefined" && value !== "" && !["city", "zip"].includes(key)) {
-      params.set(key, value.toString())
+      if (Array.isArray(value)) {
+        value.forEach((v) => params.append(key, v.toString()))
+      } else if (typeof value === "number" || typeof value === "string") {
+        params.set(key, value.toString())
+      }
     }
   })
 

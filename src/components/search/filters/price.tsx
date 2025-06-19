@@ -1,7 +1,6 @@
 "use client"
 import { useSearchResults } from "@/app/(frontend)/(search)/search-results-provider"
-import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { RadioGroup } from "@/components/ui/radio-group"
 import { DEFAULT_MAX_PRICE, DEFAULT_MIN_PRICE } from "@/constants"
 import { FilterGroupItem } from "./filter-group-item"
 
@@ -67,6 +66,8 @@ export function FilterPrice() {
             id={`price:${option.value}`}
             key={`price:${option.value}`}
             value={String(option.value)}
+            checked={value === option.value}
+            onChange={() => setPriceRange(option.value)}
           >
             {option.label}
           </FilterGroupItem>

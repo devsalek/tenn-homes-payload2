@@ -21,7 +21,10 @@ import { Autosuggest } from "../autosuggest"
 import { FilterPopover } from "./filters/filter-popover"
 import { listingStatusMap } from "@/config/collections/Properties/listing-status-map"
 import { FilterStatus } from "./filters/status"
-import { propertyTypeMap } from "@/config/collections/Properties/property-type-options"
+import {
+  PropertyType,
+  propertyTypeMap,
+} from "@/config/collections/Properties/property-type-options"
 import { DEFAULT_MAX_PRICE, DEFAULT_MIN_PRICE } from "@/constants"
 import { formatPriceShort } from "@/lib/format-price"
 
@@ -33,7 +36,7 @@ export const SearchHeader = () => {
   return (
     <div className="h-20 flex items-center justify-center">
       <div className="grid grid-cols-12 gap-4 w-full">
-        <div className="relative w-full md:col-span-10 lg:col-span-5">
+        <div className="relative w-full col-span-10 md:col-span-10 lg:col-span-5">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Autosuggest
             type="text"
@@ -94,7 +97,11 @@ const Filters = () => {
           <FilterStatus />
         </FilterPopover>
         <FilterPopover
-          label={propertyType ? propertyTypeMap[propertyType]?.label : undefined}
+          label={
+            propertyType
+              ? propertyType.map((t: PropertyType) => propertyTypeMap[t]?.label).join(", ")
+              : undefined
+          }
           placeholder="Property Type"
           isSet={!!propertyType}
           onClear={() => setFilters({ "property-type": undefined })}
