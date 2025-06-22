@@ -27,6 +27,7 @@ export const defaultFindOptions: FindOptions = {
   page: 1,
   sort: "relevance",
   depth: 2, // Default to no population
+  pagination: true,
 }
 
 /**
