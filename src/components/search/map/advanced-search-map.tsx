@@ -103,14 +103,20 @@ export const AdvancedSearchMap = ({
   )
 
   const handleZoomIn = useCallback(() => {
-    if (mapInstance && mapInstance.getZoom) {
-      mapInstance.setZoom(mapInstance.getZoom() + 1)
+    if (mapInstance && mapInstance.getZoom && mapInstance.setZoom) {
+      const currentZoom = mapInstance.getZoom()
+      if (currentZoom !== undefined) {
+        mapInstance.setZoom(currentZoom + 1)
+      }
     }
   }, [mapInstance])
 
   const handleZoomOut = useCallback(() => {
-    if (mapInstance && mapInstance.getZoom) {
-      mapInstance.setZoom(mapInstance.getZoom() - 1)
+    if (mapInstance && mapInstance.getZoom && mapInstance.setZoom) {
+      const currentZoom = mapInstance.getZoom()
+      if (currentZoom !== undefined) {
+        mapInstance.setZoom(currentZoom - 1)
+      }
     }
   }, [mapInstance])
 
