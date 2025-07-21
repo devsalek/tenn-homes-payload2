@@ -3,7 +3,7 @@
 
 export type MapStyle = "default" | "dark" | "light" | "retro" | "silver" | "minimal" | "real-estate"
 
-export const mapStyles: Record<MapStyle, any[]> = {
+export const mapStyles: Record<MapStyle, Record<string, unknown>[]> = {
   default: [],
   
   // Dark theme for night mode
@@ -504,6 +504,6 @@ export const mapStyles: Record<MapStyle, any[]> = {
   ],
 }
 
-export function getMapStyle(style: MapStyle): any[] {
+export function getMapStyle(style: MapStyle): Record<string, unknown>[] {
   return mapStyles[style] || mapStyles.default
 }

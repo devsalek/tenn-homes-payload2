@@ -1,7 +1,7 @@
 "use client"
 
 import { PropertyDecorator } from "@/repository/property/property-decorator"
-import { formatPrice, formatPriceShort } from "@/lib/format-price"
+import { formatPriceShort } from "@/lib/format-price"
 import { cn } from "@/lib/utils"
 
 interface PropertyMarkerProps {

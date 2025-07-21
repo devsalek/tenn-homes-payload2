@@ -91,16 +91,16 @@ export function parseUrlToSearchCriteria(
 }
 
 export function buildSearchUrl(searchCriteria: Partial<SearchCriteriaInput>): string {
-  const { query = "", filters = {}, sort, page, limit } = searchCriteria
+  const { filters = {}, sort, page, limit } = searchCriteria
 
   // Build path segments
   const pathSegments = ["/search"]
 
-  if (filters.city) {
+  if (filters.city && typeof filters.city === 'string') {
     pathSegments.push(`city/${encodeURIComponent(filters.city.toLowerCase())}`)
   }
 
-  if (filters.zip) {
+  if (filters.zip && typeof filters.zip === 'string') {
     pathSegments.push(`zip/${encodeURIComponent(filters.zip)}`)
   }
 

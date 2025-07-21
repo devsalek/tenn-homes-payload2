@@ -17,7 +17,7 @@ interface AdvancedSearchMapProps {
   enableClustering?: boolean
   enableMapControls?: boolean
   mapStyle?: MapStyle
-  onMapBoundsChange?: (bounds: any) => void
+  onMapBoundsChange?: (bounds: unknown) => void
 }
 
 export const AdvancedSearchMap = ({
@@ -30,28 +30,12 @@ export const AdvancedSearchMap = ({
   const [selectedProperty, setSelectedProperty] = useState<PropertyDecorator | null>(null)
   const [hoveredProperty, setHoveredProperty] = useState<PropertyDecorator | null>(null)
   const [selectedCluster, setSelectedCluster] = useState<PropertyDecorator[] | null>(null)
-  const [mapInstance, setMapInstance] = useState<any>(null)
+  const [mapInstance, setMapInstance] = useState<google.maps.Map | null>(null)
   const [currentZoom, setCurrentZoom] = useState(11)
-  const mapRef = useRef<any>(null)
+  const mapRef = useRef<HTMLDivElement>(null)
 
   // Check if Google Maps API key is available
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
-
-  if (!apiKey) {
-    return (
-      <div className="flex items-center justify-center h-full bg-muted/30">
-        <div className="text-center space-y-4">
-          <MapPin className="h-16 w-16 text-muted-foreground mx-auto" />
-          <div>
-            <h3 className="text-lg font-semibold text-muted-foreground">Map View</h3>
-            <p className="text-sm text-muted-foreground">
-              Please add NEXT_PUBLIC_GOOGLE_MAPS_API_KEY to your environment variables
-            </p>
-          </div>
-        </div>
-      </div>
-    )
-  }
 
   // Get properties with valid location data and calculate map bounds
   const propertiesWithLocation = getPropertiesWithLocation(mapResults.docs)
@@ -84,9 +68,9 @@ export const AdvancedSearchMap = ({
           mapInstance &&
           properties.length > 1 &&
           typeof window !== "undefined" &&
-          (window as any).google?.maps
+          (window as unknown as { google: typeof window.google }).google?.maps
         ) {
-          const google = (window as any).google
+          const google = (window as unknown as { google: typeof window.google }).google
           const bounds = new google.maps.LatLngBounds()
           properties.forEach((property) => {
             const [lat, lng] = property.original.point
@@ -109,7 +93,7 @@ export const AdvancedSearchMap = ({
   }, [])
 
   const handleMapChange = useCallback(
-    ({ zoom, bounds }: any) => {
+    ({ zoom, bounds }: { zoom: number; bounds: unknown }) => {
       setCurrentZoom(zoom)
       if (onMapBoundsChange && bounds) {
         onMapBoundsChange(bounds)
@@ -119,13 +103,13 @@ export const AdvancedSearchMap = ({
   )
 
   const handleZoomIn = useCallback(() => {
-    if (mapInstance) {
+    if (mapInstance && mapInstance.getZoom) {
       mapInstance.setZoom(mapInstance.getZoom() + 1)
     }
   }, [mapInstance])
 
   const handleZoomOut = useCallback(() => {
-    if (mapInstance) {
+    if (mapInstance && mapInstance.getZoom) {
       mapInstance.setZoom(mapInstance.getZoom() - 1)
     }
   }, [mapInstance])
@@ -135,9 +119,9 @@ export const AdvancedSearchMap = ({
       mapInstance &&
       propertiesWithLocation.length > 0 &&
       typeof window !== "undefined" &&
-      (window as any).google?.maps
+      (window as unknown as { google: typeof window.google }).google?.maps
     ) {
-      const google = (window as any).google
+      const google = (window as unknown as { google: typeof window.google }).google
       const bounds = new google.maps.LatLngBounds()
       propertiesWithLocation.forEach((property) => {
         const [lat, lng] = property.original.point
@@ -150,22 +134,32 @@ export const AdvancedSearchMap = ({
   const handleFullscreen = useCallback(() => {
     // Implement fullscreen functionality
     const mapElement = mapRef.current
-    if (mapElement) {
-      if (mapElement.requestFullscreen) {
-        mapElement.requestFullscreen()
-      } else if (mapElement.webkitRequestFullscreen) {
-        mapElement.webkitRequestFullscreen()
-      } else if (mapElement.mozRequestFullScreen) {
-        mapElement.mozRequestFullScreen()
-      }
+    if (mapElement && mapElement.requestFullscreen) {
+      mapElement.requestFullscreen()
     }
   }, [])
+
+  if (!apiKey) {
+    return (
+      <div className="flex items-center justify-center h-full bg-muted/30">
+        <div className="text-center space-y-4">
+          <MapPin className="h-16 w-16 text-muted-foreground mx-auto" />
+          <div>
+            <h3 className="text-lg font-semibold text-muted-foreground">Map View</h3>
+            <p className="text-sm text-muted-foreground">
+              Please add NEXT_PUBLIC_GOOGLE_MAPS_API_KEY to your environment variables
+            </p>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div ref={mapRef} className="h-full w-full relative">
       <GoogleMapReact
         bootstrapURLKeys={{
-          key: apiKey,
+          key: apiKey!,
           libraries: ["geometry", "drawing", "places"],
         }}
         center={mapConfig.center}
@@ -189,7 +183,7 @@ export const AdvancedSearchMap = ({
               if (cluster.isCluster) {
                 return (
                   <PropertyCluster
-                    // @ts-ignore - google-map-react expects lat/lng props
+                    // @ts-expect-error - google-map-react expects lat/lng props
                     lat={cluster.position.lat}
                     lng={cluster.position.lng}
                     key={cluster.id}
@@ -204,7 +198,7 @@ export const AdvancedSearchMap = ({
 
                 return (
                   <PropertyMarker
-                    // @ts-ignore - google-map-react expects lat/lng props
+                    // @ts-expect-error - google-map-react expects lat/lng props
                     lat={cluster.position.lat}
                     lng={cluster.position.lng}
                     key={property.original.id}
@@ -226,7 +220,7 @@ export const AdvancedSearchMap = ({
 
               return (
                 <PropertyMarker
-                  // @ts-ignore - google-map-react expects lat/lng props
+                  // @ts-expect-error - google-map-react expects lat/lng props
                   lat={lat}
                   lng={lng}
                   key={property.original.id}
@@ -245,7 +239,7 @@ export const AdvancedSearchMap = ({
             const [lat, lng] = selectedProperty.original.point
             return (
               <PropertyPopup
-                // @ts-ignore - google-map-react expects lat/lng props
+                // @ts-expect-error - google-map-react expects lat/lng props
                 lat={lat}
                 lng={lng}
                 property={selectedProperty}

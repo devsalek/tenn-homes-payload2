@@ -10,7 +10,7 @@ import { PropertyDecorator } from "@/repository/property/property-decorator"
 import { SearchCriteriaInput } from "@/types"
 import { useRouter } from "next/navigation"
 import { PaginatedDocs } from "payload"
-import { createContext, useContext, ReactNode, useState } from "react"
+import { createContext, useContext, ReactNode } from "react"
 
 interface SearchResultsContextType {
   searchCriteria: SearchCriteria
@@ -65,7 +65,7 @@ export function useSearchResults() {
       return newUrl
     }
 
-  const setFilters = (filters: Partial<Record<SearchFilterKeys, any>>) => {
+  const setFilters = (filters: Partial<Record<SearchFilterKeys, unknown>>) => {
     router.push(
       updateSearch(context)({ filters: { ...context.searchCriteria.filters, ...filters } }),
     )

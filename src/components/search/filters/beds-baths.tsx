@@ -1,7 +1,6 @@
 "use client"
 import { useSearchResults } from "@/app/(frontend)/(search)/search-results-provider"
-import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { RadioGroup } from "@/components/ui/radio-group"
 import { FilterGroupItem } from "./filter-group-item"
 
 const bedsOptions = [

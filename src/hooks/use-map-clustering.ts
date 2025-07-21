@@ -21,7 +21,6 @@ interface UseMapClusteringProps {
 export function useMapClustering({
   properties,
   zoom,
-  clusterRadius = 50,
 }: UseMapClusteringProps): ClusterItem[] {
   return useMemo(() => {
     // Filter properties with valid coordinates
@@ -91,7 +90,7 @@ export function useMapClustering({
     })
 
     return clusters
-  }, [properties, zoom, clusterRadius])
+  }, [properties, zoom])
 }
 
 /**

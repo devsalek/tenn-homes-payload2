@@ -5,7 +5,7 @@ import { local } from "@/repository"
 import { PaginatedDocs, Where } from "payload"
 
 export class ListingsSearchService {
-  async search(criteria: SearchCriteria): Promise<any> {
+  async search(criteria: SearchCriteria): Promise<PaginatedDocs<Property>> {
     const where: Where = {}
 
     if (criteria.filters.city) {

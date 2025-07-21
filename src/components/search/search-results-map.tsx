@@ -18,10 +18,6 @@ export const SearchResultsMap = () => {
   // Check if Google Maps API key is available
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
 
-  if (!apiKey || apiKey === "your_google_maps_api_key_here") {
-    return <MockMap />
-  }
-
   // Get properties with valid location data and calculate map bounds
   const propertiesWithLocation = getPropertiesWithLocation(searchResults.docs)
   const mapConfig = useMapBounds(searchResults.docs)
@@ -41,10 +37,14 @@ export const SearchResultsMap = () => {
     setSelectedProperty(null)
   }, [])
 
+  if (!apiKey || apiKey === "your_google_maps_api_key_here") {
+    return <MockMap />
+  }
+
   return (
     <div className="h-full w-full relative">
       <GoogleMapReact
-        bootstrapURLKeys={{ key: apiKey }}
+        bootstrapURLKeys={{ key: apiKey! }}
         center={mapConfig.center}
         zoom={mapConfig.zoom}
         options={{
@@ -61,7 +61,7 @@ export const SearchResultsMap = () => {
 
           return (
             <PropertyMarker
-              // @ts-ignore - google-map-react expects lat/lng props
+              // @ts-expect-error - google-map-react expects lat/lng props
               lat={lat}
               lng={lng}
               key={property.original.id}
@@ -80,7 +80,7 @@ export const SearchResultsMap = () => {
             const [lat, lng] = selectedProperty.original.point
             return (
               <PropertyPopup
-                // @ts-ignore - google-map-react expects lat/lng props
+                // @ts-expect-error - google-map-react expects lat/lng props
                 lat={lat}
                 lng={lng}
                 property={selectedProperty}

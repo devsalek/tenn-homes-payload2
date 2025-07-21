@@ -16,11 +16,10 @@ interface PropertyPopupProps {
   position: { lat: number; lng: number }
 }
 
-export const PropertyPopup = ({ property, onClose, position }: PropertyPopupProps) => {
+export const PropertyPopup = ({ property, onClose }: PropertyPopupProps) => {
   const details = property.original.details
-  const photos = property.original.photos as any[]
+  const photos = property.original.photos as { url?: string }[]
   const firstPhoto = photos?.[0]
-  const propertyType = details?.propertyType
 
   return (
     <Card className="py-0 border w-80 overflow-hidden -translate-x-1/2 translate-y-8">
@@ -33,7 +32,7 @@ export const PropertyPopup = ({ property, onClose, position }: PropertyPopupProp
         {firstPhoto && (
           <div className="relative h-48">
             <Image
-              src={typeof firstPhoto === "object" ? firstPhoto.url || "" : ""}
+              src={firstPhoto?.url || ""}
               alt={property.original.title}
               fill
               className="object-cover"

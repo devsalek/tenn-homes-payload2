@@ -103,7 +103,7 @@ export function getBoundsCenter(bounds: MapBounds): { lat: number; lng: number }
  * Calculate appropriate zoom level for bounds
  * This is a simplified calculation - actual implementation would depend on viewport size
  */
-export function getZoomForBounds(bounds: MapBounds, viewportSize?: { width: number; height: number }): number {
+export function getZoomForBounds(bounds: MapBounds): number {
   const latDiff = bounds.north - bounds.south
   const lngDiff = bounds.east - bounds.west
   const maxDiff = Math.max(latDiff, lngDiff)

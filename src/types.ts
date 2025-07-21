@@ -2,7 +2,7 @@ export type SearchParams = { [key: string]: string | string[] | undefined }
 
 export interface SearchCriteriaInput {
   query: string
-  filters: Record<string, any>
+  filters: Record<string, unknown>
   sort: string
   page: number
   limit: number

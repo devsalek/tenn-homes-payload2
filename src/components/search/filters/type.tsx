@@ -1,6 +1,5 @@
 "use client"
 import { useSearchResults } from "@/app/(frontend)/(search)/search-results-provider"
-import { RadioGroup } from "@/components/ui/radio-group"
 import {
   PropertyType,
   PropertyTypeOption,

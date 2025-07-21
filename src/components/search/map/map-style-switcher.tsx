@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { MapStyle } from "@/lib/map-styles"
 import { Palette } from "lucide-react"

@@ -8,7 +8,7 @@ import { MapStyle } from "@/lib/map-styles"
 interface SearchMapWithStylesProps {
   enableClustering?: boolean
   enableMapControls?: boolean
-  onMapBoundsChange?: (bounds: any) => void
+  onMapBoundsChange?: (bounds: unknown) => void
 }
 
 export const SearchMapWithStyles = ({
