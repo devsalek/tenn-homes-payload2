@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: { params: Promise<{ routePath
   }
 
   return {
-    metadataBase: new URL(SERVER_URL || "http://localhost:8181"),
+    metadataBase: new URL(SERVER_URL || "http://localhost:3000"),
     alternates: {
       canonical: property.url,
     },
