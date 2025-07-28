@@ -12,6 +12,11 @@ import landPlot from "@/assets/land.png"
 import apartment from "@/assets/apartment.png"
 import office from "@/assets/office.png"
 import condo from "@/assets/condo.png"
+import dreamHome from "@/assets/dream-home.jpeg"
+import downTown from "@/assets/downtown.jpeg"
+import fallColors from "@/assets/fall-colors.jpeg"
+import gatLinburg from "@/assets/gatlinburg.jpeg"
+import johnSon from "@/assets/johnson.jpeg"
 import { Input } from "@/components/ui/input"
 import { FixedHeader } from "../_layouts/fixed-header"
 import { Footer } from "../_layouts/footer"
@@ -197,9 +202,10 @@ export default async function HomePage() {
               </div>
               <div className="tablet:w-1/2 relative min-h-[300px]">
                 <Image
-                  src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=4140&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                  alt="Professional real estate agent in modern office"
-                  fill
+                  src={dreamHome}
+                  alt="dreamhome"
+                  width={840}
+                  height={560}
                   className="object-cover"
                 />
               </div>
@@ -303,7 +309,7 @@ export default async function HomePage() {
               <Card className="overflow-hidden border-0 shadow-sm gap-0 py-0 hover:shadow-md transition-shadow">
                 <div className="relative">
                   <Image
-                    src="https://images.unsplash.com/photo-1596134474939-f248eb9ed3fe?q=80&w=3786&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    src={downTown}
                     alt="Downtown Knoxville Market Square"
                     width={500}
                     height={300}
@@ -331,7 +337,7 @@ export default async function HomePage() {
               <Card className="overflow-hidden border-0 gap-0 shadow-sm hover:shadow-md py-0 transition-shadow">
                 <div className="relative">
                   <Image
-                    src="https://images.unsplash.com/photo-1625663033411-61031d9ac19e?q=80&w=4287&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    src={gatLinburg}
                     alt="Gatlinburg Scenic View"
                     width={500}
                     height={300}
@@ -359,7 +365,7 @@ export default async function HomePage() {
               <Card className="overflow-hidden border-0 gap-0 shadow-sm hover:shadow-md py-0 transition-shadow">
                 <div className="relative">
                   <Image
-                    src="https://images.unsplash.com/photo-1657312145619-8fdad5e7b663?q=80&w=4315&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    src={johnSon}
                     alt="Johnson City Downtown"
                     width={500}
                     height={300}
@@ -387,7 +393,7 @@ export default async function HomePage() {
               <Card className="overflow-hidden border-0 gap-0 shadow-sm hover:shadow-md py-0 transition-shadow">
                 <div className="relative">
                   <Image
-                    src="https://images.unsplash.com/photo-1509838174235-432f709c7bfd?q=80&w=4140&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    src={fallColors}
                     alt="Fall colors in the Smokies"
                     width={500}
                     height={300}
